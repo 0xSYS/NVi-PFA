@@ -24,13 +24,22 @@
 
 
 //bool show_demo_window = true;
-bool main_gui_window = false;
+//bool main_gui_window = false;
 
 int selIndex = 0;
 static char midi_search[128];
 static char sf_search[128];
 static std::string midi_search_text;
 static std::string sf_search_text;
+
+
+// Define thresholds for double-tap detection
+#define DOUBLE_TAP_TIME 0.3f  // Maximum time (in seconds) between taps
+#define DOUBLE_TAP_DISTANCE 10.0f  // Maximum distance (in pixels) between taps
+
+// Variables to track double-tap state
+static float lastTapTime = 0.0f;
+static ImVec2 lastTapPos = ImVec2(0.0f, 0.0f);
 
 //ImGuiIO& io = ImGui::GetIO();
 
@@ -154,7 +163,7 @@ void NVGui::Setup(SDL_Window *w, SDL_Renderer *r)
     //Font suggested by Nerdly
     //Metrophobic-Regular.ttf
     std::string ui_font_file = NVFileUtils::GetFilePathA("ui_font.ttf", "rb");
-    io.Fonts->AddFontFromFileTTF(ui_font_file.c_str(), 19.0f);
+    io.Fonts->AddFontFromFileTTF(ui_font_file.c_str(), 38.0f);
     
     // Setup Platform/Renderer backends
     ImGui_ImplSDL3_InitForSDLRenderer(w, r);
@@ -164,6 +173,35 @@ void NVGui::Setup(SDL_Window *w, SDL_Renderer *r)
 /*
 Functions for internal use only
 */
+
+void HandleDoubleTap()
+{
+    // Get the current time
+    float currentTime = ImGui::GetTime();
+
+    // Check if the left mouse button was clicked
+    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+        // Get the current mouse position
+        ImVec2 currentPos = ImGui::GetMousePos();
+
+        // Check if this is a double-tap
+        if ((currentTime - lastTapTime) <= DOUBLE_TAP_TIME) {
+            float dx = currentPos.x - lastTapPos.x;
+            float dy = currentPos.y - lastTapPos.y;
+            float distanceSquared = dx * dx + dy * dy;
+
+            if (distanceSquared <= DOUBLE_TAP_DISTANCE * DOUBLE_TAP_DISTANCE) {
+                // Double-tap detected
+                main_gui_window = true;  // Open the ImGui window
+                printf("Double-tap detected at (%f, %f)\n", currentPos.x, currentPos.y);
+            }
+        }
+
+        // Update the last tap information
+        lastTapTime = currentTime;
+        lastTapPos = currentPos;
+    }
+}
 
 // So many of you wanted this
 // And I can relate to such a problem
@@ -242,10 +280,24 @@ void NVGui::Run(SDL_Renderer *r)
     ImGui_ImplSDL3_NewFrame();
     ImGui::NewFrame();
     
-    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::GetIO().MouseClickedCount[ImGuiMouseButton_Left] == 2) 
-    {
+    //HandleDoubleTap();
+    
+    ImGui::SetNextWindowPos(ImVec2(10.0f, 18.0f)); // Position on the screen
+    ImGui::SetNextWindowSize(ImVec2(0.0f, 0.0f));    // No size constraints
+    
+        // Create an invisible window
+    ImGui::Begin("InvisibleWindow", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBackground);
+    
+    ImGui::SetCursorPos(ImVec2(5.0f, 400.0f));
+    if (ImGui::Button("Open settings"))
         main_gui_window = true;
-    }
+    
+    ImGui::End();
+    
+    //if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) 
+    //{
+    //    main_gui_window = true;
+    //}
     
     // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
     //if (show_demo_window)
@@ -261,7 +313,7 @@ void NVGui::Run(SDL_Renderer *r)
                 ImGuiIO& io = ImGui::GetIO();
                 ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
                 ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f)); // Pivot 0.5 = center
-                ImGui::SetNextWindowSizeConstraints(ImVec2(700, 380), ImVec2(FLT_MAX, FLT_MAX));
+                ImGui::SetNextWindowSizeConstraints(ImVec2(800, 380), ImVec2(FLT_MAX, FLT_MAX));
                 ImGui::Begin("NVi PFA", &main_gui_window);
                 
                 //ImGui::SameLine();

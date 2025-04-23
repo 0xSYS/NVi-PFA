@@ -28,7 +28,9 @@
 #include "extern/cpptoml/cpptoml.h"
 
 
-#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "FontCheck", __VA_ARGS__))
+//#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "FontCheck", __VA_ARGS__))
+#define DOUBLE_TAP_TIME 300  // Maximum time (in milliseconds) between taps
+#define DOUBLE_TAP_DISTANCE 50  // Maximum distance (in pixels) between taps
 
 
 
@@ -66,6 +68,11 @@ static constexpr unsigned int Col[]= {
 
 SDL_Event Evt;
 HSTREAM   Stm;
+
+
+
+Uint64 lastTapTime = 0;
+float lastTapX = 0, lastTapY = 0;
 
 
 
@@ -309,7 +316,7 @@ int SDL_main(int ac, char **av)
     {
         // If not assign default configuration
         default_config.bass_voice_count = 500;
-        default_config.current_soundfonts = {DEFAULT_SOUNDFONT};
+        default_config.current_soundfonts = {default_sf_path};
         default_config.bg_R = 43;
         default_config.bg_G = 43;
         default_config.bg_B = 43;
@@ -379,7 +386,7 @@ int SDL_main(int ac, char **av)
     if(live_soundfont_list.size() == 0)
     {
         std::cout << "Default sf\n";
-        Sf = BASS_MIDI_FontInit(DEFAULT_SOUNDFONT, 0);
+        Sf = BASS_MIDI_FontInit(default_sf_path.c_str(), 0);
     }
     else 
     {
@@ -441,20 +448,43 @@ int SDL_main(int ac, char **av)
                     std::cout << "Double click detected\n";
                 }
             }
-            
+            // This never worked
             if (Evt.type == SDL_EVENT_FINGER_DOWN) 
             {
                 Uint64 now = SDL_GetTicks();
             
                 if (now - lastTapTime < doubleTapThreshold) 
                 {
-                    bool main_gui_window = true;
-                    //float x = Evt.tfinger.x;
-                    //float y = Evt.tfinger.y;
-                    //printf("Double tap at (%.2f, %.2f)\n", x, y);
-                    std::cout << "Double tap\n";
+                    //main_gui_window = true;
+                    // Get the current time and touch position
+                    Uint64 currentTime = SDL_GetTicks();
+                    float x = Evt.tfinger.x * 800;  // Convert normalized coordinates to pixels
+                    float y = Evt.tfinger.y * 600;
+                   
+                    // Check if this is a double-tap
+                    if (currentTime - lastTapTime <= DOUBLE_TAP_TIME) 
+                    {
+                        float dx = x - lastTapX;
+                        float dy = y - lastTapY;
+                        float distanceSquared = dx * dx + dy * dy;
+                   
+                        if (distanceSquared <= DOUBLE_TAP_DISTANCE * DOUBLE_TAP_DISTANCE) 
+                        {
+                            // Double-tap detected
+                            main_gui_window = true;
+                            printf("Double-tap detected at (%f, %f)\n", x, y);
+                        }
+                    }
+                    lastTapTime = currentTime;
+                    lastTapX = x;
+                    lastTapY = y;
                 }
-            }*/
+            }
+            
+            //if (Evt.type == SDL_EVENT_MOUSE_BUTTON_DOWN) 
+            //{
+            //    printf("Mouse button down detected\n");
+            //}
             
             if (Evt.type == SDL_EVENT_KEY_DOWN) 
             {
@@ -462,7 +492,20 @@ int SDL_main(int ac, char **av)
                 {
                     NVi::Quit();
                 }
-            }
+            }*/
+            
+            
+            if (Evt.type == SDL_EVENT_FINGER_DOWN) {
+                    // Convert touch event to mouse event for ImGui
+                    ImGuiIO& io = ImGui::GetIO();
+                    io.AddMousePosEvent(Evt.tfinger.x * 800, Evt.tfinger.y * 600);  // Scale normalized coordinates
+                    io.AddMouseButtonEvent(0, true);  // Left mouse button down
+                }
+            
+                if (Evt.type == SDL_EVENT_FINGER_UP) {
+                    ImGuiIO& io = ImGui::GetIO();
+                    io.AddMouseButtonEvent(0, false);  // Left mouse button up
+                }
         }
         SDL_SetRenderDrawColor(Win->Ren, liveColor.r, liveColor.g, liveColor.b, liveColor.a);
         for(int i=0;i!=128;++i)

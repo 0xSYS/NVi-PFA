@@ -18,6 +18,7 @@ inline std::vector<std::string> live_midi_list;
 inline std::vector<std::string> live_soundfont_files;
 inline bool is_midi_loaded;
 inline std::string current_midi_file;
+inline bool main_gui_window = false;
 static Canvas     *Win;
 //static NVnoteList MIDI;
 

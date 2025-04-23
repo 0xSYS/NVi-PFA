@@ -40,7 +40,7 @@ void NVConf::WriteConfig(configuration cfg)
     bg_col->insert("A", cfg.bg_A);
     out_cfg->insert("BackgroundColor", bg_col);
     
-    std::ofstream out("config.toml");
+    std::ofstream out(CONFIG_PATH);
     out << (*out_cfg); // cpptoml overloads the << operator
     out.close();
     NVi::info("Config_Utils", "Settings saved");
@@ -49,7 +49,7 @@ void NVConf::WriteConfig(configuration cfg)
 NVConf::configuration NVConf::ReadConfig()
 {
     NVConf::configuration in_cfg;
-    auto cfg = cpptoml::parse_file("config.toml");
+    auto cfg = cpptoml::parse_file(CONFIG_PATH);
     
     auto audio = cfg->get_table("Audio");
     in_cfg.bass_voice_count = *audio->get_as<int>("VoiceCount");

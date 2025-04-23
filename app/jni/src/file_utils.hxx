@@ -11,7 +11,7 @@
 #ifdef NON_ANDROID
     #define BASE_DIRECTORY "/home/0xsys/Desktop"
 #else
-    #define BASE_DIRECTORY "/sdcard/Download"
+    #define BASE_DIRECTORY "/sdcard/Download/"
     #define APP_NAMESPACE "com.qsp"
 #endif
 
