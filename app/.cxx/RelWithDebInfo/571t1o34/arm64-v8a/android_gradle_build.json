@@ -1,0 +1,39 @@
+{
+  "buildFiles": [
+    "/home/0xsys/Desktop/com.qsp.nvpfa_new/app/jni/CMakeLists.txt",
+    "/home/0xsys/Desktop/com.qsp.nvpfa_new/app/jni/src/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/0xsys/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/0xsys/Desktop/com.qsp.nvpfa_new/app/.cxx/RelWithDebInfo/571t1o34/arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/0xsys/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/0xsys/Desktop/com.qsp.nvpfa_new/app/.cxx/RelWithDebInfo/571t1o34/arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "main::@145eef247bfb46b6828c": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "main",
+      "output": "/home/0xsys/Desktop/com.qsp.nvpfa_new/app/.cxx/RelWithDebInfo/571t1o34/arm64-v8a/src/libmain.a"
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/home/0xsys/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/home/0xsys/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp",
+    "cxx"
+  ]
+}

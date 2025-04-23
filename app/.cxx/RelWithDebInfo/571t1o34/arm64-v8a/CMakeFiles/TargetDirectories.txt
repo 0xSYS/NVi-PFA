@@ -1,0 +1,5 @@
+/home/0xsys/Desktop/com.qsp.nvpfa_new/app/.cxx/RelWithDebInfo/571t1o34/arm64-v8a/CMakeFiles/edit_cache.dir
+/home/0xsys/Desktop/com.qsp.nvpfa_new/app/.cxx/RelWithDebInfo/571t1o34/arm64-v8a/CMakeFiles/rebuild_cache.dir
+/home/0xsys/Desktop/com.qsp.nvpfa_new/app/.cxx/RelWithDebInfo/571t1o34/arm64-v8a/src/CMakeFiles/main.dir
+/home/0xsys/Desktop/com.qsp.nvpfa_new/app/.cxx/RelWithDebInfo/571t1o34/arm64-v8a/src/CMakeFiles/edit_cache.dir
+/home/0xsys/Desktop/com.qsp.nvpfa_new/app/.cxx/RelWithDebInfo/571t1o34/arm64-v8a/src/CMakeFiles/rebuild_cache.dir

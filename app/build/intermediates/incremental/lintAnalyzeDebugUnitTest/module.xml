@@ -1,0 +1,18 @@
+<lint-module
+    format="1"
+    dir="/home/0xsys/Desktop/com.qsp.nvpfa_new/app"
+    name=":app"
+    type="APP"
+    maven="com.qsp.nvpfa_new:app:unspecified"
+    agpVersion="8.7.3"
+    buildFolder="build"
+    bootClassPath="/home/0xsys/Android/Sdk/platforms/android-35/android.jar:/home/0xsys/Android/Sdk/build-tools/34.0.0/core-lambda-stubs.jar"
+    javaSourceLevel="1.8"
+    compileTarget="android-35"
+    neverShrinking="true">
+  <lintOptions
+      absolutePaths="true"
+      checkReleaseBuilds="true"
+      explainIssues="true"/>
+  <variant name="debug"/>
+</lint-module>

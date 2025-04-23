@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.7.3" type="incidents">
+
+    <incident
+        id="ScopedStorage"
+        severity="warning"
+        message="The Google Play store has a policy that limits usage of MANAGE_EXTERNAL_STORAGE">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*manifest*0}"
+            line="61"
+            column="36"
+            startOffset="2389"
+            endLine="61"
+            endColumn="78"
+            endOffset="2431"/>
+    </incident>
+
+    <incident
+        id="RedundantLabel"
+        severity="warning"
+        message="Redundant label can be removed">
+        <fix-attribute
+            description="Delete label"
+            namespace="http://schemas.android.com/apk/res/android"
+            attribute="label"/>
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*manifest*0}"
+            line="89"
+            column="13"
+            startOffset="3507"
+            endLine="89"
+            endColumn="45"
+            endOffset="3539"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.core:core than 1.13.0 is available: 1.16.0">
+        <fix-replace
+            description="Change to 1.16.0"
+            family="Update versions"
+            oldString="1.13.0"
+            replacement="1.16.0"
+            priority="0"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="79"
+            column="24"
+            startOffset="1875"
+            endLine="79"
+            endColumn="51"
+            endOffset="1902"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.activity:activity-ktx than 1.8.0 is available: 1.10.1">
+        <fix-replace
+            description="Change to 1.10.1"
+            family="Update versions"
+            oldString="1.8.0"
+            replacement="1.10.1"
+            priority="0"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="80"
+            column="20"
+            startOffset="1933"
+            endLine="80"
+            endColumn="58"
+            endOffset="1971"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.fragment:fragment-ktx than 1.5.6 is available: 1.8.6">
+        <fix-replace
+            description="Change to 1.8.6"
+            family="Update versions"
+            oldString="1.5.6"
+            replacement="1.8.6"
+            priority="0"/>
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="81"
+            column="20"
+            startOffset="1991"
+            endLine="81"
+            endColumn="58"
+            endOffset="2029"/>
+    </incident>
+
+    <incident
+        id="ChromeOsAbiSupport"
+        severity="warning"
+        message="Missing x86_64 ABI support for ChromeOS">
+        <location
+            file="${:app*projectDir}/build.gradle"
+            line="27"
+            column="24"
+            startOffset="446"
+            endLine="27"
+            endColumn="35"
+            endOffset="457"/>
+    </incident>
+
+</incidents>

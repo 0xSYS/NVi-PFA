@@ -1,0 +1,1 @@
+/home/0xsys/Desktop/com.qsp.nvpfa_new/app/build/intermediates/cxx/RelWithDebInfo/402g2h13/obj/arm64-v8a

@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.qsp.nvpfa.app-mergeDebugResources-23:/values-nl/values-nl.xml",
+            "map": [
+                {
+                    "source": "/home/0xsys/.gradle/caches/8.12/transforms/e911be2832e8c3747079a472e519e1ac/transformed/core-1.13.0/res/values-nl/values-nl.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,157,259,359,459,566,670,789",
+                        "endColumns": "101,101,99,99,106,103,118,100",
+                        "endOffsets": "152,254,354,454,561,665,784,885"
+                    }
+                }
+            ]
+        }
+    ]
+}

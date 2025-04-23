@@ -1,0 +1,242 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.qsp.nvpfa"
+4    android:installLocation="auto"
+5    android:versionCode="1"
+6    android:versionName="1.0" >
+7
+8    <uses-sdk
+9        android:minSdkVersion="21"
+10        android:targetSdkVersion="35" />
+11
+12    <!-- OpenGL ES 2.0 -->
+13    <uses-feature android:glEsVersion="0x00020000" />
+13-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:9:5-54
+13-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:9:19-51
+14
+15    <!-- Touchscreen support -->
+16    <uses-feature
+16-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:12:5-14:36
+17        android:name="android.hardware.touchscreen"
+17-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:13:9-52
+18        android:required="false" />
+18-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:14:9-33
+19
+20    <!-- Game controller support -->
+21    <uses-feature
+21-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:17:5-19:36
+22        android:name="android.hardware.bluetooth"
+22-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:18:9-50
+23        android:required="false" />
+23-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:19:9-33
+24    <uses-feature
+24-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:20:5-22:36
+25        android:name="android.hardware.gamepad"
+25-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:21:9-48
+26        android:required="false" />
+26-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:22:9-33
+27    <uses-feature
+27-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:23:5-25:36
+28        android:name="android.hardware.usb.host"
+28-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:24:9-49
+29        android:required="false" />
+29-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:25:9-33
+30
+31    <!-- External mouse input events -->
+32    <uses-feature
+32-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:28:5-30:36
+33        android:name="android.hardware.type.pc"
+33-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:29:9-48
+34        android:required="false" />
+34-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:30:9-33
+35
+36    <!-- Audio recording support -->
+37    <!-- if you want to record audio, uncomment this. -->
+38    <!-- <uses-permission android:name="android.permission.RECORD_AUDIO" /> -->
+39    <!--
+40         <uses-feature
+41        android:name="android.hardware.microphone"
+42        android:required="false" />
+43    -->
+44
+45
+46    <!-- Camera support -->
+47    <!-- if you want to record video, uncomment this. -->
+48    <!--
+49    <uses-permission android:name="android.permission.CAMERA" />
+50    <uses-feature android:name="android.hardware.camera" />
+51    -->
+52
+53
+54    <!-- Allow downloading to the external storage on Android 5.1 and older -->
+55    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="22" /> -->
+56
+57
+58    <!-- Allow access to Bluetooth devices -->
+59    <!-- Currently this is just for Steam Controller support and requires setting SDL_HINT_JOYSTICK_HIDAPI_STEAM -->
+60    <!-- <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" /> -->
+61    <!-- <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" /> -->
+62
+63
+64    <!-- Allow access to the vibrator -->
+65    <uses-permission android:name="android.permission.VIBRATE" />
+65-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:55:5-66
+65-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:55:22-63
+66    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+66-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:57:5-81
+66-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:57:22-78
+67    <!-- 读 -->
+68    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+68-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:59:5-80
+68-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:59:22-77
+69    <!-- 读写所有文件Android11新增 -->
+70    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+70-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:61:5-81
+70-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:61:22-79
+71
+72    <permission
+72-->[androidx.core:core:1.13.0] /home/0xsys/.gradle/caches/8.12/transforms/e911be2832e8c3747079a472e519e1ac/transformed/core-1.13.0/AndroidManifest.xml:22:5-24:47
+73        android:name="com.qsp.nvpfa.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+73-->[androidx.core:core:1.13.0] /home/0xsys/.gradle/caches/8.12/transforms/e911be2832e8c3747079a472e519e1ac/transformed/core-1.13.0/AndroidManifest.xml:23:9-81
+74        android:protectionLevel="signature" />
+74-->[androidx.core:core:1.13.0] /home/0xsys/.gradle/caches/8.12/transforms/e911be2832e8c3747079a472e519e1ac/transformed/core-1.13.0/AndroidManifest.xml:24:9-44
+75
+76    <uses-permission android:name="com.qsp.nvpfa.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" /> <!-- Allow access to Internet -->
+76-->[androidx.core:core:1.13.0] /home/0xsys/.gradle/caches/8.12/transforms/e911be2832e8c3747079a472e519e1ac/transformed/core-1.13.0/AndroidManifest.xml:26:5-97
+76-->[androidx.core:core:1.13.0] /home/0xsys/.gradle/caches/8.12/transforms/e911be2832e8c3747079a472e519e1ac/transformed/core-1.13.0/AndroidManifest.xml:26:22-94
+77    <!-- if you want to connect to the network or internet, uncomment this. -->
+78<!--     <uses-permission android:name="android.permission.INTERNET" /> -->
+79    <!--
+80 Create a Java class extending SDLActivity and place it in a
+81         directory under app/src/main/java matching the package, e.g. app/src/main/java/com/gamemaker/game/MyGame.java
+82
+83         then replace "SDLActivity" with the name of your class (e.g. "MyGame")
+84         in the XML below.
+85
+86         An example Java class can be found in README-android.md
+87    -->
+88    <application
+88-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:77:5-115:19
+89        android:allowBackup="true"
+89-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:79:9-35
+90        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+90-->[androidx.core:core:1.13.0] /home/0xsys/.gradle/caches/8.12/transforms/e911be2832e8c3747079a472e519e1ac/transformed/core-1.13.0/AndroidManifest.xml:28:18-86
+91        android:debuggable="true"
+92        android:extractNativeLibs="true"
+93        android:hardwareAccelerated="true"
+93-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:82:9-43
+94        android:icon="@mipmap/ic_launcher"
+94-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:78:9-43
+95        android:label="@string/app_name"
+95-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:77:18-50
+96        android:requestLegacyExternalStorage="true"
+96-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:81:9-52
+97        android:theme="@style/AppTheme" >
+97-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:80:9-40
+98
+99        <!--
+100        Example of setting SDL hints from AndroidManifest.xml:
+101        <meta-data android:name="SDL_ENV.SDL_ANDROID_TRAP_BACK_BUTTON" android:value="0"/>
+102        -->
+103
+104        <activity
+104-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:88:9-114:20
+105            android:name="com.qsp.nvpfa.NvpfaActivity"
+105-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:88:19-47
+106            android:alwaysRetainTaskState="true"
+106-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:90:13-49
+107            android:configChanges="layoutDirection|locale|grammaticalGender|fontScale|fontWeightAdjustment|orientation|uiMode|screenLayout|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+107-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:92:13-205
+108            android:exported="true"
+108-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:94:13-36
+109            android:label="@string/app_name"
+109-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:89:13-45
+110            android:launchMode="singleInstance"
+110-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:91:13-48
+111            android:preferMinimalPostProcessing="true"
+111-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:93:13-55
+112            android:screenOrientation="landscape" >
+112-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:95:13-50
+113            <intent-filter>
+113-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:98:13-101:29
+114                <action android:name="android.intent.action.MAIN" />
+114-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:99:17-69
+114-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:99:25-66
+115
+116                <category android:name="android.intent.category.LAUNCHER" />
+116-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:100:17-77
+116-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:100:27-74
+117            </intent-filter>
+118            <!-- Let Android know that we can handle some USB devices and should receive this event -->
+119            <intent-filter>
+119-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:103:13-105:29
+120                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+120-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:104:17-90
+120-->/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:104:25-87
+121            </intent-filter>
+122            <!-- Drop file event -->
+123            <!--
+124            <intent-filter>
+125                <action android:name="android.intent.action.VIEW" />
+126                <category android:name="android.intent.category.DEFAULT" />
+127                <data android:mimeType="*/*" />
+128            </intent-filter>
+129            -->
+130        </activity>
+131
+132        <provider
+132-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:24:9-32:20
+133            android:name="androidx.startup.InitializationProvider"
+133-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:25:13-67
+134            android:authorities="com.qsp.nvpfa.androidx-startup"
+134-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:26:13-68
+135            android:exported="false" >
+135-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:27:13-37
+136            <meta-data
+136-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:29:13-31:52
+137                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+137-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:30:17-85
+138                android:value="androidx.startup" />
+138-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:31:17-49
+139        </provider>
+140
+141        <receiver
+141-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:34:9-52:20
+142            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+142-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:35:13-76
+143            android:directBootAware="false"
+143-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:36:13-44
+144            android:enabled="true"
+144-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:37:13-35
+145            android:exported="true"
+145-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:38:13-36
+146            android:permission="android.permission.DUMP" >
+146-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:39:13-57
+147            <intent-filter>
+147-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:40:13-42:29
+148                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+148-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:17-91
+148-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:25-88
+149            </intent-filter>
+150            <intent-filter>
+150-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:43:13-45:29
+151                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+151-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:17-85
+151-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:25-82
+152            </intent-filter>
+153            <intent-filter>
+153-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:46:13-48:29
+154                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+154-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:17-88
+154-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:25-85
+155            </intent-filter>
+156            <intent-filter>
+156-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:49:13-51:29
+157                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+157-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:17-95
+157-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/27676e7654574c0b857735aae5e677cb/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:25-92
+158            </intent-filter>
+159        </receiver>
+160    </application>
+161
+162</manifest>

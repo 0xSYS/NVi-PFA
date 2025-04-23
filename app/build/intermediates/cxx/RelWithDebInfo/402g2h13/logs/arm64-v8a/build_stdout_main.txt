@@ -1,0 +1,18 @@
+ninja: Entering directory `/home/0xsys/Desktop/com.qsp.nvpfa_new/app/.cxx/RelWithDebInfo/402g2h13/arm64-v8a'
+[1/17] Building CXX object src/CMakeFiles/main.dir/extern/imgui_sdl3/imgui_impl_sdlrenderer3.cpp.o
+[2/17] Building CXX object src/CMakeFiles/main.dir/extern/imgui_sdl3/imgui_impl_sdl3.cpp.o
+[3/17] Building CXX object src/CMakeFiles/main.dir/MIDI.cxx.o
+[4/17] Building CXX object src/CMakeFiles/main.dir/extern/imgui/imgui_tables.cpp.o
+[5/17] Building CXX object src/CMakeFiles/main.dir/extern/imgui/imgui_demo.cpp.o
+[6/17] Building CXX object src/CMakeFiles/main.dir/file_utils.cxx.o
+[7/17] Building CXX object src/CMakeFiles/main.dir/Nlist.cxx.o
+[8/17] Building CXX object src/CMakeFiles/main.dir/extern/imgui/imgui_widgets.cpp.o
+[9/17] Building CXX object src/CMakeFiles/main.dir/Sequ.cxx.o
+[10/17] Building CXX object src/CMakeFiles/main.dir/Config_Utils.cxx.o
+[11/17] Building CXX object src/CMakeFiles/main.dir/extern/imgui/imgui_draw.cpp.o
+[12/17] Building CXX object src/CMakeFiles/main.dir/Utils.cxx.o
+[13/17] Building CXX object src/CMakeFiles/main.dir/canvas.cxx.o
+[14/17] Building CXX object src/CMakeFiles/main.dir/Gui.cxx.o
+[15/17] Building CXX object src/CMakeFiles/main.dir/extern/imgui/imgui.cpp.o
+[16/17] Building CXX object src/CMakeFiles/main.dir/Player.cxx.o
+[17/17] Linking CXX shared library /home/0xsys/Desktop/com.qsp.nvpfa_new/app/build/intermediates/cxx/RelWithDebInfo/402g2h13/obj/arm64-v8a/libmain.so

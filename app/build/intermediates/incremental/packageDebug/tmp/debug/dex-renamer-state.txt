@@ -1,0 +1,10 @@
+#Wed Apr 23 16:41:41 EEST 2025
+base.2=/home/0xsys/Desktop/com.qsp.nvpfa_new/app/build/intermediates/dex/debug/mergeProjectDexDebug/4/classes.dex
+path.2=4/classes.dex
+base.1=/home/0xsys/Desktop/com.qsp.nvpfa_new/app/build/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex
+path.1=0/classes.dex
+base.0=/home/0xsys/Desktop/com.qsp.nvpfa_new/app/build/intermediates/dex/debug/mergeExtDexDebug/classes.dex
+renamed.2=classes3.dex
+renamed.1=classes2.dex
+renamed.0=classes.dex
+path.0=classes.dex

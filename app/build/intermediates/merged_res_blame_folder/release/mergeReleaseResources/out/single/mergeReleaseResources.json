@@ -1,0 +1,34 @@
+[
+    {
+        "merged": "com.qsp.nvpfa.app-release-25:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.qsp.nvpfa.app-main-26:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.qsp.nvpfa.app-release-25:/raw_piano_maganda.sf2.flat",
+        "source": "com.qsp.nvpfa.app-main-26:/raw/piano_maganda.sf2"
+    },
+    {
+        "merged": "com.qsp.nvpfa.app-release-25:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.qsp.nvpfa.app-main-26:/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.qsp.nvpfa.app-release-25:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "com.qsp.nvpfa.app-main-26:/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.qsp.nvpfa.app-release-25:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.qsp.nvpfa.app-main-26:/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.qsp.nvpfa.app-release-25:/raw_pfa_intro.mid.flat",
+        "source": "com.qsp.nvpfa.app-main-26:/raw/pfa_intro.mid"
+    },
+    {
+        "merged": "com.qsp.nvpfa.app-release-25:/raw_ui_font.ttf.flat",
+        "source": "com.qsp.nvpfa.app-main-26:/raw/ui_font.ttf"
+    },
+    {
+        "merged": "com.qsp.nvpfa.app-release-25:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "com.qsp.nvpfa.app-main-26:/mipmap-mdpi/ic_launcher.png"
+    }
+]
