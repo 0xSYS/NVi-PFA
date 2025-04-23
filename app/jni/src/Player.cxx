@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
-#include <android/log.h>
+//#include <android/log.h>
 //#include <bassmidi.h>
 //#include <bass_fx.h>
 
@@ -292,12 +292,9 @@ int SDL_main(int ac, char **av)
     const char * midi_path = av[1];
     const char * sf_path = av[2];
     
-    if (!NVFileUtils::FileExists("/data/data/com.qsp.nvpfa/files/ui_font.ttf")) {
-        LOGI("Font file does NOT exist!");
-    } else {
-        LOGI("Font file exists.");
-    }
-    
+    std::string default_sf_path = NVFileUtils::GetFilePathA("piano_maganda.sf2", "rb");
+    std::string default_midi_path = NVFileUtils::GetFilePathA("pfa_intro.mid", "rb");
+    std::string ui_font = NVFileUtils::GetFilePathA("ui_font.ttf", "rb");
     if(NVFileUtils::FileExists(CONFIG_PATH) == true)
     {
         // Read Config and assign settings structure
@@ -352,7 +349,9 @@ int SDL_main(int ac, char **av)
     if(!MIDI.start_parse(parsed_config.last_midi_path.c_str()))
     {
         Canvas C;
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", "MIDI File Load Failed", nullptr);
+        std::ostringstream temp_msg;
+        temp_msg << "Failed to load '" << parsed_config.last_midi_path << "'";
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", temp_msg.str().c_str(), nullptr);
         return 1;
     }
     else {

@@ -44,6 +44,8 @@ namespace  NVi   /* ===== Tool function namespace ===== */
     
     //void StartBassPlayback(std::string midi_path, std::vector<std::string> soundfonts);
     
+    void CheckAssets();
+    
     void CreateMidiList();
     void ReadMidiList();
     void RefreshSFList();

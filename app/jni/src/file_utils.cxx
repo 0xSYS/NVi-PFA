@@ -1,3 +1,4 @@
+#include <SDL3/SDL_filesystem.h>
 #include <stdio.h>
 #include <dirent.h>
 #include <stdbool.h>
@@ -76,6 +77,30 @@ std::vector<std::string> NVFileUtils::GetFilesByExtension(std::string base_dir, 
     
         closedir(dir);
         return result;
+}
+
+
+std::string NVFileUtils::GetFilePathA(std::string filename, const char * reading_mode)
+{
+    std::string out_path;
+    std::ostringstream full_path;
+    char * base_path = SDL_GetPrefPath(APP_NAMESPACE, "nvpfa");
+    full_path << base_path << filename;
+    SDL_IOStream *check_file = SDL_IOFromFile(filename.c_str(), reading_mode);
+    if(check_file != NULL)
+    {
+        SDL_CloseIO(check_file);
+        out_path = full_path.str();
+    }
+    else
+    {
+        out_path = "";
+        std::ostringstream temp_msg;
+        temp_msg << "Failed to get file !\n" << "'" << full_path.str() << "' Does not exists !";
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", temp_msg.str().c_str(), nullptr);
+    }
+    SDL_free(base_path);
+    return out_path;
 }
 
 

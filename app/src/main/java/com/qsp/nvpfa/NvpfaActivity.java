@@ -1,7 +1,11 @@
-
 package com.qsp.nvpfa;
 import org.libsdl.app.SDLActivity;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.File;
+import java.io.FileOutputStream;
+import android.util.Log;
 import android.os.Build;
 import android.os.Bundle;
 import android.Manifest;
@@ -18,11 +22,18 @@ import androidx.annotation.NonNull;
 public class NvpfaActivity extends SDLActivity {
     private static final int REQUEST_STORAGE_PERMISSION = 1;
     private static final int REQUEST_MANAGE_EXTERNAL_STORAGE = 2;
+    private static final String TAG = "NvpfaActivity";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        
+        loadFile("pfa_intro.mid");
+        loadFile("piano_maganda.sf2");
+        loadFile("ui_font.ttf");
+        
+        extractAssets();
+            
         getFilesDir();
 
         // 检查是否已经拥有权限
@@ -50,6 +61,62 @@ public class NvpfaActivity extends SDLActivity {
             }
         }
     }
+    
+    private void loadFile(String filename) {
+        InputStream is = null;
+        try {
+            is = getAssets().open(filename);
+            // Process the file...
+            Log.d(TAG, "Successfully opened: " + filename);
+            
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to open asset: " + filename, e);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    Log.e(TAG, "Error closing stream for " + filename, e);
+                }
+            }
+        }
+    }
+    
+    private void extractAssets() {
+        String[] assetFiles = {"pfa_intro.mid", "piano_maganda.sf2", "ui_font.ttf"}; // Add all your filenames
+        
+        for (String filename : assetFiles) {
+            File outFile = new File(getFilesDir(), filename);
+            
+            // Skip if already extracted
+            if (outFile.exists()) {
+                Log.d("Assets", "File already extracted: " + filename);
+                continue;
+            }
+            
+            // Extract the file
+            try (InputStream is = getAssets().open(filename);
+                 FileOutputStream fos = new FileOutputStream(outFile)) {
+                
+                byte[] buffer = new byte[8192];
+                int read;
+                while ((read = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, read);
+                }
+                fos.flush();
+                
+                Log.d("Assets", "Successfully extracted: " + filename);
+            } catch (IOException e) {
+                Log.e("Assets", "Failed to extract " + filename, e);
+            }
+        }
+        
+        // List files after extraction
+        Log.d("Assets", "Files directory contents:");
+        for (String file : getFilesDir().list()) {
+            Log.d("Assets", " - " + file);
+        }
+    } // MISSING CLOSING BRACKET WAS HERE
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

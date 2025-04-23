@@ -31,7 +31,7 @@
         errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/java/com/qsp/nvpfa/NvpfaActivity.java"
-            line="84"
+            line="151"
             column="29"/>
     </issue>
 
@@ -79,7 +79,7 @@
         errorLine2="                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/home/0xsys/Desktop/com.qsp.nvpfa_new/app/build.gradle"
-            line="79"
+            line="85"
             column="24"/>
     </issue>
 
@@ -95,7 +95,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/home/0xsys/Desktop/com.qsp.nvpfa_new/app/build.gradle"
-            line="80"
+            line="86"
             column="20"/>
     </issue>
 
@@ -111,7 +111,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/home/0xsys/Desktop/com.qsp.nvpfa_new/app/build.gradle"
-            line="81"
+            line="87"
             column="20"/>
     </issue>
 
@@ -129,7 +129,7 @@
         errorLine2="                       ~~~~~~~~~~~">
         <location
             file="/home/0xsys/Desktop/com.qsp.nvpfa_new/app/build.gradle"
-            line="27"
+            line="33"
             column="24"/>
     </issue>
 
@@ -179,42 +179,6 @@
             file="/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/res/values/colors.xml"
             line="5"
             column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        severity="Warning"
-        message="The resource `R.raw.pfa_intro` appears to be unused"
-        category="Performance"
-        priority="3"
-        summary="Unused resources"
-        explanation="Unused resources make applications larger and slow down builds.&#xA;&#xA;&#xA;The unused resource check can ignore tests. If you want to include resources that are only referenced from tests, consider packaging them in a test source set instead.&#xA;&#xA;You can include test sources in the unused resource check by setting the system property lint.unused-resources.include-tests =true, and to exclude them (usually for performance reasons), use lint.unused-resources.exclude-tests =true.&#xA;,">
-        <location
-            file="/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/res/raw/pfa_intro.mid"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        severity="Warning"
-        message="The resource `R.raw.piano_maganda` appears to be unused"
-        category="Performance"
-        priority="3"
-        summary="Unused resources"
-        explanation="Unused resources make applications larger and slow down builds.&#xA;&#xA;&#xA;The unused resource check can ignore tests. If you want to include resources that are only referenced from tests, consider packaging them in a test source set instead.&#xA;&#xA;You can include test sources in the unused resource check by setting the system property lint.unused-resources.include-tests =true, and to exclude them (usually for performance reasons), use lint.unused-resources.exclude-tests =true.&#xA;,">
-        <location
-            file="/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/res/raw/piano_maganda.sf2"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        severity="Warning"
-        message="The resource `R.raw.ui_font` appears to be unused"
-        category="Performance"
-        priority="3"
-        summary="Unused resources"
-        explanation="Unused resources make applications larger and slow down builds.&#xA;&#xA;&#xA;The unused resource check can ignore tests. If you want to include resources that are only referenced from tests, consider packaging them in a test source set instead.&#xA;&#xA;You can include test sources in the unused resource check by setting the system property lint.unused-resources.include-tests =true, and to exclude them (usually for performance reasons), use lint.unused-resources.exclude-tests =true.&#xA;,">
-        <location
-            file="/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/res/raw/ui_font.ttf"/>
     </issue>
 
 </issues>

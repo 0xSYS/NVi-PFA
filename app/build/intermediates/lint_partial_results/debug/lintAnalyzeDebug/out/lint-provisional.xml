@@ -52,12 +52,12 @@
         <fix-data minSdk="fffffffffff00000" requiresApi="ffffffffe0000000"/>
         <location
             file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/qsp/nvpfa/NvpfaActivity.java"
-            line="84"
+            line="151"
             column="29"
-            startOffset="3527"
-            endLine="84"
+            startOffset="5853"
+            endLine="151"
             endColumn="53"
-            endOffset="3551"/>
+            endOffset="5877"/>
         <map>
             <entry
                 name="desc"

@@ -32,15 +32,9 @@
             endLine="4"
             endColumn="35"
             endOffset="132"/>
-        <location id="R.raw.pfa_intro"
-            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/raw/pfa_intro.mid"/>
-        <location id="R.raw.piano_maganda"
-            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/raw/piano_maganda.sf2"/>
-        <location id="R.raw.ui_font"
-            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/raw/ui_font.ttf"/>
         <entry
             name="model"
-            string="color[colorPrimary(D),colorPrimaryDark(D),colorAccent(D)],mipmap[ic_launcher(U)],raw[pfa_intro(D),piano_maganda(D),ui_font(D)],string[app_name(U)],style[AppTheme(U)];;;;"/>
+            string="color[colorPrimary(D),colorPrimaryDark(D),colorAccent(D)],mipmap[ic_launcher(U)],string[app_name(U)],style[AppTheme(U)];;;;"/>
     </map>
 
 </incidents>

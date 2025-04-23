@@ -10,6 +10,7 @@
 #include "Gui.hxx"
 #include "Config_Utils.hxx"
 #include "Utils.hxx"
+#include "file_utils.hxx"
 
 
 #include "extern/imgui/imgui.h"
@@ -152,7 +153,8 @@ void NVGui::Setup(SDL_Window *w, SDL_Renderer *r)
     
     //Font suggested by Nerdly
     //Metrophobic-Regular.ttf
-    //io.Fonts->AddFontFromFileTTF("/sdcard/Download/Roboto-Regular.ttf", 19.0f);
+    std::string ui_font_file = NVFileUtils::GetFilePathA("ui_font.ttf", "rb");
+    io.Fonts->AddFontFromFileTTF(ui_font_file.c_str(), 19.0f);
     
     // Setup Platform/Renderer backends
     ImGui_ImplSDL3_InitForSDLRenderer(w, r);

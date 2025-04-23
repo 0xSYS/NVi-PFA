@@ -177,9 +177,9 @@ document.getElementById(id).style.display = 'none';
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
-      <span class="mdl-layout-title">Lint Report: 1 error and 13 warnings</span>
+      <span class="mdl-layout-title">Lint Report: 1 error and 10 warnings</span>
       <div class="mdl-layout-spacer"></div>
-      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Wed Apr 23 16:41:45 EEST 2025 by AGP (8.7.3)</nav>
+      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Wed Apr 23 19:37:13 EEST 2025 by AGP (8.7.3)</nav>
     </div>
   </header>
   <div class="mdl-layout__drawer">
@@ -192,7 +192,7 @@ document.getElementById(id).style.display = 'none';
       <a class="mdl-navigation__link" href="#RedundantLabel"><i class="material-icons warning-icon">warning</i>Redundant label on activity (1)</a>
       <a class="mdl-navigation__link" href="#GradleDependency"><i class="material-icons warning-icon">warning</i>Obsolete Gradle Dependency (3)</a>
       <a class="mdl-navigation__link" href="#ChromeOsAbiSupport"><i class="material-icons warning-icon">warning</i>Missing ABI Support for ChromeOS (1)</a>
-      <a class="mdl-navigation__link" href="#UnusedResources"><i class="material-icons warning-icon">warning</i>Unused resources (6)</a>
+      <a class="mdl-navigation__link" href="#UnusedResources"><i class="material-icons warning-icon">warning</i>Unused resources (3)</a>
     </nav>
   </div>
   <main class="mdl-layout__content">
@@ -230,7 +230,7 @@ document.getElementById(id).style.display = 'none';
 <tr><td class="countColumn"></td><td class="categoryColumn"><a href="#Performance">Performance</a>
 </td></tr>
 <tr>
-<td class="countColumn">6</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<td class="countColumn">3</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#UnusedResources">UnusedResources</a>: Unused resources</td></tr>
 <tr><td></td><td class="categoryColumn"><a href="#ExtraIssues">Included Additional Checks (20)</a>
 </td></tr>
@@ -309,14 +309,14 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/com/qsp/nvpfa/NvpfaActivity.java">../../src/main/java/com/qsp/nvpfa/NvpfaActivity.java</a>:84</span>: <span class="message">Call requires API level 30 (current min is 21): <code>android.os.Environment#isExternalStorageManager</code></span><br /><pre class="errorlines">
-<span class="lineno"> 81 </span>    <span class="keyword">protected</span> <span class="keyword">void</span> onActivityResult(<span class="keyword">int</span> requestCode, <span class="keyword">int</span> resultCode, Intent data) {
-<span class="lineno"> 82 </span>        <span class="keyword">super</span>.onActivityResult(requestCode, resultCode, data);
-<span class="lineno"> 83 </span>        <span class="keyword">if</span> (requestCode == REQUEST_MANAGE_EXTERNAL_STORAGE) {
-<span class="caretline"><span class="lineno"> 84 </span>            <span class="keyword">if</span> (Environment.<span class="error">isExternalStorageManager</span>()) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 85 </span>                <span class="comment">// 用户已经手动开启了 MANAGE_EXTERNAL_STORAGE 权限</span>
-<span class="lineno"> 86 </span>                initializeApp();
-<span class="lineno"> 87 </span>            } <span class="keyword">else</span> {
+<span class="location"><a href="../../src/main/java/com/qsp/nvpfa/NvpfaActivity.java">../../src/main/java/com/qsp/nvpfa/NvpfaActivity.java</a>:151</span>: <span class="message">Call requires API level 30 (current min is 21): <code>android.os.Environment#isExternalStorageManager</code></span><br /><pre class="errorlines">
+<span class="lineno"> 148 </span>    <span class="keyword">protected</span> <span class="keyword">void</span> onActivityResult(<span class="keyword">int</span> requestCode, <span class="keyword">int</span> resultCode, Intent data) {
+<span class="lineno"> 149 </span>        <span class="keyword">super</span>.onActivityResult(requestCode, resultCode, data);
+<span class="lineno"> 150 </span>        <span class="keyword">if</span> (requestCode == REQUEST_MANAGE_EXTERNAL_STORAGE) {
+<span class="caretline"><span class="lineno"> 151 </span>            <span class="keyword">if</span> (Environment.<span class="error">isExternalStorageManager</span>()) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 152 </span>                <span class="comment">// 用户已经手动开启了 MANAGE_EXTERNAL_STORAGE 权限</span>
+<span class="lineno"> 153 </span>                initializeApp();
+<span class="lineno"> 154 </span>            } <span class="keyword">else</span> {
 </pre>
 
 </div>
@@ -456,33 +456,33 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../build.gradle">../../build.gradle</a>:79</span>: <span class="message">A newer version of androidx.core:core than 1.13.0 is available: 1.16.0</span><br /><pre class="errorlines">
-<span class="lineno"> 76 </span>dependencies {
-<span class="lineno"> 77 </span>    implementation files(<span class="string">'libs/SDL3-3.2.10.aar'</span>)
-<span class="lineno"> 78 </span>
-<span class="caretline"><span class="lineno"> 79 </span>        implementation <span class="warning"><span class="string">'androidx.core:core:1.13.0'</span></span> <span class="comment">// 使用最新的版本</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 80 </span>    implementation <span class="string">'androidx.activity:activity-ktx:1.8.0'</span>
-<span class="lineno"> 81 </span>    implementation <span class="string">'androidx.fragment:fragment-ktx:1.5.6'</span>
-<span class="lineno"> 82 </span>    implementation fileTree(include: [<span class="string">'*.jar'</span>], dir: <span class="string">'libs'</span>)
+<span class="location"><a href="../../build.gradle">../../build.gradle</a>:85</span>: <span class="message">A newer version of androidx.core:core than 1.13.0 is available: 1.16.0</span><br /><pre class="errorlines">
+<span class="lineno"> 82 </span>dependencies {
+<span class="lineno"> 83 </span>    implementation files(<span class="string">'libs/SDL3-3.2.10.aar'</span>)
+<span class="lineno"> 84 </span>
+<span class="caretline"><span class="lineno"> 85 </span>        implementation <span class="warning"><span class="string">'androidx.core:core:1.13.0'</span></span> <span class="comment">// 使用最新的版本</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 86 </span>    implementation <span class="string">'androidx.activity:activity-ktx:1.8.0'</span>
+<span class="lineno"> 87 </span>    implementation <span class="string">'androidx.fragment:fragment-ktx:1.5.6'</span>
+<span class="lineno"> 88 </span>    implementation fileTree(include: [<span class="string">'*.jar'</span>], dir: <span class="string">'libs'</span>)
 </pre>
 
-<span class="location"><a href="../../build.gradle">../../build.gradle</a>:80</span>: <span class="message">A newer version of androidx.activity:activity-ktx than 1.8.0 is available: 1.10.1</span><br /><pre class="errorlines">
-<span class="lineno"> 77 </span>    implementation files(<span class="string">'libs/SDL3-3.2.10.aar'</span>)
-<span class="lineno"> 78 </span>
-<span class="lineno"> 79 </span>        implementation <span class="string">'androidx.core:core:1.13.0'</span> <span class="comment">// 使用最新的版本</span>
-<span class="caretline"><span class="lineno"> 80 </span>    implementation <span class="warning"><span class="string">'androidx.activity:activity-ktx:1.8.0'</span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 81 </span>    implementation <span class="string">'androidx.fragment:fragment-ktx:1.5.6'</span>
-<span class="lineno"> 82 </span>    implementation fileTree(include: [<span class="string">'*.jar'</span>], dir: <span class="string">'libs'</span>)
-<span class="lineno"> 83 </span>    implementation <span class="string">'androidx.activity:activity:1.10.1'</span></pre>
+<span class="location"><a href="../../build.gradle">../../build.gradle</a>:86</span>: <span class="message">A newer version of androidx.activity:activity-ktx than 1.8.0 is available: 1.10.1</span><br /><pre class="errorlines">
+<span class="lineno"> 83 </span>    implementation files(<span class="string">'libs/SDL3-3.2.10.aar'</span>)
+<span class="lineno"> 84 </span>
+<span class="lineno"> 85 </span>        implementation <span class="string">'androidx.core:core:1.13.0'</span> <span class="comment">// 使用最新的版本</span>
+<span class="caretline"><span class="lineno"> 86 </span>    implementation <span class="warning"><span class="string">'androidx.activity:activity-ktx:1.8.0'</span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 87 </span>    implementation <span class="string">'androidx.fragment:fragment-ktx:1.5.6'</span>
+<span class="lineno"> 88 </span>    implementation fileTree(include: [<span class="string">'*.jar'</span>], dir: <span class="string">'libs'</span>)
+<span class="lineno"> 89 </span>    implementation <span class="string">'androidx.activity:activity:1.10.1'</span></pre>
 
-<span class="location"><a href="../../build.gradle">../../build.gradle</a>:81</span>: <span class="message">A newer version of androidx.fragment:fragment-ktx than 1.5.6 is available: 1.8.6</span><br /><pre class="errorlines">
-<span class="lineno"> 78 </span>
-<span class="lineno"> 79 </span>        implementation <span class="string">'androidx.core:core:1.13.0'</span> <span class="comment">// 使用最新的版本</span>
-<span class="lineno"> 80 </span>    implementation <span class="string">'androidx.activity:activity-ktx:1.8.0'</span>
-<span class="caretline"><span class="lineno"> 81 </span>    implementation <span class="warning"><span class="string">'androidx.fragment:fragment-ktx:1.5.6'</span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 82 </span>    implementation fileTree(include: [<span class="string">'*.jar'</span>], dir: <span class="string">'libs'</span>)
-<span class="lineno"> 83 </span>    implementation <span class="string">'androidx.activity:activity:1.10.1'</span>
-<span class="lineno"> 84 </span>}
+<span class="location"><a href="../../build.gradle">../../build.gradle</a>:87</span>: <span class="message">A newer version of androidx.fragment:fragment-ktx than 1.5.6 is available: 1.8.6</span><br /><pre class="errorlines">
+<span class="lineno"> 84 </span>
+<span class="lineno"> 85 </span>        implementation <span class="string">'androidx.core:core:1.13.0'</span> <span class="comment">// 使用最新的版本</span>
+<span class="lineno"> 86 </span>    implementation <span class="string">'androidx.activity:activity-ktx:1.8.0'</span>
+<span class="caretline"><span class="lineno"> 87 </span>    implementation <span class="warning"><span class="string">'androidx.fragment:fragment-ktx:1.5.6'</span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 88 </span>    implementation fileTree(include: [<span class="string">'*.jar'</span>], dir: <span class="string">'libs'</span>)
+<span class="lineno"> 89 </span>    implementation <span class="string">'androidx.activity:activity:1.10.1'</span>
+<span class="lineno"> 90 </span>}
 </pre>
 
 </div>
@@ -523,14 +523,14 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../build.gradle">../../build.gradle</a>:27</span>: <span class="message">Missing x86_64 ABI support for ChromeOS</span><br /><pre class="errorlines">
-<span class="lineno"> 24 </span>        versionName <span class="string">"1.0"</span>
-<span class="lineno"> 25 </span>
-<span class="lineno"> 26 </span>        ndk {
-<span class="caretline"><span class="lineno"> 27 </span>            abiFilters <span class="warning"><span class="string">'arm64-v8a'</span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 28 </span>        }
-<span class="lineno"> 29 </span>        <span class="comment">/*
-</span><span class="lineno"> 30 </span><span class="comment">        externalNativeBuild {
+<span class="location"><a href="../../build.gradle">../../build.gradle</a>:33</span>: <span class="message">Missing x86_64 ABI support for ChromeOS</span><br /><pre class="errorlines">
+<span class="lineno"> 30 </span>        versionName <span class="string">"1.0"</span>
+<span class="lineno"> 31 </span>
+<span class="lineno"> 32 </span>        ndk {
+<span class="caretline"><span class="lineno"> 33 </span>            abiFilters <span class="warning"><span class="string">'arm64-v8a'</span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 34 </span>        }
+<span class="lineno"> 35 </span>        <span class="comment">/*
+</span><span class="lineno"> 36 </span><span class="comment">        externalNativeBuild {
 </span></pre>
 
 </div>
@@ -600,9 +600,6 @@ Dismiss</button>            </div>
 <span class="lineno"> 6 </span><span class="tag">&lt;/resources></span>
 </pre>
 
-<span class="location"><a href="../../src/main/res/raw/pfa_intro.mid">../../src/main/res/raw/pfa_intro.mid</a></span>: <span class="message">The resource <code>R.raw.pfa_intro</code> appears to be unused</span><br />
-<span class="location"><a href="../../src/main/res/raw/piano_maganda.sf2">../../src/main/res/raw/piano_maganda.sf2</a></span>: <span class="message">The resource <code>R.raw.piano_maganda</code> appears to be unused</span><br />
-<span class="location"><a href="../../src/main/res/raw/ui_font.ttf">../../src/main/res/raw/ui_font.ttf</a></span>: <span class="message">The resource <code>R.raw.ui_font</code> appears to be unused</span><br />
 </div>
 <div class="metadata"><div class="explanation" id="explanationUnusedResources" style="display: none;">
 Unused resources make applications larger and slow down builds.<br/>

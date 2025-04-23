@@ -32,7 +32,7 @@
 
    https://goo.gle/android-storage-usecases
 
-/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/java/com/qsp/nvpfa/NvpfaActivity.java:84: Error: Call requires API level 30 (current min is 21): android.os.Environment#isExternalStorageManager [NewApi]
+/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/java/com/qsp/nvpfa/NvpfaActivity.java:151: Error: Call requires API level 30 (current min is 21): android.os.Environment#isExternalStorageManager [NewApi]
             if (Environment.isExternalStorageManager()) {
                             ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -90,13 +90,13 @@
    the application tag. Since the application has already specified the same
    label, the label on this activity can be omitted.
 
-/home/0xsys/Desktop/com.qsp.nvpfa_new/app/build.gradle:79: Warning: A newer version of androidx.core:core than 1.13.0 is available: 1.16.0 [GradleDependency]
+/home/0xsys/Desktop/com.qsp.nvpfa_new/app/build.gradle:85: Warning: A newer version of androidx.core:core than 1.13.0 is available: 1.16.0 [GradleDependency]
         implementation 'androidx.core:core:1.13.0' // 使用最新的版本
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/home/0xsys/Desktop/com.qsp.nvpfa_new/app/build.gradle:80: Warning: A newer version of androidx.activity:activity-ktx than 1.8.0 is available: 1.10.1 [GradleDependency]
+/home/0xsys/Desktop/com.qsp.nvpfa_new/app/build.gradle:86: Warning: A newer version of androidx.activity:activity-ktx than 1.8.0 is available: 1.10.1 [GradleDependency]
     implementation 'androidx.activity:activity-ktx:1.8.0'
                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/home/0xsys/Desktop/com.qsp.nvpfa_new/app/build.gradle:81: Warning: A newer version of androidx.fragment:fragment-ktx than 1.5.6 is available: 1.8.6 [GradleDependency]
+/home/0xsys/Desktop/com.qsp.nvpfa_new/app/build.gradle:87: Warning: A newer version of androidx.fragment:fragment-ktx than 1.5.6 is available: 1.8.6 [GradleDependency]
     implementation 'androidx.fragment:fragment-ktx:1.5.6'
                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -107,7 +107,7 @@
    However, you may simply not be aware that a more recent version is
    available, and that is what this lint check helps find.
 
-/home/0xsys/Desktop/com.qsp.nvpfa_new/app/build.gradle:27: Warning: Missing x86_64 ABI support for ChromeOS [ChromeOsAbiSupport]
+/home/0xsys/Desktop/com.qsp.nvpfa_new/app/build.gradle:33: Warning: Missing x86_64 ABI support for ChromeOS [ChromeOsAbiSupport]
             abiFilters 'arm64-v8a'
                        ~~~~~~~~~~~
 
@@ -130,9 +130,6 @@
 /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/res/values/colors.xml:5: Warning: The resource R.color.colorAccent appears to be unused [UnusedResources]
     <color name="colorAccent">#FF4081</color>
            ~~~~~~~~~~~~~~~~~~
-/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/res/raw/pfa_intro.mid: Warning: The resource R.raw.pfa_intro appears to be unused [UnusedResources]
-/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/res/raw/piano_maganda.sf2: Warning: The resource R.raw.piano_maganda appears to be unused [UnusedResources]
-/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/res/raw/ui_font.ttf: Warning: The resource R.raw.ui_font appears to be unused [UnusedResources]
 
    Explanation for issues of type "UnusedResources":
    Unused resources make applications larger and slow down builds.
@@ -148,4 +145,4 @@
    lint.unused-resources.exclude-tests =true.
    ,
 
-1 errors, 13 warnings
+1 errors, 10 warnings

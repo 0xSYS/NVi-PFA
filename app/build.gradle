@@ -9,10 +9,16 @@ android {
     buildFeatures {
         prefab true
     }
+    
+    aaptOptions {
+        noCompress 'txt', 'json', 'bin', 'mid', 'midi', 'smf',  'sf2', 'ttf', 'toml', 'sf3'
+    }
 
     sourceSets {
         main {
             jniLibs.srcDirs =['libs', 'jniLibs']
+            assets.srcDirs = ['src/main/assets']
+            //resources.srcDirs = ['src/main/res/raw/']
         }
     }
     namespace = "com.qsp.nvpfa"

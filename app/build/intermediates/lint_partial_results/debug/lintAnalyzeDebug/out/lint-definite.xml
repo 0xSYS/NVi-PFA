@@ -45,12 +45,12 @@
             priority="0"/>
         <location
             file="${:app*projectDir}/build.gradle"
-            line="79"
+            line="85"
             column="24"
-            startOffset="1875"
-            endLine="79"
+            startOffset="2101"
+            endLine="85"
             endColumn="51"
-            endOffset="1902"/>
+            endOffset="2128"/>
     </incident>
 
     <incident
@@ -65,12 +65,12 @@
             priority="0"/>
         <location
             file="${:app*projectDir}/build.gradle"
-            line="80"
+            line="86"
             column="20"
-            startOffset="1933"
-            endLine="80"
+            startOffset="2159"
+            endLine="86"
             endColumn="58"
-            endOffset="1971"/>
+            endOffset="2197"/>
     </incident>
 
     <incident
@@ -85,12 +85,12 @@
             priority="0"/>
         <location
             file="${:app*projectDir}/build.gradle"
-            line="81"
+            line="87"
             column="20"
-            startOffset="1991"
-            endLine="81"
+            startOffset="2217"
+            endLine="87"
             endColumn="58"
-            endOffset="2029"/>
+            endOffset="2255"/>
     </incident>
 
     <incident
@@ -99,12 +99,12 @@
         message="Missing x86_64 ABI support for ChromeOS">
         <location
             file="${:app*projectDir}/build.gradle"
-            line="27"
+            line="33"
             column="24"
-            startOffset="446"
-            endLine="27"
+            startOffset="672"
+            endLine="33"
             endColumn="35"
-            endOffset="457"/>
+            endOffset="683"/>
     </incident>
 
 </incidents>
