@@ -14,12 +14,12 @@
     #define MIDI_LIST "midi_list.toml"
     #define SF_LIST "soundfonts.toml"
     #define DEFAULT_SOUNDFONT "piano_maganda.sf2"
-    #define DEFAULT_MIDI "PFA_Intro.mid"
+    #define DEFAULT_MIDI "pfa_intro.mid"
 #else
     #define CONFIG_PATH "/data/data/com.qsp.nvpfa/files/config.toml"
     #define MIDI_LIST "/data/data/com.qsp.nvpfa/files/midi_list.toml"
     #define SF_LIST "/data/data/com.qsp.nvpfa/files/soundfonts.toml"
-    #define DEFAULT_SOUNDFONT "/data/data/com.qsp.nvpfa/files/piano_maganda.sfS2"
+    #define DEFAULT_SOUNDFONT "/data/data/com.qsp.nvpfa/files/piano_maganda.sf2"
     #define DEFAULT_MIDI "/data/data/com.qsp.nvpfa/files/pfa_intro.mid"
 #endif
 

@@ -15,6 +15,8 @@
 //#define DEV_TEST // Use this for development purposes only
 
 
+
+
 #include "Utils.hxx"
 #include "file_utils.hxx"
 #include "Config_Utils.hxx"
@@ -75,6 +77,12 @@ Uint64 lastTapTime = 0;
 float lastTapX = 0, lastTapY = 0;
 
 
+float limiter_threshold = 0.8f; // Max sample level before limiting
+float limiter_knee = 0.05f;     // Knee softness (smooth start of compression)
+float limiter_release = 0.0005f; // How quickly it relaxes gain (adjust if needed)
+
+float current_gain = 1.0f; // Persistent global gain
+
 
 
 void bassevt(DWORD type, DWORD param, DWORD chan, DWORD tick, DWORD time)
@@ -82,6 +90,47 @@ void bassevt(DWORD type, DWORD param, DWORD chan, DWORD tick, DWORD time)
     BASS_MIDI_EVENT evt = {type,param,chan,tick,time};
     BASS_MIDI_StreamEvents(Stm,BASS_MIDI_EVENTS_STRUCT|BASS_MIDI_EVENTS_NORSTATUS|BASS_MIDI_EVENTS_CANCEL,&evt,1);
 }
+
+
+void CALLBACK normalize_dsp_proc(HDSP handle, DWORD channel, void *buffer, DWORD length, void *user)
+{
+    float *samples = (float*)buffer;
+        DWORD count = length / sizeof(float);
+    
+        for (DWORD i = 0; i < count; ++i)
+        {
+            float input = samples[i];
+            float abs_input = fabs(input);
+    
+            if (abs_input > limiter_threshold)
+            {
+                // Over the threshold
+                float exceed = abs_input - limiter_threshold;
+    
+                // Soft knee compression
+                float compressed = exceed / (exceed + limiter_knee);
+    
+                // Calculate desired gain to apply
+                float desired_gain = limiter_threshold / (limiter_threshold + compressed);
+    
+                // Smooth the gain change (attack instantly, release slowly)
+                if (desired_gain < current_gain)
+                    current_gain = desired_gain; // attack (instant clamp)
+                else
+                    current_gain += (desired_gain - current_gain) * limiter_release; // release (slow)
+    
+            }
+            else
+            {
+                // No peak, slowly release gain toward 1.0
+                current_gain += (1.0f - current_gain) * limiter_release;
+            }
+    
+            // Apply the current gain
+            samples[i] *= current_gain;
+        }
+}
+
 
 int    _WinH, pps = 6000;
 double Tplay = 0.0, Tscr;
@@ -186,6 +235,12 @@ void NVi::CreateMidiList()
     all_midi_files.insert(all_midi_files.end(), smf_caps_files.begin(), smf_caps_files.end());
     
     live_midi_list.resize(all_midi_files.size());
+    
+    for(int i = 0; i < live_midi_list.size(); i++)
+    {
+        live_midi_list[i] = all_midi_files[i];
+        //std::cout << "Midi List: " << live_midi_list[i] << "\n";
+    }
     
     
     auto root = cpptoml::make_table();
@@ -299,9 +354,11 @@ int SDL_main(int ac, char **av)
     const char * midi_path = av[1];
     const char * sf_path = av[2];
     
+#ifndef NON_ANDROID
     std::string default_sf_path = NVFileUtils::GetFilePathA("piano_maganda.sf2", "rb");
     std::string default_midi_path = NVFileUtils::GetFilePathA("pfa_intro.mid", "rb");
     std::string ui_font = NVFileUtils::GetFilePathA("ui_font.ttf", "rb");
+#endif
     if(NVFileUtils::FileExists(CONFIG_PATH) == true)
     {
         // Read Config and assign settings structure
@@ -316,7 +373,9 @@ int SDL_main(int ac, char **av)
     {
         // If not assign default configuration
         default_config.bass_voice_count = 500;
+#ifndef NON_ANDROID
         default_config.current_soundfonts = {default_sf_path};
+#endif
         default_config.bg_R = 43;
         default_config.bg_G = 43;
         default_config.bg_B = 43;
@@ -374,11 +433,11 @@ int SDL_main(int ac, char **av)
     _WinH = Win->WinH - Win->WinW * 80 / 1000; Tscr = (double)_WinH / pps;
 
     BASS_PluginLoad(BASSMIDI_LIB, 0);
-    //BASS_PluginLoad("libbass_fx.so", 0);
     BASS_SetConfig(BASS_CONFIG_MIDI_AUTOFONT, 0);
     BASS_Init(-1, 44100, 0, 0, nullptr);
     
-    Stm = BASS_StreamCreateFile(0, parsed_config.last_midi_path.c_str(), 0, 0, 0);
+    Stm = BASS_StreamCreateFile(0, parsed_config.last_midi_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+    BASS_ChannelSetDSP(Stm, &normalize_dsp_proc, 0, 0);
     HSOUNDFONT Sf;
     
     //Load all enabled soundfonts
@@ -386,7 +445,11 @@ int SDL_main(int ac, char **av)
     if(live_soundfont_list.size() == 0)
     {
         std::cout << "Default sf\n";
+#ifndef NON_ANDROID
         Sf = BASS_MIDI_FontInit(default_sf_path.c_str(), 0);
+#else
+        Sf = BASS_MIDI_FontInit(DEFAULT_SOUNDFONT, 0);
+#endif
     }
     else 
     {
@@ -402,18 +465,7 @@ int SDL_main(int ac, char **av)
     // No more errape
     BASS_ChannelSetAttribute(Stm, BASS_ATTRIB_MIDI_VOICES, parsed_config.bass_voice_count);
 
-/*
-    HFX fx = BASS_ChannelSetFX(Stm, BASS_FX_BFX_DAMP, 1);
-    BASS_BFX_DAMP damp = {
-        .fTarget = 0.25f,      // Target RMS level (0.0 to 1.0)
-        .fQuiet = 0.05f,       // Below this is considered silence
-        .fRate = 0.05f,        // How fast it adjusts
-        .fGain = 1.0f,         // Max gain applied
-        .fDelay = 0.1f,        // Smoothing delay
-        .lChannel = BASS_BFX_CHANALL
-    };
-    BASS_FXSetParameters(fx, &damp);
-*/
+
     
     BASS_MIDI_StreamSetFilter(Stm, 0, reinterpret_cast<BOOL (*)(HSTREAM, int, BASS_MIDI_EVENT *, BOOL, void *)>(filter), nullptr);
     BASS_ChannelPlay(Stm, 1);
@@ -493,8 +545,10 @@ int SDL_main(int ac, char **av)
                     NVi::Quit();
                 }
             }*/
-            
-            
+
+    // This makes the UI to be unresponsive for some users
+    // I forgor to get rid of that shit       
+/*
             if (Evt.type == SDL_EVENT_FINGER_DOWN) {
                     // Convert touch event to mouse event for ImGui
                     ImGuiIO& io = ImGui::GetIO();
@@ -506,6 +560,7 @@ int SDL_main(int ac, char **av)
                     ImGuiIO& io = ImGui::GetIO();
                     io.AddMouseButtonEvent(0, false);  // Left mouse button up
                 }
+*/
         }
         SDL_SetRenderDrawColor(Win->Ren, liveColor.r, liveColor.g, liveColor.b, liveColor.a);
         for(int i=0;i!=128;++i)

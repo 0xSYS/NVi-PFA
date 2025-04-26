@@ -79,7 +79,7 @@ std::vector<std::string> NVFileUtils::GetFilesByExtension(std::string base_dir, 
         return result;
 }
 
-
+#ifndef NON_ANDROID
 std::string NVFileUtils::GetFilePathA(std::string filename, const char * reading_mode)
 {
     std::string out_path;
@@ -102,7 +102,7 @@ std::string NVFileUtils::GetFilePathA(std::string filename, const char * reading
     SDL_free(base_path);
     return out_path;
 }
-
+#endif
 
 bool NVFileUtils::FileExists(std::string f)
 {

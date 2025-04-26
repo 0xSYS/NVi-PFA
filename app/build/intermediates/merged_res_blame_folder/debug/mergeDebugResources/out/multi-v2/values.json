@@ -21,39 +21,20 @@
                     }
                 },
                 {
-                    "source": "/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/res/values/styles.xml",
+                    "source": "/home/0xsys/NVi-PFA/app/src/main/res/values/colors.xml",
                     "from": {
-                        "startLines": "3",
-                        "startColumns": "4",
-                        "startOffsets": "92",
-                        "endLines": "8",
-                        "endColumns": "12",
-                        "endOffsets": "388"
+                        "startLines": "4,2,3",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "153,55,102",
+                        "endColumns": "45,46,50",
+                        "endOffsets": "194,97,148"
                     },
                     "to": {
-                        "startLines": "107",
-                        "startColumns": "4",
-                        "startOffsets": "6455",
-                        "endLines": "112",
-                        "endColumns": "12",
-                        "endOffsets": "6716"
-                    }
-                },
-                {
-                    "source": "/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/res/values/strings.xml",
-                    "from": {
-                        "startLines": "1",
-                        "startColumns": "4",
-                        "startOffsets": "16",
-                        "endColumns": "41",
-                        "endOffsets": "53"
-                    },
-                    "to": {
-                        "startLines": "98",
-                        "startColumns": "4",
-                        "startOffsets": "5831",
-                        "endColumns": "41",
-                        "endOffsets": "5868"
+                        "startLines": "7,8,9",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "406,452,499",
+                        "endColumns": "45,46,50",
+                        "endOffsets": "447,494,545"
                     }
                 },
                 {
@@ -74,6 +55,25 @@
                     }
                 },
                 {
+                    "source": "/home/0xsys/NVi-PFA/app/src/main/res/values/styles.xml",
+                    "from": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "92",
+                        "endLines": "8",
+                        "endColumns": "12",
+                        "endOffsets": "388"
+                    },
+                    "to": {
+                        "startLines": "107",
+                        "startColumns": "4",
+                        "startOffsets": "6455",
+                        "endLines": "112",
+                        "endColumns": "12",
+                        "endOffsets": "6716"
+                    }
+                },
+                {
                     "source": "/home/0xsys/.gradle/caches/8.12/transforms/3219563007dc4285fe5bda1c39e4e643/transformed/lifecycle-viewmodel-2.6.2/res/values/values.xml",
                     "from": {
                         "startLines": "2",
@@ -88,6 +88,23 @@
                         "startOffsets": "5564",
                         "endColumns": "49",
                         "endOffsets": "5609"
+                    }
+                },
+                {
+                    "source": "/home/0xsys/NVi-PFA/app/src/main/res/values/strings.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "4",
+                        "startOffsets": "16",
+                        "endColumns": "41",
+                        "endOffsets": "53"
+                    },
+                    "to": {
+                        "startLines": "98",
+                        "startColumns": "4",
+                        "startOffsets": "5831",
+                        "endColumns": "41",
+                        "endOffsets": "5868"
                     }
                 },
                 {
@@ -158,23 +175,6 @@
                         "startOffsets": "4398,5450",
                         "endColumns": "41,59",
                         "endOffsets": "4435,5505"
-                    }
-                },
-                {
-                    "source": "/home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/res/values/colors.xml",
-                    "from": {
-                        "startLines": "4,2,3",
-                        "startColumns": "4,4,4",
-                        "startOffsets": "153,55,102",
-                        "endColumns": "45,46,50",
-                        "endOffsets": "194,97,148"
-                    },
-                    "to": {
-                        "startLines": "7,8,9",
-                        "startColumns": "4,4,4",
-                        "startOffsets": "406,452,499",
-                        "endColumns": "45,46,50",
-                        "endOffsets": "447,494,545"
                     }
                 },
                 {

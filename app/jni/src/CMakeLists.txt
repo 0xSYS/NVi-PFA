@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.6)
 
 project(my_app)
 
+
+option(EXE_TYPE "Build core aplication as executable" OFF)
+
 if(NOT TARGET SDL3::SDL3)
     find_package(SDL3 CONFIG)
 endif()
@@ -25,10 +28,15 @@ endif()
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_compile_options(-UNON_ANDROID)
+#add_compile_options(-UNON_ANDROID)
 
 #link_directories(${CMAKE_SOURCE_DIR}extern/lib)
 #link_directories(${CMAKE_SOURCE_DIR}/../libs/arm64-v8a)
+
+
+if(EXE_TYPE)
+message(STATUS "Building as executable")
+else()
 
 # Import BASS libs
 add_library(bass SHARED IMPORTED)
@@ -36,13 +44,41 @@ set_target_properties(bass PROPERTIES IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/../
 
 add_library(bassmidi SHARED IMPORTED)
 set_target_properties(bassmidi PROPERTIES IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/../libs/arm64-v8a/libbassmidi.so")
+endif()
 
-#add_library(bass_fx SHARED IMPORTED)
-#set_target_properties(bass_fx PROPERTIES IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/../libs/arm64-v8a/libbass_fx.so")
+
+include_directories(".")
+
+
+if(EXE_TYPE)
+
+add_definitions(-DNON_ANDROID=1)
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall")
 set(CMAKE_C_FLAGS_RELEASE "-O3 -Wall")
-include_directories(".")
+add_executable(nvi-pfa
+    extern/imgui_sdl3/imgui_impl_sdl3.cpp
+    extern/imgui_sdl3/imgui_impl_sdlrenderer3.cpp
+    extern/imgui/imgui.cpp
+    extern/imgui/imgui_demo.cpp
+    extern/imgui/imgui_tables.cpp
+    extern/imgui/imgui_widgets.cpp
+    extern/imgui/imgui_draw.cpp
+    Config_Utils.cxx
+    file_utils.cxx
+    MIDI.cxx
+    Nlist.cxx
+    Player.cxx
+    Sequ.cxx
+    Utils.cxx
+    canvas.cxx
+    Gui.cxx
+)
+target_link_libraries(nvi-pfa PRIVATE SDL3::SDL3 bass bassmidi)
+else()
+
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall")
+set(CMAKE_C_FLAGS_RELEASE "-O3 -Wall")
 add_library(main SHARED
     extern/imgui_sdl3/imgui_impl_sdl3.cpp
     extern/imgui_sdl3/imgui_impl_sdlrenderer3.cpp
@@ -62,3 +98,5 @@ add_library(main SHARED
     Gui.cxx
 )
 target_link_libraries(main PRIVATE SDL3::SDL3 bass bassmidi log)
+
+endif()

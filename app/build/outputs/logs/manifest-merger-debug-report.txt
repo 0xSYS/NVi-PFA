@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:2:1-117:12
-INJECTED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:2:1-117:12
-INJECTED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:2:1-117:12
-INJECTED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:2:1-117:12
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:2:1-117:12
+INJECTED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:2:1-117:12
+INJECTED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:2:1-117:12
+INJECTED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:2:1-117:12
 MERGED from [SDL3-3.2.10.aar] /home/0xsys/.gradle/caches/8.12/transforms/911fc0ec81bf1bedb9f080a8bd8c9ca9/transformed/SDL3-3.2.10/AndroidManifest.xml:1:1-7:12
 MERGED from [androidx.fragment:fragment-ktx:1.5.6] /home/0xsys/.gradle/caches/8.12/transforms/c9fc11c166ab7974d872ee4faf2efe87/transformed/fragment-ktx-1.5.6/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.fragment:fragment:1.5.6] /home/0xsys/.gradle/caches/8.12/transforms/9e3ccc752ca63a11f187dcf0dc08831e/transformed/fragment-1.5.6/AndroidManifest.xml:17:1-24:12
@@ -33,72 +33,72 @@ MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/0xsys/.gradle/caches/8
 MERGED from [androidx.annotation:annotation-experimental:1.4.0] /home/0xsys/.gradle/caches/8.12/transforms/cb8657b1b14e73589f2b77f45642d160/transformed/annotation-experimental-1.4.0/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.core:core-viewtree:1.0.0] /home/0xsys/.gradle/caches/8.12/transforms/04809c00baa8a3927a0e4c3537ffba49/transformed/core-viewtree-1.0.0/AndroidManifest.xml:2:1-7:12
 	package
-		INJECTED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml
+		INJECTED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml
 	android:versionName
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:5:5-30
-		INJECTED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:5:5-30
+		INJECTED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml
 	xmlns:tools
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:3:5-51
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:3:5-51
 	xmlns:android
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:2:11-69
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:2:11-69
 	android:versionCode
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:4:5-28
-		INJECTED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:4:5-28
+		INJECTED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml
 	android:installLocation
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:6:5-35
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:6:5-35
 uses-feature#0x00020000
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:9:5-54
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:9:5-54
 	android:glEsVersion
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:9:19-51
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:9:19-51
 uses-feature#android.hardware.touchscreen
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:12:5-14:36
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:12:5-14:36
 	android:required
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:14:9-33
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:14:9-33
 	android:name
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:13:9-52
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:13:9-52
 uses-feature#android.hardware.bluetooth
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:17:5-19:36
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:17:5-19:36
 	android:required
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:19:9-33
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:19:9-33
 	android:name
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:18:9-50
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:18:9-50
 uses-feature#android.hardware.gamepad
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:20:5-22:36
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:20:5-22:36
 	android:required
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:22:9-33
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:22:9-33
 	android:name
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:21:9-48
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:21:9-48
 uses-feature#android.hardware.usb.host
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:23:5-25:36
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:23:5-25:36
 	android:required
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:25:9-33
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:25:9-33
 	android:name
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:24:9-49
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:24:9-49
 uses-feature#android.hardware.type.pc
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:28:5-30:36
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:28:5-30:36
 	android:required
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:30:9-33
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:30:9-33
 	android:name
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:29:9-48
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:29:9-48
 uses-permission#android.permission.VIBRATE
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:55:5-66
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:55:5-66
 	android:name
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:55:22-63
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:55:22-63
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:57:5-81
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:57:5-81
 	android:name
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:57:22-78
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:57:22-78
 uses-permission#android.permission.READ_EXTERNAL_STORAGE
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:59:5-80
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:59:5-80
 	android:name
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:59:22-77
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:59:22-77
 uses-permission#android.permission.MANAGE_EXTERNAL_STORAGE
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:61:5-81
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:61:5-81
 	android:name
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:61:22-79
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:61:22-79
 application
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:77:5-115:19
-INJECTED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:77:5-115:19
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:77:5-115:19
+INJECTED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:77:5-115:19
 MERGED from [androidx.core:core:1.13.0] /home/0xsys/.gradle/caches/8.12/transforms/e911be2832e8c3747079a472e519e1ac/transformed/core-1.13.0/AndroidManifest.xml:28:5-89
 MERGED from [androidx.core:core:1.13.0] /home/0xsys/.gradle/caches/8.12/transforms/e911be2832e8c3747079a472e519e1ac/transformed/core-1.13.0/AndroidManifest.xml:28:5-89
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/0xsys/.gradle/caches/8.12/transforms/7bba2bbfb0985c18cdb946e5b099df2a/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
@@ -108,61 +108,61 @@ MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/0xsys/.grad
 MERGED from [androidx.startup:startup-runtime:1.1.1] /home/0xsys/.gradle/caches/8.12/transforms/8fd9be7e75d49dcd36dd3f60ee38375e/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
 MERGED from [androidx.startup:startup-runtime:1.1.1] /home/0xsys/.gradle/caches/8.12/transforms/8fd9be7e75d49dcd36dd3f60ee38375e/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
 	android:extractNativeLibs
-		INJECTED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml
+		INJECTED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml
 	android:requestLegacyExternalStorage
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:81:9-52
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:81:9-52
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.13.0] /home/0xsys/.gradle/caches/8.12/transforms/e911be2832e8c3747079a472e519e1ac/transformed/core-1.13.0/AndroidManifest.xml:28:18-86
 	android:label
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:77:18-50
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:77:18-50
 	android:hardwareAccelerated
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:82:9-43
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:82:9-43
 	android:icon
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:78:9-43
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:78:9-43
 	android:allowBackup
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:79:9-35
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:79:9-35
 	android:theme
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:80:9-40
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:80:9-40
 activity#com.qsp.nvpfa.NvpfaActivity
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:88:9-114:20
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:88:9-114:20
 	android:screenOrientation
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:95:13-50
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:95:13-50
 	android:label
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:89:13-45
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:89:13-45
 	android:launchMode
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:91:13-48
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:91:13-48
 	android:exported
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:94:13-36
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:94:13-36
 	tools:ignore
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:96:13-42
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:96:13-42
 	android:configChanges
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:92:13-205
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:92:13-205
 	android:alwaysRetainTaskState
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:90:13-49
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:90:13-49
 	android:preferMinimalPostProcessing
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:93:13-55
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:93:13-55
 	android:name
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:88:19-47
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:88:19-47
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:98:13-101:29
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:98:13-101:29
 action#android.intent.action.MAIN
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:99:17-69
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:99:17-69
 	android:name
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:99:25-66
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:99:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:100:17-77
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:100:17-77
 	android:name
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:100:27-74
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:100:27-74
 intent-filter#action:name:android.hardware.usb.action.USB_DEVICE_ATTACHED
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:103:13-105:29
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:103:13-105:29
 action#android.hardware.usb.action.USB_DEVICE_ATTACHED
-ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:104:17-90
+ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:104:17-90
 	android:name
-		ADDED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml:104:25-87
+		ADDED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml:104:25-87
 uses-sdk
-INJECTED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml
-INJECTED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml
+INJECTED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml
+INJECTED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml
 MERGED from [SDL3-3.2.10.aar] /home/0xsys/.gradle/caches/8.12/transforms/911fc0ec81bf1bedb9f080a8bd8c9ca9/transformed/SDL3-3.2.10/AndroidManifest.xml:5:5-6:47
 MERGED from [SDL3-3.2.10.aar] /home/0xsys/.gradle/caches/8.12/transforms/911fc0ec81bf1bedb9f080a8bd8c9ca9/transformed/SDL3-3.2.10/AndroidManifest.xml:5:5-6:47
 MERGED from [androidx.fragment:fragment-ktx:1.5.6] /home/0xsys/.gradle/caches/8.12/transforms/c9fc11c166ab7974d872ee4faf2efe87/transformed/fragment-ktx-1.5.6/AndroidManifest.xml:20:5-22:41
@@ -220,9 +220,9 @@ MERGED from [androidx.annotation:annotation-experimental:1.4.0] /home/0xsys/.gra
 MERGED from [androidx.core:core-viewtree:1.0.0] /home/0xsys/.gradle/caches/8.12/transforms/04809c00baa8a3927a0e4c3537ffba49/transformed/core-viewtree-1.0.0/AndroidManifest.xml:5:5-44
 MERGED from [androidx.core:core-viewtree:1.0.0] /home/0xsys/.gradle/caches/8.12/transforms/04809c00baa8a3927a0e4c3537ffba49/transformed/core-viewtree-1.0.0/AndroidManifest.xml:5:5-44
 	android:targetSdkVersion
-		INJECTED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml
+		INJECTED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from /home/0xsys/Desktop/com.qsp.nvpfa_new/app/src/main/AndroidManifest.xml
+		INJECTED from /home/0xsys/NVi-PFA/app/src/main/AndroidManifest.xml
 permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.13.0] /home/0xsys/.gradle/caches/8.12/transforms/e911be2832e8c3747079a472e519e1ac/transformed/core-1.13.0/AndroidManifest.xml:22:5-24:47
 	android:protectionLevel

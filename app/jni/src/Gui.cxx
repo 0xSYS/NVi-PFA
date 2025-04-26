@@ -162,8 +162,12 @@ void NVGui::Setup(SDL_Window *w, SDL_Renderer *r)
     
     //Font suggested by Nerdly
     //Metrophobic-Regular.ttf
+#ifndef NON_ANDROID
     std::string ui_font_file = NVFileUtils::GetFilePathA("ui_font.ttf", "rb");
     io.Fonts->AddFontFromFileTTF(ui_font_file.c_str(), 38.0f);
+#else
+    io.Fonts->AddFontFromFileTTF("ui_font.ttf", 19.0f);
+#endif
     
     // Setup Platform/Renderer backends
     ImGui_ImplSDL3_InitForSDLRenderer(w, r);
@@ -289,7 +293,7 @@ void NVGui::Run(SDL_Renderer *r)
     ImGui::Begin("InvisibleWindow", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBackground);
     
     ImGui::SetCursorPos(ImVec2(5.0f, 400.0f));
-    if (ImGui::Button("Open settings"))
+    if (ImGui::Button("#"))
         main_gui_window = true;
     
     ImGui::End();

@@ -1,1 +1,0 @@
-Copy SDL3-3.3.0.aar to this folder.

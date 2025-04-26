@@ -1,0 +1,3 @@
+/home/0xsys/NVi-PFA/app/jni/src/build/CMakeFiles/nvi-pfa.dir
+/home/0xsys/NVi-PFA/app/jni/src/build/CMakeFiles/edit_cache.dir
+/home/0xsys/NVi-PFA/app/jni/src/build/CMakeFiles/rebuild_cache.dir

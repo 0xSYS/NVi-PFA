@@ -1,0 +1,42 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/main.dir/link.d"
+  "CMakeFiles/main.dir/Config_Utils.cxx.o"
+  "CMakeFiles/main.dir/Config_Utils.cxx.o.d"
+  "CMakeFiles/main.dir/Gui.cxx.o"
+  "CMakeFiles/main.dir/Gui.cxx.o.d"
+  "CMakeFiles/main.dir/MIDI.cxx.o"
+  "CMakeFiles/main.dir/MIDI.cxx.o.d"
+  "CMakeFiles/main.dir/Nlist.cxx.o"
+  "CMakeFiles/main.dir/Nlist.cxx.o.d"
+  "CMakeFiles/main.dir/Player.cxx.o"
+  "CMakeFiles/main.dir/Player.cxx.o.d"
+  "CMakeFiles/main.dir/Sequ.cxx.o"
+  "CMakeFiles/main.dir/Sequ.cxx.o.d"
+  "CMakeFiles/main.dir/Utils.cxx.o"
+  "CMakeFiles/main.dir/Utils.cxx.o.d"
+  "CMakeFiles/main.dir/canvas.cxx.o"
+  "CMakeFiles/main.dir/canvas.cxx.o.d"
+  "CMakeFiles/main.dir/extern/imgui/imgui.cpp.o"
+  "CMakeFiles/main.dir/extern/imgui/imgui.cpp.o.d"
+  "CMakeFiles/main.dir/extern/imgui/imgui_demo.cpp.o"
+  "CMakeFiles/main.dir/extern/imgui/imgui_demo.cpp.o.d"
+  "CMakeFiles/main.dir/extern/imgui/imgui_draw.cpp.o"
+  "CMakeFiles/main.dir/extern/imgui/imgui_draw.cpp.o.d"
+  "CMakeFiles/main.dir/extern/imgui/imgui_tables.cpp.o"
+  "CMakeFiles/main.dir/extern/imgui/imgui_tables.cpp.o.d"
+  "CMakeFiles/main.dir/extern/imgui/imgui_widgets.cpp.o"
+  "CMakeFiles/main.dir/extern/imgui/imgui_widgets.cpp.o.d"
+  "CMakeFiles/main.dir/extern/imgui_sdl3/imgui_impl_sdl3.cpp.o"
+  "CMakeFiles/main.dir/extern/imgui_sdl3/imgui_impl_sdl3.cpp.o.d"
+  "CMakeFiles/main.dir/extern/imgui_sdl3/imgui_impl_sdlrenderer3.cpp.o"
+  "CMakeFiles/main.dir/extern/imgui_sdl3/imgui_impl_sdlrenderer3.cpp.o.d"
+  "CMakeFiles/main.dir/file_utils.cxx.o"
+  "CMakeFiles/main.dir/file_utils.cxx.o.d"
+  "libmain.pdb"
+  "libmain.so"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/main.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

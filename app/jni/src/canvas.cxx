@@ -138,7 +138,11 @@ Canvas::Canvas()
         SDL_Init(SDL_INIT_VIDEO); //IMG_Init(IMG_INIT_PNG);
         //Win = SDL_CreateWindow("NVplayer++", parsed_config.window_w, parsed_config.window_h, 0);
         //Win = SDL_CreateWindow("NVplayer++", 1900, 900, 0);
+#ifndef NON_ANDROID
         Win = SDL_CreateWindow("NVplayer++", 1920, 1080, 0);
+#else
+        Win = SDL_CreateWindow("NVplayer++", 1900, 900, 0);
+#endif
         if(Win == nullptr)
         {
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", "Failed to create window" , nullptr);
