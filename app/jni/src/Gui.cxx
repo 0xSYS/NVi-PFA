@@ -475,7 +475,7 @@ void NVGui::Run(SDL_Renderer *r)
                         ImGui::SliderInt("Note Speed", &live_note_speed, 100, 20000);
                         ImGui::Text("Background Color");
                         clear_color = ImVec4(live_conf.bg_R / 255.0f, live_conf.bg_G / 255.0f, live_conf.bg_B / 255.0f, live_conf.bg_A / 255.0f);
-                        ImGui::ColorEdit3("clear color", (float*)&clear_color);
+                        ImGui::ColorEdit3("##H", (float*)&clear_color);
                         if (ImGui::BeginItemTooltip())
                         {
                             ImGui::Text("Change the background color of the main scene");

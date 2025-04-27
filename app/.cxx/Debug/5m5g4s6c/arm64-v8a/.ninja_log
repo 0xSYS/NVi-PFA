@@ -48,3 +48,6 @@
 10	1932	1745765904796227438	src/CMakeFiles/main.dir/Gui.cxx.o	df4b8824d9259d87
 8	3241	1745765906092238071	src/CMakeFiles/main.dir/Player.cxx.o	833b7e70e99c0a
 3241	3667	1745765906531241673	/home/0xsys/NVi-PFA/app/build/intermediates/cxx/Debug/5m5g4s6c/obj/arm64-v8a/libmain.so	ad4b48934bbbd24d
+4	1839	1745769194129844897	src/CMakeFiles/main.dir/canvas.cxx.o	d18fe915374f8570
+4	3636	1745769195908859848	src/CMakeFiles/main.dir/Player.cxx.o	833b7e70e99c0a
+3636	4076	1745769196372863748	/home/0xsys/NVi-PFA/app/build/intermediates/cxx/Debug/5m5g4s6c/obj/arm64-v8a/libmain.so	ad4b48934bbbd24d
