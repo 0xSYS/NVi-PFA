@@ -1,0 +1,5 @@
+.gradle/*
+app/.cxx/*
+app/build/intermediates/*
+app/jni/src/build/*
+local.properties
