@@ -1,2 +1,0 @@
-D:\Downloads\nvi pfa\NVi-PFA\app\jni\CMakeLists.txt
-D:\Downloads\nvi pfa\NVi-PFA\app\jni\src\CMakeLists.txt
