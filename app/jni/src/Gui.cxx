@@ -518,7 +518,8 @@ void NVGui::Run(SDL_Renderer *r)
                         ImGui::Text("Piano From Above imitation: Tweak");
                         ImGui::Text("Improved by:");
                         ImGui::Text("0xsys");
-                        ImGui::Text("Hex");
+                        ImGui::Text("Hex\n\n");
+                        ImGui::Text("Icon Made by Zeal");
                         ImGui::Text("Powered by: SDL3, Imgui, bass and bass plugins");
                         ImGui::EndTabItem();
                     }
