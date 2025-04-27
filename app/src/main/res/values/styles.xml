@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.NoTitleBar.Fullscreen">
+    <style name="AppTheme" parent="android:Theme.Black.NoTitleBar">
         <!-- Customize your theme here. -->
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
+
         <!--<item name="android:windowFullscreen">true</item>--> <!--It causes issues with the window-->
     </style>
 </resources>
