@@ -8,7 +8,7 @@ This clone is powered by Qishipai's [midi processing library](https://github.com
 > This project is still in early development and any release could be unstable. Consider building and testing them at your own risk!!
 
 ## Features
-- [ ] Default midi and soundfont
+- [X] Default midi and soundfont
 - [X] Custom background color support
 - [X] Custom themed GUI
 - [X] Settings storage to file (.toml)
