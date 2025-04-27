@@ -1,12 +1,12 @@
 [BackgroundColor]
 	A = 255
-	B = 206
-	G = 206
-	R = 206
+	B = 92
+	G = 92
+	R = 92
 [Visual]
 	Window_h = 0
 	Window_w = 0
-	NoteSpeed = 6610
+	NoteSpeed = 3882
 [Audio]
-	LastMIDIpath = "/home/0xsys/Desktop/Black_MIDI/midis/(black midi) senbonzakura final fixed MTC Split.mid.mid"
+	LastMIDIpath = "/home/0xsys/Desktop/Black_MIDI/midis/SFTDP14M_Replication.mid"
 	VoiceCount = 500

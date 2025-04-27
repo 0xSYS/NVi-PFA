@@ -437,7 +437,7 @@ void Canvas::Note(int k, int yb, int ye, unsigned int c)
 int Canvas::scale(int x) const
 {
     // Fixed a small note glitch LMfaoerGdfgg
-    return (x * WinW + 5865) / 7330;
+    return (x * WinW + 4700) / 7330;
     //return (x * WinW + 3665) / 7330;
 }
 

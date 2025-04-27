@@ -75,11 +75,12 @@ Uint64 lastTapTime = 0;
 float lastTapX = 0, lastTapY = 0;
 
 
-float limiter_threshold = 0.8f; // Max sample level before limiting
-float limiter_knee = 0.05f;     // Knee softness (smooth start of compression)
-float limiter_release = 0.0005f; // How quickly it relaxes gain (adjust if needed)
+float limiter_threshold = 0.8f;
+float limiter_knee = 0.05f;
+float limiter_attack = 0.1f;   // attack speed (0 = instant, 1 = never)
+float limiter_release = 0.0005f; // release speed
 
-float current_gain = 1.0f; // Persistent global gain
+float current_gain = 1.0f;
 
 
 void bassevt(DWORD type, DWORD param, DWORD chan, DWORD tick, DWORD time)
@@ -89,42 +90,32 @@ void bassevt(DWORD type, DWORD param, DWORD chan, DWORD tick, DWORD time)
 }
 
 
-void CALLBACK normalize_dsp_proc(HDSP handle, DWORD channel, void *buffer, DWORD length, void *user)
+void CALLBACK dsp_limiter(HDSP handle, DWORD channel, void *buffer, DWORD length, void *user)
 {
     float *samples = (float*)buffer;
     DWORD count = length / sizeof(float);
-    
+   
     for (DWORD i = 0; i < count; ++i)
     {
         float input = samples[i];
         float abs_input = fabs(input);
-    
+   
+        float desired_gain = 1.0f;
+   
         if (abs_input > limiter_threshold)
         {
-            // Over the threshold
             float exceed = abs_input - limiter_threshold;
-    
-            // Soft knee compression
             float compressed = exceed / (exceed + limiter_knee);
-    
-            // Calculate desired gain to apply
-            float desired_gain = limiter_threshold / (limiter_threshold + compressed);
-    
-            // Smooth the gain change (attack instantly, release slowly)
-            if (desired_gain < current_gain)
-                current_gain = desired_gain; // attack (instant clamp)
-            else
-                current_gain += (desired_gain - current_gain) * limiter_release; // release (slow)
-    
+            desired_gain = limiter_threshold / (limiter_threshold + compressed);
         }
+   
+        // Smoothly approach desired gain
+        if (desired_gain < current_gain)
+            current_gain += (desired_gain - current_gain) * limiter_attack; // attack smoothing
         else
-        {
-            // No peak, slowly release gain toward 1.0
-            current_gain += (1.0f - current_gain) * limiter_release;
-        }
-    
-        // Apply the current gain
-        samples[i] *= current_gain;
+               current_gain += (desired_gain - current_gain) * limiter_release; // release smoothing
+   
+           samples[i] *= current_gain;
     }
 }
 
@@ -473,7 +464,7 @@ int SDL_main(int ac, char **av)
     BASS_Init(-1, 44100, 0, 0, nullptr);
     
     Stm = BASS_StreamCreateFile(0, parsed_config.last_midi_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
-    BASS_ChannelSetDSP(Stm, &normalize_dsp_proc, 0, 0);
+    BASS_ChannelSetDSP(Stm, &dsp_limiter, 0, 0);
     HSOUNDFONT Sf;
     
     //Load all enabled soundfonts
