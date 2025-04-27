@@ -29,7 +29,7 @@ This clone is powered by Qishipai's [midi processing library](https://github.com
 - [ ] More audio settings (like Realtime frame rate, frame fluctuation, enabling disabling limiter)
 - [ ] Performance improvements
 - [ ] Loging to text file (This can be useful for development purposes)
-- [ ] Custom icon and app name (Almost there...)
+- [X] Custom icon and app name
 
 # How to build an apk
 First you need to make sure you have the android studio and android-sdk installed.
@@ -54,5 +54,5 @@ This only builds the debug version of the apk
 - Tweak: Creating the PFA imitation and upgrading to SDL3, implementing a simple overlap remover
 - 0xsys: Most UI design, settings and translations
 - Nerdly: UI Font Choice
-- Hex: Playback options: play / pause, seek forward
+- Hex: Playback options: play / pause, seek backwards/forwards
 - Zeal: Custom Icon
