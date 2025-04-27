@@ -1,4 +1,2 @@
-ninja: Entering directory `/home/0xsys/NVi-PFA/app/.cxx/Debug/5m5g4s6c/arm64-v8a'
-[1/3] Building CXX object src/CMakeFiles/main.dir/canvas.cxx.o
-[2/3] Building CXX object src/CMakeFiles/main.dir/Player.cxx.o
-[3/3] Linking CXX shared library /home/0xsys/NVi-PFA/app/build/intermediates/cxx/Debug/5m5g4s6c/obj/arm64-v8a/libmain.so
+ninja: Entering directory `D:\Downloads\nvi pfa\NVi-PFA\app\.cxx\Debug\5m5g4s6c\arm64-v8a'
+ninja: no work to do.

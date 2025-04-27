@@ -205,6 +205,18 @@ void seek_playback(double seconds) {
     
     // Update our playback time
     Tplay = BASS_ChannelBytes2Seconds(Stm, new_pos);
+    
+    // When seeking backwards, reload the note data
+    if (seconds < 0) {
+        // Clear the note list
+        for (int i = 0; i < 128; ++i) {
+            MIDI.L[i].clear();
+        }
+        
+        // Seek the list to the new position and update
+        MIDI.list_seek(Tplay);
+        MIDI.update_to(Tplay + Tscr);
+    }
 }
 
 // Function to toggle pause/play
@@ -525,7 +537,9 @@ int SDL_main(int ac, char **av)
 					case SDLK_SPACE:
 						toggle_pause();
 						break;
-						//rewind used to be here
+					case SDLK_LEFT:
+						seek_playback(-SEEK_AMOUNT);
+						break;
 					case SDLK_RIGHT:
 						seek_playback(SEEK_AMOUNT);
 						break;

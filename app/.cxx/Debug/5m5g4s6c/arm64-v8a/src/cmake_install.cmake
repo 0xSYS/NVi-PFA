@@ -1,8 +1,8 @@
-# Install script for directory: /home/0xsys/NVi-PFA/app/jni/src
+# Install script for directory: D:/Downloads/nvi pfa/NVi-PFA/app/jni/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/usr/local")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/GAME")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -39,6 +39,6 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "/opt/android-sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objdump")
+  set(CMAKE_OBJDUMP "C:/Users/Hexagon/AppData/Local/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-objdump.exe")
 endif()
 

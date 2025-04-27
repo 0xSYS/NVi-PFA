@@ -8,9 +8,9 @@
     "triple": "aarch64-linux-android",
     "llvmTriple": "aarch64-none-linux-android"
   },
-  "cxxBuildFolder": "/home/0xsys/NVi-PFA/app/.cxx/Debug/5m5g4s6c/arm64-v8a",
-  "soFolder": "/home/0xsys/NVi-PFA/app/build/intermediates/cxx/Debug/5m5g4s6c/obj/arm64-v8a",
-  "soRepublishFolder": "/home/0xsys/NVi-PFA/app/build/intermediates/cmake/debug/obj/arm64-v8a",
+  "cxxBuildFolder": "D:\\Downloads\\nvi pfa\\NVi-PFA\\app\\.cxx\\Debug\\5m5g4s6c\\arm64-v8a",
+  "soFolder": "D:\\Downloads\\nvi pfa\\NVi-PFA\\app\\build\\intermediates\\cxx\\Debug\\5m5g4s6c\\obj\\arm64-v8a",
+  "soRepublishFolder": "D:\\Downloads\\nvi pfa\\NVi-PFA\\app\\build\\intermediates\\cmake\\debug\\obj\\arm64-v8a",
   "abiPlatformVersion": 21,
   "cmake": {
     "effectiveConfiguration": {
@@ -31,16 +31,16 @@
     "implicitBuildTargetSet": [],
     "cmakeSettingsConfiguration": "android-gradle-plugin-predetermined-name",
     "module": {
-      "cxxFolder": "/home/0xsys/NVi-PFA/app/.cxx",
-      "intermediatesBaseFolder": "/home/0xsys/NVi-PFA/app/build/intermediates",
-      "intermediatesFolder": "/home/0xsys/NVi-PFA/app/build/intermediates/cxx",
+      "cxxFolder": "D:\\Downloads\\nvi pfa\\NVi-PFA\\app\\.cxx",
+      "intermediatesBaseFolder": "D:\\Downloads\\nvi pfa\\NVi-PFA\\app\\build\\intermediates",
+      "intermediatesFolder": "D:\\Downloads\\nvi pfa\\NVi-PFA\\app\\build\\intermediates\\cxx",
       "gradleModulePathName": ":app",
-      "moduleRootFolder": "/home/0xsys/NVi-PFA/app",
-      "moduleBuildFile": "/home/0xsys/NVi-PFA/app/build.gradle",
-      "makeFile": "/home/0xsys/NVi-PFA/app/jni/CMakeLists.txt",
+      "moduleRootFolder": "D:\\Downloads\\nvi pfa\\NVi-PFA\\app",
+      "moduleBuildFile": "D:\\Downloads\\nvi pfa\\NVi-PFA\\app\\build.gradle",
+      "makeFile": "D:\\Downloads\\nvi pfa\\NVi-PFA\\app\\jni\\CMakeLists.txt",
       "buildSystem": "CMAKE",
-      "ndkFolder": "/opt/android-sdk/ndk/27.0.12077973",
-      "ndkFolderBeforeSymLinking": "/opt/android-sdk/ndk/27.0.12077973",
+      "ndkFolder": "C:\\Users\\Hexagon\\AppData\\Local\\Android\\Sdk\\ndk\\27.0.12077973",
+      "ndkFolderBeforeSymLinking": "C:\\Users\\Hexagon\\AppData\\Local\\Android\\Sdk\\ndk\\27.0.12077973",
       "ndkVersion": "27.0.12077973",
       "ndkSupportedAbiList": [
         "armeabi-v7a",
@@ -130,38 +130,38 @@
           "llvmTriple": "x86_64-none-linux-android"
         }
       ],
-      "cmakeToolchainFile": "/opt/android-sdk/ndk/27.0.12077973/build/cmake/android.toolchain.cmake",
+      "cmakeToolchainFile": "C:\\Users\\Hexagon\\AppData\\Local\\Android\\Sdk\\ndk\\27.0.12077973\\build\\cmake\\android.toolchain.cmake",
       "cmake": {
-        "cmakeExe": "/opt/android-sdk/cmake/3.22.1/bin/cmake"
+        "cmakeExe": "C:\\Users\\Hexagon\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\cmake.exe"
       },
       "stlSharedObjectMap": {
         "LIBCXX_SHARED": {
-          "armeabi-v7a": "/opt/android-sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libc++_shared.so",
-          "arm64-v8a": "/opt/android-sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libc++_shared.so",
-          "riscv64": "/opt/android-sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/riscv64-linux-android/libc++_shared.so",
-          "x86": "/opt/android-sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/libc++_shared.so",
-          "x86_64": "/opt/android-sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/libc++_shared.so"
+          "armeabi-v7a": "C:\\Users\\Hexagon\\AppData\\Local\\Android\\Sdk\\ndk\\27.0.12077973\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\arm-linux-androideabi\\libc++_shared.so",
+          "arm64-v8a": "C:\\Users\\Hexagon\\AppData\\Local\\Android\\Sdk\\ndk\\27.0.12077973\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\aarch64-linux-android\\libc++_shared.so",
+          "riscv64": "C:\\Users\\Hexagon\\AppData\\Local\\Android\\Sdk\\ndk\\27.0.12077973\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\riscv64-linux-android\\libc++_shared.so",
+          "x86": "C:\\Users\\Hexagon\\AppData\\Local\\Android\\Sdk\\ndk\\27.0.12077973\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\i686-linux-android\\libc++_shared.so",
+          "x86_64": "C:\\Users\\Hexagon\\AppData\\Local\\Android\\Sdk\\ndk\\27.0.12077973\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\x86_64-linux-android\\libc++_shared.so"
         },
         "LIBCXX_STATIC": {},
         "NONE": {},
         "SYSTEM": {}
       },
       "project": {
-        "rootBuildGradleFolder": "/home/0xsys/NVi-PFA",
-        "sdkFolder": "/opt/android-sdk",
+        "rootBuildGradleFolder": "D:\\Downloads\\nvi pfa\\NVi-PFA",
+        "sdkFolder": "C:\\Users\\Hexagon\\AppData\\Local\\Android\\Sdk",
         "isBuildOnlyTargetAbiEnabled": true,
         "isCmakeBuildCohabitationEnabled": false,
         "isPrefabEnabled": true
       },
       "outputOptions": [],
-      "ninjaExe": "/opt/android-sdk/cmake/3.22.1/bin/ninja",
+      "ninjaExe": "C:\\Users\\Hexagon\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
       "hasBuildTimeInformation": true
     },
     "prefabClassPaths": [
-      "/home/0xsys/.gradle/caches/modules-2/files-2.1/com.google.prefab/cli/2.1.0/aa32fec809c44fa531f01dcfb739b5b3304d3050/cli-2.1.0-all.jar"
+      "C:\\Users\\Hexagon\\.gradle\\caches\\modules-2\\files-2.1\\com.google.prefab\\cli\\2.1.0\\aa32fec809c44fa531f01dcfb739b5b3304d3050\\cli-2.1.0-all.jar"
     ],
     "prefabPackages": [
-      "/home/0xsys/.gradle/caches/8.12/transforms/911fc0ec81bf1bedb9f080a8bd8c9ca9/transformed/SDL3-3.2.10/prefab"
+      "C:\\Users\\Hexagon\\.gradle\\caches\\8.12\\transforms\\911fc0ec81bf1bedb9f080a8bd8c9ca9\\transformed\\SDL3-3.2.10\\prefab"
     ],
     "prefabPackageConfigurations": [],
     "stlType": "c++_static",
@@ -170,28 +170,28 @@
   "buildSettings": {
     "environmentVariables": []
   },
-  "prefabFolder": "/home/0xsys/NVi-PFA/app/.cxx/Debug/5m5g4s6c/prefab/arm64-v8a",
+  "prefabFolder": "D:\\Downloads\\nvi pfa\\NVi-PFA\\app\\.cxx\\Debug\\5m5g4s6c\\prefab\\arm64-v8a",
   "isActiveAbi": true,
   "fullConfigurationHash": "5m5g4s6c6lq06r3l3w5i63z2w13f1rb4p491nf5l1nt6127v4n6b45i",
   "fullConfigurationHashKey": "# Values used to calculate the hash in this folder name.\n# Should not depend on the absolute path of the project itself.\n#   - AGP: 8.7.3.\n#   - $NDK is the path to NDK 27.0.12077973.\n#   - $PROJECT is the path to the parent folder of the root Gradle build file.\n#   - $ABI is the ABI to be built with. The specific value doesn\u0027t contribute to the value of the hash.\n#   - $HASH is the hash value computed from this text.\n#   - $CMAKE is the path to CMake 3.22.1.\n#   - $NINJA is the path to Ninja.\n-H$PROJECT/app/jni\n-DCMAKE_SYSTEM_NAME\u003dAndroid\n-DCMAKE_EXPORT_COMPILE_COMMANDS\u003dON\n-DCMAKE_SYSTEM_VERSION\u003d21\n-DANDROID_PLATFORM\u003dandroid-21\n-DANDROID_ABI\u003d$ABI\n-DCMAKE_ANDROID_ARCH_ABI\u003d$ABI\n-DANDROID_NDK\u003d$NDK\n-DCMAKE_ANDROID_NDK\u003d$NDK\n-DCMAKE_TOOLCHAIN_FILE\u003d$NDK/build/cmake/android.toolchain.cmake\n-DCMAKE_MAKE_PROGRAM\u003d$NINJA\n-DCMAKE_LIBRARY_OUTPUT_DIRECTORY\u003d$PROJECT/app/build/intermediates/cxx/Debug/$HASH/obj/$ABI\n-DCMAKE_RUNTIME_OUTPUT_DIRECTORY\u003d$PROJECT/app/build/intermediates/cxx/Debug/$HASH/obj/$ABI\n-DCMAKE_BUILD_TYPE\u003dDebug\n-DCMAKE_FIND_ROOT_PATH\u003d$PROJECT/app/.cxx/Debug/$HASH/prefab/$ABI/prefab\n-B$PROJECT/app/.cxx/Debug/$HASH/$ABI\n-GNinja",
   "configurationArguments": [
-    "-H/home/0xsys/NVi-PFA/app/jni",
+    "-HD:\\Downloads\\nvi pfa\\NVi-PFA\\app\\jni",
     "-DCMAKE_SYSTEM_NAME\u003dAndroid",
     "-DCMAKE_EXPORT_COMPILE_COMMANDS\u003dON",
     "-DCMAKE_SYSTEM_VERSION\u003d21",
     "-DANDROID_PLATFORM\u003dandroid-21",
     "-DANDROID_ABI\u003darm64-v8a",
     "-DCMAKE_ANDROID_ARCH_ABI\u003darm64-v8a",
-    "-DANDROID_NDK\u003d/opt/android-sdk/ndk/27.0.12077973",
-    "-DCMAKE_ANDROID_NDK\u003d/opt/android-sdk/ndk/27.0.12077973",
-    "-DCMAKE_TOOLCHAIN_FILE\u003d/opt/android-sdk/ndk/27.0.12077973/build/cmake/android.toolchain.cmake",
-    "-DCMAKE_MAKE_PROGRAM\u003d/opt/android-sdk/cmake/3.22.1/bin/ninja",
-    "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY\u003d/home/0xsys/NVi-PFA/app/build/intermediates/cxx/Debug/5m5g4s6c/obj/arm64-v8a",
-    "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY\u003d/home/0xsys/NVi-PFA/app/build/intermediates/cxx/Debug/5m5g4s6c/obj/arm64-v8a",
+    "-DANDROID_NDK\u003dC:\\Users\\Hexagon\\AppData\\Local\\Android\\Sdk\\ndk\\27.0.12077973",
+    "-DCMAKE_ANDROID_NDK\u003dC:\\Users\\Hexagon\\AppData\\Local\\Android\\Sdk\\ndk\\27.0.12077973",
+    "-DCMAKE_TOOLCHAIN_FILE\u003dC:\\Users\\Hexagon\\AppData\\Local\\Android\\Sdk\\ndk\\27.0.12077973\\build\\cmake\\android.toolchain.cmake",
+    "-DCMAKE_MAKE_PROGRAM\u003dC:\\Users\\Hexagon\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY\u003dD:\\Downloads\\nvi pfa\\NVi-PFA\\app\\build\\intermediates\\cxx\\Debug\\5m5g4s6c\\obj\\arm64-v8a",
+    "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY\u003dD:\\Downloads\\nvi pfa\\NVi-PFA\\app\\build\\intermediates\\cxx\\Debug\\5m5g4s6c\\obj\\arm64-v8a",
     "-DCMAKE_BUILD_TYPE\u003dDebug",
-    "-DCMAKE_FIND_ROOT_PATH\u003d/home/0xsys/NVi-PFA/app/.cxx/Debug/5m5g4s6c/prefab/arm64-v8a/prefab",
-    "-B/home/0xsys/NVi-PFA/app/.cxx/Debug/5m5g4s6c/arm64-v8a",
+    "-DCMAKE_FIND_ROOT_PATH\u003dD:\\Downloads\\nvi pfa\\NVi-PFA\\app\\.cxx\\Debug\\5m5g4s6c\\prefab\\arm64-v8a\\prefab",
+    "-BD:\\Downloads\\nvi pfa\\NVi-PFA\\app\\.cxx\\Debug\\5m5g4s6c\\arm64-v8a",
     "-GNinja"
   ],
-  "intermediatesParentFolder": "/home/0xsys/NVi-PFA/app/build/intermediates/cxx/Debug/5m5g4s6c"
+  "intermediatesParentFolder": "D:\\Downloads\\nvi pfa\\NVi-PFA\\app\\build\\intermediates\\cxx\\Debug\\5m5g4s6c"
 }

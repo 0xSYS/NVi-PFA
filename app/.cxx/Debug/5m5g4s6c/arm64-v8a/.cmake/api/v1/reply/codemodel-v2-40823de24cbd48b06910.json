@@ -1,0 +1,87 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "src",
+					"jsonFile" : "directory-src-Debug-c94b7c2814d5a21df52c.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "src",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "GAME"
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "my_app",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "main::@145eef247bfb46b6828c",
+					"jsonFile" : "target-main-Debug-2c84b0811e75f0b05f0d.json",
+					"name" : "main",
+					"projectIndex" : 1
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "D:/Downloads/nvi pfa/NVi-PFA/app/.cxx/Debug/5m5g4s6c/arm64-v8a",
+		"source" : "D:/Downloads/nvi pfa/NVi-PFA/app/jni"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

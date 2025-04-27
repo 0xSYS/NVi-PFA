@@ -25,7 +25,7 @@ rule CUSTOM_COMMAND
 rule CXX_COMPILER__main_Debug
   depfile = $DEP_FILE
   deps = gcc
-  command = /opt/android-sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=aarch64-none-linux-android21 --sysroot=/opt/android-sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/sysroot $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  command = C:\Users\Hexagon\AppData\Local\Android\Sdk\ndk\27.0.12077973\toolchains\llvm\prebuilt\windows-x86_64\bin\clang++.exe --target=aarch64-none-linux-android21 --sysroot=C:/Users/Hexagon/AppData/Local/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/windows-x86_64/sysroot $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
   description = Building CXX object $out
 
 
@@ -33,7 +33,7 @@ rule CXX_COMPILER__main_Debug
 # Rule for linking CXX shared library.
 
 rule CXX_SHARED_LIBRARY_LINKER__main_Debug
-  command = $PRE_LINK && /opt/android-sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=aarch64-none-linux-android21 --sysroot=/opt/android-sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fPIC $LANGUAGE_COMPILE_FLAGS $ARCH_FLAGS $LINK_FLAGS -shared $SONAME_FLAG$SONAME -o $TARGET_FILE $in $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
+  command = cmd.exe /C "$PRE_LINK && C:\Users\Hexagon\AppData\Local\Android\Sdk\ndk\27.0.12077973\toolchains\llvm\prebuilt\windows-x86_64\bin\clang++.exe --target=aarch64-none-linux-android21 --sysroot=C:/Users/Hexagon/AppData/Local/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/windows-x86_64/sysroot -fPIC $LANGUAGE_COMPILE_FLAGS $ARCH_FLAGS $LINK_FLAGS -shared $SONAME_FLAG$SONAME -o $TARGET_FILE $in $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX shared library $TARGET_FILE
   restat = $RESTAT
 
@@ -42,7 +42,7 @@ rule CXX_SHARED_LIBRARY_LINKER__main_Debug
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = /opt/android-sdk/cmake/3.22.1/bin/cmake --regenerate-during-build -S/home/0xsys/NVi-PFA/app/jni -B/home/0xsys/NVi-PFA/app/.cxx/Debug/5m5g4s6c/arm64-v8a
+  command = C:\Users\Hexagon\AppData\Local\Android\Sdk\cmake\3.22.1\bin\cmake.exe --regenerate-during-build -S"D:\Downloads\nvi pfa\NVi-PFA\app\jni" -B"D:\Downloads\nvi pfa\NVi-PFA\app\.cxx\Debug\5m5g4s6c\arm64-v8a"
   description = Re-running CMake...
   generator = 1
 
@@ -51,7 +51,7 @@ rule RERUN_CMAKE
 # Rule for cleaning all built files.
 
 rule CLEAN
-  command = /opt/android-sdk/cmake/3.22.1/bin/ninja $FILE_ARG -t clean $TARGETS
+  command = C:\Users\Hexagon\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe $FILE_ARG -t clean $TARGETS
   description = Cleaning all built files...
 
 
@@ -59,6 +59,6 @@ rule CLEAN
 # Rule for printing all primary targets available.
 
 rule HELP
-  command = /opt/android-sdk/cmake/3.22.1/bin/ninja -t targets
+  command = C:\Users\Hexagon\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe -t targets
   description = All primary targets available:
 

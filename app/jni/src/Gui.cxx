@@ -293,7 +293,6 @@ void NVGui::Run(SDL_Renderer *r)
         // Create an invisible window
     ImGui::Begin("InvisibleWindow", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBackground);
     
-	// In NVGui::Run, after the invisible window code and before any tab code:
 
 	// Add playback control buttons at the bottom right
 	ImGuiIO& io = ImGui::GetIO();
@@ -302,7 +301,16 @@ void NVGui::Run(SDL_Renderer *r)
 	float total_width = 2 * button_size + spacing;
 	float y_position = io.DisplaySize.y - button_size - 170.0f;
 	
-	// Rewind button (used to be here)
+	// Backward button
+	ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x - total_width - button_size - spacing - 10.0f, y_position));
+	ImGui::SetNextWindowSize(ImVec2(button_size, button_size));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	ImGui::Begin("BackwardButton", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
+	if (ImGui::Button("<<", ImVec2(button_size, button_size))) {
+		seek_playback(-SEEK_AMOUNT); // Negative value for backwards
+	}
+	ImGui::End();
+	ImGui::PopStyleVar();
 	
 	// Play/Pause button
 	ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x - total_width - 10.0f, y_position));
