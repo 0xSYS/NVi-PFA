@@ -84,7 +84,6 @@ float limiter_release = 0.0005f; // How quickly it relaxes gain (adjust if neede
 float current_gain = 1.0f; // Persistent global gain
 
 
-
 void bassevt(DWORD type, DWORD param, DWORD chan, DWORD tick, DWORD time)
 {
     BASS_MIDI_EVENT evt = {type,param,chan,tick,time};
@@ -132,10 +131,13 @@ void CALLBACK normalize_dsp_proc(HDSP handle, DWORD channel, void *buffer, DWORD
 }
 
 
-int    _WinH, pps = 6000;
+int    _WinH;
+//static int ns = live_note_speed;
+// 20000 maximum
+// 100 minimum
 double Tplay = 0.0, Tscr;
 
-static void DrawNote(NVi::u16_t k, const NVnote &n)
+static void DrawNote(NVi::u16_t k, const NVnote &n, int pps)
 {
     unsigned int c = Col[(n.track%16+n.chn)%16];
     int key = KeyMap[k], y_1;
@@ -194,6 +196,41 @@ BOOL CALLBACK filter(HSTREAM S, DWORD trk, BASS_MIDI_EVENT *E, BOOL sk, void *u)
     return TRUE;
 }
 
+// Add these with your other global variables
+bool is_paused = false;
+QWORD saved_position = 0; // For storing position when paused
+const double SEEK_AMOUNT = 3.0; // 3 seconds for seeking
+
+// Function to handle seeking
+void seek_playback(double seconds) {
+    QWORD current_byte_pos = BASS_ChannelGetPosition(Stm, BASS_POS_BYTE);
+    double current_time = BASS_ChannelBytes2Seconds(Stm, current_byte_pos);
+    double new_time = current_time + seconds;
+    
+    // Ensure we don't seek before the beginning
+    if (new_time < 0) new_time = 0;
+    
+    // Convert back to bytes and set position
+    QWORD new_pos = BASS_ChannelSeconds2Bytes(Stm, new_time);
+    BASS_ChannelSetPosition(Stm, new_pos, BASS_POS_BYTE);
+    
+    // Update our playback time
+    Tplay = BASS_ChannelBytes2Seconds(Stm, new_pos);
+}
+
+// Function to toggle pause/play
+void toggle_pause() {
+    if (is_paused) {
+        // Resume playback
+        BASS_ChannelPlay(Stm, false); // false means don't restart from beginning
+        is_paused = false;
+    } else {
+        // Pause playback
+        saved_position = BASS_ChannelGetPosition(Stm, BASS_POS_BYTE);
+        BASS_ChannelPause(Stm);
+        is_paused = true;
+    }
+}
 
 void NVi::Quit()
 {
@@ -368,6 +405,7 @@ int SDL_main(int ac, char **av)
         liveColor.g = parsed_config.bg_G;
         liveColor.b = parsed_config.bg_B;
         liveColor.a = parsed_config.bg_A;
+        live_note_speed = parsed_config.note_speed;
     }
     else 
     {
@@ -430,7 +468,7 @@ int SDL_main(int ac, char **av)
     
     SDL_SetRenderDrawColor(Win->Ren, liveColor.r, liveColor.g, liveColor.b, liveColor.a);
 
-    _WinH = Win->WinH - Win->WinW * 80 / 1000; Tscr = (double)_WinH / pps;
+    //_WinH = Win->WinH - Win->WinW * 80 / 1000; Tscr = (double)_WinH / live_note_speed;
 
     BASS_PluginLoad(BASSMIDI_LIB, 0);
     BASS_SetConfig(BASS_CONFIG_MIDI_AUTOFONT, 0);
@@ -478,108 +516,62 @@ int SDL_main(int ac, char **av)
     const Uint32 doubleTapThreshold = 400; // in milliseconds
     
     
-    while (BASS_ChannelIsActive(Stm) != BASS_ACTIVE_STOPPED)
-    {
-        MIDI.update_to(Tplay + Tscr);
-        MIDI.remove_to(Tplay);
-        Win->canvas_clear();
-        while (SDL_PollEvent(&Evt)) 
-        {
-            ImGui_ImplSDL3_ProcessEvent(&Evt);
-            if (Evt.type == SDL_EVENT_QUIT)
-                break;
-            
-            // Very temporary stuff here lol
-            /*    
-            if (Evt.type == SDL_EVENT_MOUSE_BUTTON_DOWN) 
-            {
-                if (Evt.button.clicks == 2) 
-                {
-                    bool main_gui_window = true;
-                    //printf("Double click at (%d, %d)\n", event.button.x, event.button.y);
-                    std::cout << "Double click detected\n";
-                }
-            }
-            // This never worked
-            if (Evt.type == SDL_EVENT_FINGER_DOWN) 
-            {
-                Uint64 now = SDL_GetTicks();
-            
-                if (now - lastTapTime < doubleTapThreshold) 
-                {
-                    //main_gui_window = true;
-                    // Get the current time and touch position
-                    Uint64 currentTime = SDL_GetTicks();
-                    float x = Evt.tfinger.x * 800;  // Convert normalized coordinates to pixels
-                    float y = Evt.tfinger.y * 600;
-                   
-                    // Check if this is a double-tap
-                    if (currentTime - lastTapTime <= DOUBLE_TAP_TIME) 
-                    {
-                        float dx = x - lastTapX;
-                        float dy = y - lastTapY;
-                        float distanceSquared = dx * dx + dy * dy;
-                   
-                        if (distanceSquared <= DOUBLE_TAP_DISTANCE * DOUBLE_TAP_DISTANCE) 
-                        {
-                            // Double-tap detected
-                            main_gui_window = true;
-                            printf("Double-tap detected at (%f, %f)\n", x, y);
-                        }
-                    }
-                    lastTapTime = currentTime;
-                    lastTapX = x;
-                    lastTapY = y;
-                }
-            }
-            
-            //if (Evt.type == SDL_EVENT_MOUSE_BUTTON_DOWN) 
-            //{
-            //    printf("Mouse button down detected\n");
-            //}
-            
-            if (Evt.type == SDL_EVENT_KEY_DOWN) 
-            {
-                if (Evt.key.key == SDLK_Q) 
-                {
-                    NVi::Quit();
-                }
-            }*/
-
-    // This makes the UI to be unresponsive for some users
-    // I forgor to get rid of that shit       
-/*
-            if (Evt.type == SDL_EVENT_FINGER_DOWN) {
-                    // Convert touch event to mouse event for ImGui
-                    ImGuiIO& io = ImGui::GetIO();
-                    io.AddMousePosEvent(Evt.tfinger.x * 800, Evt.tfinger.y * 600);  // Scale normalized coordinates
-                    io.AddMouseButtonEvent(0, true);  // Left mouse button down
-                }
-            
-                if (Evt.type == SDL_EVENT_FINGER_UP) {
-                    ImGuiIO& io = ImGui::GetIO();
-                    io.AddMouseButtonEvent(0, false);  // Left mouse button up
-                }
-*/
-        }
-        SDL_SetRenderDrawColor(Win->Ren, liveColor.r, liveColor.g, liveColor.b, liveColor.a);
-        for(int i=0;i!=128;++i)
-        {
-            for (const NVnote &n : MIDI.L[KeyMap[i]])
-            {
-                DrawNote(i, n);
-            }
-        }
-        Win->DrawKeyBoard();
-        NVGui::Run(Win->Ren);
-        SDL_RenderPresent(Win->Ren);
-        Tplay = BASS_ChannelBytes2Seconds(Stm, BASS_ChannelGetPosition(Stm, BASS_POS_BYTE));
-        const char * sdl_err = SDL_GetError();
-        if(strlen(sdl_err) << 1)
-        {
-            SDL_Log("SDL Error: %s", sdl_err);
-        }
-    }
+    // updated tplay method
+	while (BASS_ChannelIsActive(Stm) != BASS_ACTIVE_STOPPED)
+	{
+	    _WinH = Win->WinH - Win->WinW * 80 / 1000; Tscr = (double)_WinH / live_note_speed;
+		MIDI.update_to(Tplay + Tscr);
+		MIDI.remove_to(Tplay);
+		Win->canvas_clear();
+		while (SDL_PollEvent(&Evt)) 
+		{
+			ImGui_ImplSDL3_ProcessEvent(&Evt);
+			if (Evt.type == SDL_EVENT_QUIT)
+				break;
+				
+			// Add keyboard controls for playback
+			if (Evt.type == SDL_EVENT_KEY_DOWN) 
+			{
+				switch (Evt.key.key) {
+					case SDLK_SPACE:
+						toggle_pause();
+						break;
+						//rewind used to be here
+					case SDLK_RIGHT:
+						seek_playback(SEEK_AMOUNT);
+						break;
+					case SDLK_Q:
+						NVi::Quit();
+						break;
+				}
+			}
+		}
+		
+		//pps = live_note_speed;
+		
+		SDL_SetRenderDrawColor(Win->Ren, liveColor.r, liveColor.g, liveColor.b, liveColor.a);
+		for(int i=0;i!=128;++i)
+		{
+			for (const NVnote &n : MIDI.L[KeyMap[i]])
+			{
+				DrawNote(i, n, live_note_speed);
+			}
+		}
+		Win->DrawKeyBoard();
+		NVGui::Run(Win->Ren);
+		SDL_RenderPresent(Win->Ren);
+		
+		// Only update Tplay if not paused
+		if (!is_paused) {
+			Tplay = BASS_ChannelBytes2Seconds(Stm, BASS_ChannelGetPosition(Stm, BASS_POS_BYTE));
+		}
+		
+		const char * sdl_err = SDL_GetError();
+		if(strlen(sdl_err) << 1)
+		{
+			SDL_Log("SDL Error: %s", sdl_err);
+		}
+	}
     
     //NVi::Quit();
 #else

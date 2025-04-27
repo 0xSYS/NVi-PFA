@@ -29,6 +29,7 @@ void NVConf::WriteConfig(configuration cfg)
     out_cfg->insert("Audio", audio);
     
     auto vis = cpptoml::make_table();
+    vis->insert("NoteSpeed", cfg.note_speed);
     vis->insert("Window_w", cfg.window_w);
     vis->insert("Window_h", cfg.window_h);
     out_cfg->insert("Visual", vis);
@@ -43,7 +44,7 @@ void NVConf::WriteConfig(configuration cfg)
     std::ofstream out(CONFIG_PATH);
     out << (*out_cfg); // cpptoml overloads the << operator
     out.close();
-    NVi::info("Config_Utils", "Settings saved");
+    NVi::info("Config_Utils", "Settings saved\n");
 }
 
 NVConf::configuration NVConf::ReadConfig()
@@ -58,6 +59,7 @@ NVConf::configuration NVConf::ReadConfig()
     auto vis = cfg->get_table("Visual");
     in_cfg.window_w = *vis->get_as<int>("Window_w");
     in_cfg.window_h = *vis->get_as<int>("Window_h");
+    in_cfg.note_speed = *vis->get_as<int>("NoteSpeed");
     
     auto bg_col = cfg->get_table("BackgroundColor");
     in_cfg.bg_R = *bg_col->get_as<int>("R");
@@ -95,7 +97,7 @@ void NVConf::CreateSoundfontList(std::vector<SoundfontItem> lst)
     } 
     else 
     {
-        NVi::error("Config_Utils", "Failed to write 'soundfonts.toml'");
+        NVi::error("Config_Utils", "Failed to write 'soundfonts.toml'\n");
     }
 }
 
@@ -109,7 +111,7 @@ std::vector<SoundfontItem> NVConf::ReadSoundfontList()
     
     if (!paths || !enabled || paths->size() != enabled->size()) 
     {
-        NVi::error("Config_Utils", "Invalid or mismatched arrays in 'soundfonts.toml'");
+        NVi::error("Config_Utils", "Invalid or mismatched arrays in 'soundfonts.toml'\n");
         return lst;
     }
     

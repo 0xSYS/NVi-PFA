@@ -21,9 +21,7 @@
 
 
 
-
-
-//bool show_demo_window = true;
+bool show_demo_window = true;
 //bool main_gui_window = false;
 
 int selIndex = 0;
@@ -43,7 +41,10 @@ static ImVec2 lastTapPos = ImVec2(0.0f, 0.0f);
 
 //ImGuiIO& io = ImGui::GetIO();
 
-
+// Add these to your other extern declarations
+extern bool is_paused;
+extern void seek_playback(double seconds);
+extern void toggle_pause();
 
 void NVGui::SetDefaultTheme()
 {
@@ -292,6 +293,39 @@ void NVGui::Run(SDL_Renderer *r)
         // Create an invisible window
     ImGui::Begin("InvisibleWindow", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBackground);
     
+	// In NVGui::Run, after the invisible window code and before any tab code:
+
+	// Add playback control buttons at the bottom right
+	ImGuiIO& io = ImGui::GetIO();
+	float button_size = 80.0f;
+	float spacing = 5.0f;
+	float total_width = 2 * button_size + spacing;
+	float y_position = io.DisplaySize.y - button_size - 170.0f;
+	
+	// Rewind button (used to be here)
+	
+	// Play/Pause button
+	ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x - total_width - 10.0f, y_position));
+	ImGui::SetNextWindowSize(ImVec2(button_size, button_size));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	ImGui::Begin("PlayPauseButton", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
+	if (ImGui::Button(is_paused ? "|>" : "||", ImVec2(button_size, button_size))) {
+		toggle_pause();
+	}
+	ImGui::End();
+	ImGui::PopStyleVar();
+	
+	// Fast forward button
+	ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x - button_size - 10.0f, y_position));
+	ImGui::SetNextWindowSize(ImVec2(button_size, button_size));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	ImGui::Begin("ForwardButton", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
+	if (ImGui::Button(">>", ImVec2(button_size, button_size))) {
+		seek_playback(SEEK_AMOUNT);
+	}
+	ImGui::End();
+	ImGui::PopStyleVar();
+	
     ImGui::SetCursorPos(ImVec2(5.0f, 400.0f));
     if (ImGui::Button("#"))
         main_gui_window = true;
@@ -306,7 +340,7 @@ void NVGui::Run(SDL_Renderer *r)
     // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
     //if (show_demo_window)
     //    ImGui::ShowDemoWindow(&show_demo_window);
-    
+    //
             // Reserved for future use
             //ImGui::Text("%.1f FPS", nvg.io.Framerate);
     
@@ -441,6 +475,7 @@ void NVGui::Run(SDL_Renderer *r)
                     if (ImGui::BeginTabItem("Settings"))
                     {
                         ImGui::Text("Settings marked with * require restart of NV PFA\n\n");
+                        ImGui::SliderInt("Note Speed", &live_note_speed, 100, 20000);
                         ImGui::Text("Background Color");
                         clear_color = ImVec4(live_conf.bg_R / 255.0f, live_conf.bg_G / 255.0f, live_conf.bg_B / 255.0f, live_conf.bg_A / 255.0f);
                         ImGui::ColorEdit3("clear color", (float*)&clear_color);
@@ -465,7 +500,7 @@ void NVGui::Run(SDL_Renderer *r)
                         live_conf.bg_G = liveColor.g;
                         live_conf.bg_B = liveColor.b;
                         live_conf.bg_A = liveColor.a;
-                        //live_conf.current_soundfonts = {"/home/0xsys/Desktop/piano maganda (26,893kb).sf2"};
+                        live_conf.note_speed = live_note_speed;
                         
                         if(ImGui::Button("Save"))
                         {

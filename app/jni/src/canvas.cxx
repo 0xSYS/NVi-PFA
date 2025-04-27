@@ -436,7 +436,9 @@ void Canvas::Note(int k, int yb, int ye, unsigned int c)
 
 int Canvas::scale(int x) const
 {
-    return (x * WinW + 3665) / 7330;
+    // Fixed a small note glitch LMfaoerGdfgg
+    return (x * WinW + 5865) / 7330;
+    //return (x * WinW + 3665) / 7330;
 }
 
 Canvas::RGBA_pix Canvas::getColor(color C) const

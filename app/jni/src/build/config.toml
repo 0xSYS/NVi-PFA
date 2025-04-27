@@ -1,11 +1,12 @@
 [BackgroundColor]
 	A = 255
 	B = 255
-	G = 224
-	R = 0
+	G = 255
+	R = 255
 [Visual]
 	Window_h = 0
 	Window_w = 0
+	NoteSpeed = 2973
 [Audio]
-	LastMIDIpath = "/home/0xsys/Desktop/different midi extension.smf"
+	LastMIDIpath = "/home/0xsys/Desktop/Black_MIDI/midis/Evans V2.mid"
 	VoiceCount = 500

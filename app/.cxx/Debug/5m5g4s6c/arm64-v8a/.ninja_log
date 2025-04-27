@@ -35,3 +35,12 @@
 5803	6204	1745691139383616879	/home/0xsys/NVi-PFA/app/build/intermediates/cxx/Debug/5m5g4s6c/obj/arm64-v8a/libmain.so	ad4b48934bbbd24d
 4	2300	1745692933376038906	src/CMakeFiles/main.dir/Player.cxx.o	833b7e70e99c0a
 2300	2358	1745692933449035608	/home/0xsys/NVi-PFA/app/build/intermediates/cxx/Debug/5m5g4s6c/obj/arm64-v8a/libmain.so	ad4b48934bbbd24d
+51	2060	1745751231093309832	src/CMakeFiles/main.dir/Sequ.cxx.o	cfdae8b105a36dff
+50	2076	1745751231106309952	src/CMakeFiles/main.dir/MIDI.cxx.o	ef63d52244ad9a04
+55	2080	1745751231090309804	src/CMakeFiles/main.dir/Utils.cxx.o	3b5264f0091a6a1
+50	2548	1745751231571314230	src/CMakeFiles/main.dir/Nlist.cxx.o	5c2b2edc47912760
+2060	3166	1745751232213320137	src/CMakeFiles/main.dir/canvas.cxx.o	d18fe915374f8570
+2076	3296	1745751232343321333	src/CMakeFiles/main.dir/Gui.cxx.o	df4b8824d9259d87
+50	4111	1745751233149328751	src/CMakeFiles/main.dir/Config_Utils.cxx.o	e40084d05125fb15
+51	4351	1745751233359330684	src/CMakeFiles/main.dir/Player.cxx.o	833b7e70e99c0a
+4351	4776	1745751233826334982	/home/0xsys/NVi-PFA/app/build/intermediates/cxx/Debug/5m5g4s6c/obj/arm64-v8a/libmain.so	ad4b48934bbbd24d
