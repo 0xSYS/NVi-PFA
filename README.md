@@ -1,8 +1,8 @@
 # NVirsual Piano From Above
-A clone of the original (Pano From Above)[https://github.com/brian-pantano/PianoFromAbove] made by Brian Panatano.
+A clone of the original [Pano From Above](https://github.com/brian-pantano/PianoFromAbove) made by Brian Panatano.
 Now available on on android.
 
-This clone is powered by Qishipai's (midi processing library)[https://github.com/qishipai/NVirsual] and using SDL3 to render the notes and the keyboard.
+This clone is powered by Qishipai's [midi processing library](https://github.com/qishipai/NVirsual) and using SDL3 to render the notes and the keyboard.
 
 > [!WARNING]
 > This project is still in early development and any release could be unstable. Consider building and testing them at your own risk!!
@@ -42,7 +42,7 @@ First you need to make sure you have the android studio and android-sdk installe
 ```
 This only builds the debug version of the apk
 
-*) If you want to build the desktop version (which is currently available and works best on arch linux atm) check out (the guide build)[app/jni/src/source_info.md] from the core source code of the app.
+*) If you want to build the desktop version (which is currently available and works best on arch linux atm) check out [the guide build](app/jni/src/README.md) from the core source code of the app.
 
 
 
