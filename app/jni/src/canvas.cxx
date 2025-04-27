@@ -296,7 +296,7 @@ void Canvas::DrawKeyBoard()
                 float fMCX = _KeyWidth[j] - fMXGap * 2.0f - fKeyGap;
                 float fMY = std::max( fCurY + fTopCY + fNearCY - fMCX - 7.0f, fCurY + fSharpCY + 5.0f );
                 // DrawRect(Ren, fCurX + fKeyGap1+WinH - WinW * 82 / 1000 + fMXGap, fMY, fMCX, fCurY + fTopCY + fNearCY - 7.0f - fMY, m_csKBWhite.iDarkRGB );
-                DrawRect(Ren, fCurX + fKeyGap1 + fMXGap , fMY+WinH - WinW * 82 / 1000, fMCX, fCurY + fTopCY + fNearCY - 7.0f - fMY, 0xFF000000|r1|g1<<8|b1<<16,0xFF000000|r1|g1<<8|b1<<16,0xFF000000|r1|g1<<8|b1<<16,0xFF000000|r1|g1<<8|b1<<16);
+                DrawRect(Ren, fCurX + fKeyGap1 + fMXGap , fMY+WinH - WinW * 82 / 1000, fMCX, fCurY + fTopCY + fNearCY - 7.0f - fMY, 0xFF000000|r2|g2<<8|b2<<16,0xFF000000|r2|g2<<8|b2<<16,0xFF000000|r2|g2<<8|b2<<16,0xFF000000|r2|g2<<8|b2<<16);
             }
         }
 
