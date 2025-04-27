@@ -35,9 +35,9 @@ This clone is powered by Qishipai's [midi processing library](https://github.com
 First you need to make sure you have the android studio and android-sdk installed.
 
 2) Git clone this repo and cd into it.
-3)
+3) Set the path to the android sdk in [local.properties](local.properties)
+4) Run the following commands:
 ```
-./gradlew clean
 ./gradlew assembleDebug
 ```
 This only builds the debug version of the apk

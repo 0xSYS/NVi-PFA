@@ -12,6 +12,12 @@ Required dependencies:
 - bass
 - bassmidi
 
+Internal Dependencies:
+- cpptoml
+#### Both proprietary software !!
+- bass
+- bassmidi
+
 if you're on arch you can install both bass and bassmidi from the AUR (bass libbassmidi)
 SDL 3 is available to install from pacman (sdl3)
 
