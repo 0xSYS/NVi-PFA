@@ -30,9 +30,7 @@
 #include "extern/cpptoml/cpptoml.h"
 
 
-//#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "FontCheck", __VA_ARGS__))
-#define DOUBLE_TAP_TIME 300  // Maximum time (in milliseconds) between taps
-#define DOUBLE_TAP_DISTANCE 50  // Maximum distance (in pixels) between taps
+
 
 
 
@@ -94,40 +92,40 @@ void bassevt(DWORD type, DWORD param, DWORD chan, DWORD tick, DWORD time)
 void CALLBACK normalize_dsp_proc(HDSP handle, DWORD channel, void *buffer, DWORD length, void *user)
 {
     float *samples = (float*)buffer;
-        DWORD count = length / sizeof(float);
+    DWORD count = length / sizeof(float);
     
-        for (DWORD i = 0; i < count; ++i)
+    for (DWORD i = 0; i < count; ++i)
+    {
+        float input = samples[i];
+        float abs_input = fabs(input);
+    
+        if (abs_input > limiter_threshold)
         {
-            float input = samples[i];
-            float abs_input = fabs(input);
+            // Over the threshold
+            float exceed = abs_input - limiter_threshold;
     
-            if (abs_input > limiter_threshold)
-            {
-                // Over the threshold
-                float exceed = abs_input - limiter_threshold;
+            // Soft knee compression
+            float compressed = exceed / (exceed + limiter_knee);
     
-                // Soft knee compression
-                float compressed = exceed / (exceed + limiter_knee);
+            // Calculate desired gain to apply
+            float desired_gain = limiter_threshold / (limiter_threshold + compressed);
     
-                // Calculate desired gain to apply
-                float desired_gain = limiter_threshold / (limiter_threshold + compressed);
-    
-                // Smooth the gain change (attack instantly, release slowly)
-                if (desired_gain < current_gain)
-                    current_gain = desired_gain; // attack (instant clamp)
-                else
-                    current_gain += (desired_gain - current_gain) * limiter_release; // release (slow)
-    
-            }
+            // Smooth the gain change (attack instantly, release slowly)
+            if (desired_gain < current_gain)
+                current_gain = desired_gain; // attack (instant clamp)
             else
-            {
-                // No peak, slowly release gain toward 1.0
-                current_gain += (1.0f - current_gain) * limiter_release;
-            }
+                current_gain += (desired_gain - current_gain) * limiter_release; // release (slow)
     
-            // Apply the current gain
-            samples[i] *= current_gain;
         }
+        else
+        {
+            // No peak, slowly release gain toward 1.0
+            current_gain += (1.0f - current_gain) * limiter_release;
+        }
+    
+        // Apply the current gain
+        samples[i] *= current_gain;
+    }
 }
 
 
@@ -447,7 +445,7 @@ int SDL_main(int ac, char **av)
     if(parsed_config.last_midi_path.length() == 0)
     {
         parsed_config.last_midi_path = DEFAULT_MIDI;
-        std::cout << "No default midi\n";
+        //std::cout << "No default midi\n";
     }
     
     if(!MIDI.start_parse(parsed_config.last_midi_path.c_str()))
@@ -479,7 +477,7 @@ int SDL_main(int ac, char **av)
     HSOUNDFONT Sf;
     
     //Load all enabled soundfonts
-    std::cout << "Size: " << live_soundfont_list.size() << "\n";
+    //std::cout << "Size: " << live_soundfont_list.size() << "\n";
     if(live_soundfont_list.size() == 0)
     {
         std::cout << "Default sf\n";

@@ -465,9 +465,6 @@ void NVGui::Run(SDL_Renderer *r)
                             ImGui::EndTooltip();
                         }
                         RenderSoundfontList(live_soundfont_list, sf_search_text);
-                        //checked_soundfonts = NVGui::GetCheckedSoundfonts(live_soundfont_list);
-                        //for(int i = 0; i < checked_soundfonts.size(); i++)
-                            //std::cout << "from gui: " << checked_soundfonts.size() << "\n";
                             
                         ImGui::EndTabItem();
                     }
@@ -488,7 +485,7 @@ void NVGui::Run(SDL_Renderer *r)
                         ImGui::Text("\n");
                         ImGui::Text("Voice Count *");
                         static int i0 = 123;
-                        ImGui::InputInt("input int", &live_conf.bass_voice_count);
+                        ImGui::InputInt("##LOL", &live_conf.bass_voice_count);
                         if (ImGui::BeginItemTooltip())
                         {
                             ImGui::Text("Set how many notes can be played on specific instruments");
@@ -519,7 +516,9 @@ void NVGui::Run(SDL_Renderer *r)
                         ImGui::Text("Authors:");
                         ImGui::Text("NVirsual: Qishipai");
                         ImGui::Text("Piano From Above imitation: Tweak");
-                        ImGui::Text("Improved by 0xsys\n\n");
+                        ImGui::Text("Improved by:");
+                        ImGui::Text("0xsys");
+                        ImGui::Text("Hex");
                         ImGui::Text("Powered by: SDL3, Imgui, bass and bass plugins");
                         ImGui::EndTabItem();
                     }
