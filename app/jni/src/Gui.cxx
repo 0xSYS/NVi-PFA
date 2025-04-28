@@ -75,9 +75,21 @@ void NVGui::SetDefaultTheme()
 	style.CellPadding              = ImVec2(12.10000038146973f, 9.199999809265137f);
 	style.IndentSpacing            = 0.0f;
 	style.ColumnsMinSpacing        = 4.900000095367432f;
-	style.ScrollbarSize            = 20.60000038146973f;  // Modified
+	
+	// Different size for the scrollbar so user can actually grab it lol
+#ifdef NON_ANDROID
+	style.ScrollbarSize            = 20.60000038146973f;
+#else
+	style.ScrollbarSize            = 48.60000038146973f;
+#endif
+
 	style.ScrollbarRounding        = 15.89999961853027f;
-	style.GrabMinSize              = 12.700000047683716f; // Modified
+#ifdef NON_ANDROID
+	style.GrabMinSize              = 12.700000047683716f;
+#else
+	style.GrabMinSize              = 40.700000047683716f;
+#endif
+
 	style.GrabRounding             = 8.0f;                // Modified
 	style.TabRounding              = 8.89999961853027f;
 	style.TabBorderSize            = 0.0f;
@@ -220,7 +232,7 @@ std::string FilenameOnly(const std::string& path)
 
 void RenderMidiList(const std::vector<std::string>& items, int& selectedIndex, std::string find_item)
 {
-    ImGui::BeginChild("ListRegion", ImVec2(0, 200), true, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("ListRegion", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar);
     
         for (int i = 0; i < items.size(); ++i) 
         {
@@ -246,7 +258,7 @@ void RenderMidiList(const std::vector<std::string>& items, int& selectedIndex, s
 
 void RenderSoundfontList(std::vector<SoundfontItem>& items, std::string find_item)
 {
-    ImGui::BeginChild("ListRegion", ImVec2(0, 200), true, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("ListRegion", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar);
     
     for (int i = 0; i < items.size(); ++i) 
     {
@@ -356,11 +368,15 @@ void NVGui::Run(SDL_Renderer *r)
             // Show the main GUI window
             if (main_gui_window)
             {
-                ImGuiIO& io = ImGui::GetIO();
                 ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
                 ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f)); // Pivot 0.5 = center
-                ImGui::SetNextWindowSizeConstraints(ImVec2(800, 380), ImVec2(FLT_MAX, FLT_MAX));
+#ifdef NON_ANDROID
+                ImGui::SetNextWindowSizeConstraints(ImVec2(700, 380), ImVec2(FLT_MAX, FLT_MAX));
                 ImGui::Begin("NVi PFA", &main_gui_window);
+#else           // Setting up a different ui layout for mobile users
+                ImGui::SetNextWindowSize(ImVec2(900.0f, 600.0f));
+                ImGui::Begin("NVi PFA", &main_gui_window, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+#endif
                 
                 //ImGui::SameLine();
                 
@@ -384,7 +400,8 @@ void NVGui::Run(SDL_Renderer *r)
                         midi_search_text = midi_search;
                         
                         // Draw placeholder text if empty and not focused
-                        if (strlen(midi_search) == 0 && !ImGui::IsItemActive()) {
+                        if (strlen(midi_search) == 0 && !ImGui::IsItemActive()) 
+                        {
                             ImVec2 pos = ImGui::GetItemRectMin();
                             ImVec2 text_pos = ImVec2(pos.x + ImGui::GetStyle().FramePadding.x, pos.y + ImGui::GetStyle().FramePadding.y);
                             ImGui::GetWindowDrawList()->AddText(text_pos, ImGui::GetColorU32(ImGuiCol_TextDisabled), "Search midis");
@@ -417,11 +434,12 @@ void NVGui::Run(SDL_Renderer *r)
                             ImGui::EndTooltip();
                         }
                         
-                        ImGui::SameLine();
+                        //ImGui::SameLine();
                         
-                        if (ImGui::Button("Close"))
-                            //NVi::CloseMidiPlayback();
-                            std::cout << "Close midi playback\n";
+                        // Not used yet...
+                        //if (ImGui::Button("Close"))
+                        //    //NVi::CloseMidiPlayback();
+                        //    std::cout << "Close midi playback\n";
                         
                         if (ImGui::BeginItemTooltip())
                         {
@@ -520,15 +538,17 @@ void NVGui::Run(SDL_Renderer *r)
                     }
                     if (ImGui::BeginTabItem("About"))
                     {
+                        ImGui::BeginChild("ScrollRegion", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_AlwaysVerticalScrollbar);
                         ImGui::Text("A clone of the original Piano From Above for mobile based on Qishipai's midi processing library.");
                         ImGui::Text("Authors:");
                         ImGui::Text("NVirsual: Qishipai");
-                        ImGui::Text("Piano From Above imitation: Tweak");
+                        ImGui::Text("Piano From Above imitation: Tweak1600");
                         ImGui::Text("Improved by:");
                         ImGui::Text("0xsys");
-                        ImGui::Text("Hex\n\n");
+                        ImGui::Text("Hexagon-Midis\n\n");
                         ImGui::Text("Icon Made by Zeal");
                         ImGui::Text("Powered by: SDL3, Imgui, bass and bass plugins");
+                        ImGui::EndChild();
                         ImGui::EndTabItem();
                     }
                     ImGui::EndTabBar();
