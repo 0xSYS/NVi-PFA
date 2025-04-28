@@ -15,11 +15,7 @@ if command -v convert >/dev/null 2>&1; then
         exit 1
     else
         echo "input image: $1"
-     
         ICONS_PATH="../app/src/main/res"
-     
-     
-        
         SOURCE_ICON="$1"
      
         # Sizes and corresponding folders
