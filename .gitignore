@@ -1,5 +1,9 @@
 .gradle/*
+build/*
 app/.cxx/*
 app/build/intermediates/*
+app/build/outputs/logs/*
+app/build/outputs/apk/debug/*
+app/build/tmp/*
 app/jni/src/build/*
 local.properties
