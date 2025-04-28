@@ -26,6 +26,7 @@ This clone is powered by Qishipai's [midi processing library](https://github.com
 - [ ] Custom note color array support
 - [ ] Veritcal lines on the background
 - [ ] Background image support
+- [ ] Setting custom key ranges
 - [ ] Common midi and soundfont reloading (This must not require app restarting after each midi playing session)
 - [ ] Seting for custom folders / directories to search for midi and soundfont files
 - [ ] More audio settings (like Realtime frame rate, frame fluctuation, enabling disabling limiter)
