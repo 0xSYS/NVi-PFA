@@ -10,6 +10,7 @@ This clone is powered by Qishipai's [midi processing library](https://github.com
 
 ## Features
 - [X] Default midi and soundfont
+- [ ] Default GM Soundfont
 - [X] Custom background color support
 - [X] Custom themed GUI
 - [X] Settings storage to file (.toml)
