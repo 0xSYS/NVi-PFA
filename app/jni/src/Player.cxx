@@ -323,17 +323,16 @@ void NVi::ReadMidiList()
             NVi::error("Player", "'midi_files' array not found or invalid");
             exit(1);
         }
-    
-        } // Try to catch parsing errros
-        catch (const cpptoml::parse_exception& e) 
-        {
-            std::ostringstream msg;
-            msg << "TOML Parse Error: " << e.what();
-            Canvas C;
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", msg.str().c_str(), nullptr);
-            NVi::error("Player", "TOML Parse error: %s", e.what());
-            exit(1);
-        }
+    } // Try to catch parsing errros
+    catch (const cpptoml::parse_exception& e) 
+    {
+        std::ostringstream msg;
+        msg << "TOML Parse Error: " << e.what();
+        Canvas C;
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", msg.str().c_str(), nullptr);
+        NVi::error("Player", "TOML Parse error: %s", e.what());
+        exit(1);
+    }
 }
 
 
@@ -471,6 +470,7 @@ int SDL_main(int ac, char **av)
 
     //_WinH = Win->WinH - Win->WinW * 80 / 1000; Tscr = (double)_WinH / live_note_speed;
 
+
     BASS_PluginLoad(BASSMIDI_LIB, 0);
     BASS_SetConfig(BASS_CONFIG_MIDI_AUTOFONT, 0);
     BASS_Init(-1, 44100, 0, 0, nullptr);
@@ -517,10 +517,20 @@ int SDL_main(int ac, char **av)
     const Uint32 doubleTapThreshold = 400; // in milliseconds
     
     
+   	SDL_SetRenderDrawColor(Win->Ren, liveColor.r, liveColor.g, liveColor.b, liveColor.a);
+    
+    // 0 note speed results in invisible notes and extreme lag
+    if(live_note_speed == 0)
+    {
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Note speed cannot be zero !!!!", NULL);
+        exit(1);
+    }
+    
+    
     // updated tplay method
 	while (BASS_ChannelIsActive(Stm) != BASS_ACTIVE_STOPPED)
 	{
-	    _WinH = Win->WinH - Win->WinW * 80 / 1000; Tscr = (double)_WinH / live_note_speed;
+	    _WinH = Win->WinH - Win->WinW * 80 / 1000; Tscr = (double)_WinH / live_note_speed; // On desktop it seems to cause frame shifting or icomplete frame rendering
 		MIDI.update_to(Tplay + Tscr);
 		MIDI.remove_to(Tplay);
 		Win->canvas_clear();
@@ -553,13 +563,15 @@ int SDL_main(int ac, char **av)
 		//pps = live_note_speed;
 		
 		SDL_SetRenderDrawColor(Win->Ren, liveColor.r, liveColor.g, liveColor.b, liveColor.a);
+		
 		for(int i=0;i!=128;++i)
 		{
-			for (const NVnote &n : MIDI.L[KeyMap[i]])
-			{
+	        for (const NVnote &n : MIDI.L[KeyMap[i]])
+	        {
 				DrawNote(i, n, live_note_speed);
-			}
+	        }
 		}
+		
 		Win->DrawKeyBoard();
 		NVGui::Run(Win->Ren);
 		SDL_RenderPresent(Win->Ren);
