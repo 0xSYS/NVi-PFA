@@ -14,6 +14,7 @@ Required dependencies:
 
 Internal Dependencies:
 - cpptoml
+- imgui
 #### Both proprietary software !!
 - bass
 - bassmidi
