@@ -6,7 +6,7 @@ This clone is powered by Qishipai's [midi processing library](https://github.com
 
 > [!WARNING]
 > This project is still in early development and any release could be unstable. Consider building and testing them at your own risk!!
-> #### No public builds are allowed to be fully shared !!!
+> #### No public builds are allowed to be fully shared or redistributed!!!
 
 ## Features
 - [X] Default midi and soundfont
@@ -20,7 +20,7 @@ This clone is powered by Qishipai's [midi processing library](https://github.com
 - [X] Seek forward
 - [X] Seek backwards
 - [X] Live Note speed change
-- [ ] Improving the audio limiter
+- [X] Improving the audio limiter
 - [X] Better UI layout on mobile
 - [ ] File information support
 - [ ] Custom note color array support
