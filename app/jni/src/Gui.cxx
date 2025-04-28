@@ -355,7 +355,8 @@ void NVGui::Run(SDL_Renderer *r)
     //ImGui::SetCursorPos(ImVec2(5.0f, 400.0f));
     //if (ImGui::InvisibleButton(" hiddend settigs btn", button_sz))
     //    main_gui_window = true;
-        
+    
+    ImGui::SetCursorPos(ImVec2(5.0f, 400.0f));   
     if (ImGui::Button("#"))
         main_gui_window = true;
     
