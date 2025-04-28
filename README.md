@@ -6,6 +6,7 @@ This clone is powered by Qishipai's [midi processing library](https://github.com
 
 > [!WARNING]
 > This project is still in early development and any release could be unstable. Consider building and testing them at your own risk!!
+> #### No public builds are allowed to be fully shared !!!
 
 ## Features
 - [X] Default midi and soundfont
