@@ -1,0 +1,49 @@
+#!/bin/bash
+
+
+# Simple script to generate icons for the apk
+# Made by 0xsys
+
+
+
+if command -v convert >/dev/null 2>&1; then
+    echo -e "\e[38;5;83mmagick command found\e[0m"
+
+
+    if [ -z "$1" ]; then
+        echo -e "\e[38;5;196mPlease provide a path to an image_name.png !\e[0m"
+        exit 1
+    else
+        echo "input image: $1"
+     
+        ICONS_PATH="../app/src/main/res"
+     
+     
+        
+        SOURCE_ICON="$1"
+     
+        # Sizes and corresponding folders
+        declare -A sizes=(
+            [mipmap-mdpi]=48
+            [mipmap-hdpi]=72
+            [mipmap-xhdpi]=96
+            [mipmap-xxhdpi]=144
+            [mipmap-xxxhdpi]=192
+        )
+     
+        for folder in "${!sizes[@]}"; do
+            size=${sizes[$folder]}
+            full_folder="$ICONS_PATH/$folder"
+            if [ -d "$full_folder" ]; then
+                echo "Replacing icon in $full_folder..."
+                magick "$SOURCE_ICON" -resize ${size}x${size} "$full_folder/ic_launcher.png"
+            else
+                echo "Warning: Folder $full_folder does not exist. Skipping."
+            fi
+    done
+        echo "Done!"
+    fi
+else
+    echo -e "\e[38;5;196mmagick unavailable!!\e[0m\nPlease make sure install ImageMagick."
+    exit 1
+fi
