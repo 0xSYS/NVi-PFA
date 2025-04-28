@@ -18,7 +18,7 @@ This clone is powered by Qishipai's [midi processing library](https://github.com
 - [X] Midi and soundfont list providers
 - [X] Play / Pause playback
 - [X] Seek forward
-- [ ] Seek backwards
+- [X] Seek backwards
 - [X] Live Note speed change
 - [ ] Improving the audio limiter
 - [X] Better UI layout on mobile
