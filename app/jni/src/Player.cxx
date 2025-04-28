@@ -450,17 +450,27 @@ int SDL_main(int ac, char **av)
         //std::cout << "No default midi\n";
     }
     
-    if(!MIDI.start_parse(parsed_config.last_midi_path.c_str()))
+    if(live_note_speed == 0)
     {
-        Canvas C;
-        std::ostringstream temp_msg;
-        temp_msg << "Failed to load '" << parsed_config.last_midi_path << "'";
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", temp_msg.str().c_str(), nullptr);
-        return 1;
+        //Canvas C;
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Note speed cannot be zero !!!!", NULL);
+        exit(1);
     }
-    else {
-        //std::cout << "M\n";
-        NVi::info("Player", "Midi file exists\n"); // Just to not let this empty lol
+    else
+    {
+        if(!MIDI.start_parse(parsed_config.last_midi_path.c_str()))
+        {
+            Canvas C;
+            std::ostringstream temp_msg;
+            temp_msg << "Failed to load '" << parsed_config.last_midi_path << "'";
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", temp_msg.str().c_str(), nullptr);
+            return 1;
+        }
+        else 
+        {
+            //std::cout << "M\n";
+            NVi::info("Player", "Midi file exists\n"); // Just to not let this empty lol
+        }
     }
     
 
@@ -520,12 +530,6 @@ int SDL_main(int ac, char **av)
    	SDL_SetRenderDrawColor(Win->Ren, liveColor.r, liveColor.g, liveColor.b, liveColor.a);
     
     // 0 note speed results in invisible notes and extreme lag
-    if(live_note_speed == 0)
-    {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Note speed cannot be zero !!!!", NULL);
-        exit(1);
-    }
-    
     
     // updated tplay method
 	while (BASS_ChannelIsActive(Stm) != BASS_ACTIVE_STOPPED)
