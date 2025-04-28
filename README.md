@@ -21,7 +21,7 @@ This clone is powered by Qishipai's [midi processing library](https://github.com
 - [ ] Seek backwards
 - [X] Live Note speed change
 - [ ] Improving the audio limiter
-- [ ] Better UI layout on mobile
+- [X] Better UI layout on mobile
 - [ ] File information support
 - [ ] Custom note color array support
 - [ ] Veritcal lines on the background
