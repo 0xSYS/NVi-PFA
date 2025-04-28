@@ -346,7 +346,16 @@ void NVGui::Run(SDL_Renderer *r)
 	ImGui::End();
 	ImGui::PopStyleVar();
 	
-    ImGui::SetCursorPos(ImVec2(5.0f, 400.0f));
+	//ImVec2 button_sz = ImVec2(100, 30); // Area size
+	
+	/*
+	We can use invisible buttons that cover the entire screen to create a layout where users can click them for playing / 
+	pausing the playback, seeking forward and backwards, and opening the settings by double clicking / taping them
+	*/
+    //ImGui::SetCursorPos(ImVec2(5.0f, 400.0f));
+    //if (ImGui::InvisibleButton(" hiddend settigs btn", button_sz))
+    //    main_gui_window = true;
+        
     if (ImGui::Button("#"))
         main_gui_window = true;
     
