@@ -3,14 +3,11 @@
 #pragma once
 
 #include <cstddef>
-//#include <iostream>
 
-//#include "Gui.hxx"
+
 #include "Config_Utils.hxx"
 #include "extern/imgui/imgui.h"
-#include "canvas.hxx"
-//#include "Nlist.hxx"
-//#include "canvas.hxx"
+
 
 inline NVConf::configuration parsed_config;
 inline NVConf::configuration default_config;
@@ -19,7 +16,6 @@ inline std::vector<std::string> live_soundfont_files;
 inline bool is_midi_loaded;
 inline std::string current_midi_file;
 inline bool main_gui_window = false;
-static Canvas     *Win;
 //static NVnoteList MIDI;
 
 

@@ -1,8 +1,50 @@
 #include <cstdarg>
 #include <cstdio>
+
+#ifndef NON_ANDROID
+    #include <android/log.h>
+#endif
+
+
 #include "Utils.hxx"
-//#include <bass.h>
-#include "extern/audio/bass.h"
+
+
+#define APP_NAME "NVI_PFA"
+#define LOG_BUFFER_SIZE 1024
+
+
+
+
+
+
+#ifndef NON_ANDROID
+void android_log(int priority, const char * prefix, const char *fmt, va_list args)
+{
+    char message_buf[LOG_BUFFER_SIZE];
+    char final_buf[LOG_BUFFER_SIZE];
+    
+    // Format the original message first
+    vsnprintf(message_buf, sizeof(message_buf), fmt, args);
+    
+    // Prepend the prefix
+    snprintf(final_buf, sizeof(final_buf), "[%s] %s", prefix, message_buf);
+    
+    // Send to Android log
+    __android_log_print(priority, APP_NAME, "%s", final_buf);
+}
+
+void log_warn_va(const char *fmt, va_list args)
+{
+    __android_log_vprint(ANDROID_LOG_WARN, APP_NAME, fmt, args);
+}
+
+void log_err_va(const char *fmt, va_list args)
+{
+    __android_log_vprint(ANDROID_LOG_ERROR, APP_NAME, fmt, args);
+}
+#endif
+
+
 
 #if defined(_WIN32) || defined(_WIN64) /* Setting font colors using the Windows API */
 
@@ -17,7 +59,9 @@ void NVi::error(const char *prefix, const char *str, ...)
     SetConsoleTextAttribute(h, 0x0C); 
     fprintf(stderr, "ERROR: ");
     SetConsoleTextAttribute(h, 0x07);
-    va_start(args, str); vfprintf(stderr, str, args); va_end(args);
+    va_start(args, str); 
+    vfprintf(stderr, str, args); 
+    va_end(args);
 }
 
 void NVi::warn(const char *prefix, const char *str, ...)
@@ -29,7 +73,9 @@ void NVi::warn(const char *prefix, const char *str, ...)
     SetConsoleTextAttribute(h, 0x0E); 
     fprintf(stderr, "WARNING: ");
     SetConsoleTextAttribute(h, 0x07);
-    va_start(args, str); vfprintf(stderr, str, args); va_end(args);
+    va_start(args, str); 
+    vfprintf(stderr, str, args); 
+    va_end(args);
 }
 
 void NVi::info(const char *prefix, const char *str, ...)
@@ -41,7 +87,9 @@ void NVi::info(const char *prefix, const char *str, ...)
     SetConsoleTextAttribute(h, 0x0A); 
     fprintf(stderr, "INFO: ");
     SetConsoleTextAttribute(h, 0x07);
-    va_start(args, str); vfprintf(stderr, str, args); va_end(args);
+    va_start(args, str); 
+    vfprintf(stderr, str, args); 
+    va_end(args);
 }
 
 #else /* Setting the terminal font color using the \033 control character */
@@ -49,27 +97,39 @@ void NVi::info(const char *prefix, const char *str, ...)
 void NVi::error(const char *prefix, const char *str, ...)
 {
     va_list args;
+    va_start(args, str);
+#ifndef NON_ANDROID
+    android_log(ANDROID_LOG_ERROR, prefix, str, args);
+#else
     fprintf(stderr, "\033[1m[%s] \033[31mERROR: \033[m", prefix);
-    va_start(args, str); 
-    vfprintf(stderr, str, args); 
+    vfprintf(stderr, str, args);
+#endif 
     va_end(args);
 }
 
 void NVi::warn(const char *prefix, const char *str, ...)
 {
     va_list args;
+    va_start(args, str);
+#ifndef NON_ANDROID
+    android_log(ANDROID_LOG_WARN, prefix, str, args);
+#else
     fprintf(stderr, "\033[1m[%s] \033[33mWARNING: \033[m", prefix);
-    va_start(args, str); 
-    vfprintf(stderr, str, args); 
+    vfprintf(stderr, str, args);
+#endif
     va_end(args);
 }
 
 void NVi::info(const char *prefix, const char *str, ...)
 {
     va_list args;
+    va_start(args, str);
+#ifndef NON_ANDROID
+    android_log(ANDROID_LOG_INFO, prefix, str, args);
+#else
     fprintf(stderr, "\033[1m[%s] \033[32mINFO: \033[m", prefix);
-    va_start(args, str); 
-    vfprintf(stderr, str, args); 
+    vfprintf(stderr, str, args);
+#endif
     va_end(args);
 }
 

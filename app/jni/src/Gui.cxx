@@ -31,15 +31,6 @@ static std::string midi_search_text;
 static std::string sf_search_text;
 
 
-// Define thresholds for double-tap detection
-#define DOUBLE_TAP_TIME 0.3f  // Maximum time (in seconds) between taps
-#define DOUBLE_TAP_DISTANCE 10.0f  // Maximum distance (in pixels) between taps
-
-// Variables to track double-tap state
-static float lastTapTime = 0.0f;
-static ImVec2 lastTapPos = ImVec2(0.0f, 0.0f);
-
-//ImGuiIO& io = ImGui::GetIO();
 
 // Add these to your other extern declarations
 extern bool is_paused;
@@ -169,12 +160,8 @@ void NVGui::Setup(SDL_Window *w, SDL_Renderer *r)
     ImGui::StyleColorsDark();
     SetDefaultTheme(); // Setting a nice looking GUI :3
     
-    
-        //ImFont* font = io.Fonts->AddFontFromMemoryTTF(fontBuffer, fontSize, 19.0f);
-      
-    
-    //Font suggested by Nerdly
     //Metrophobic-Regular.ttf
+    //Font suggested by Nerdly
 #ifndef NON_ANDROID
     std::string ui_font_file = NVFileUtils::GetFilePathA("ui_font.ttf", "rb");
     io.Fonts->AddFontFromFileTTF(ui_font_file.c_str(), 38.0f);
@@ -190,35 +177,6 @@ void NVGui::Setup(SDL_Window *w, SDL_Renderer *r)
 /*
 Functions for internal use only
 */
-
-void HandleDoubleTap()
-{
-    // Get the current time
-    float currentTime = ImGui::GetTime();
-
-    // Check if the left mouse button was clicked
-    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-        // Get the current mouse position
-        ImVec2 currentPos = ImGui::GetMousePos();
-
-        // Check if this is a double-tap
-        if ((currentTime - lastTapTime) <= DOUBLE_TAP_TIME) {
-            float dx = currentPos.x - lastTapPos.x;
-            float dy = currentPos.y - lastTapPos.y;
-            float distanceSquared = dx * dx + dy * dy;
-
-            if (distanceSquared <= DOUBLE_TAP_DISTANCE * DOUBLE_TAP_DISTANCE) {
-                // Double-tap detected
-                main_gui_window = true;  // Open the ImGui window
-                printf("Double-tap detected at (%f, %f)\n", currentPos.x, currentPos.y);
-            }
-        }
-
-        // Update the last tap information
-        lastTapTime = currentTime;
-        lastTapPos = currentPos;
-    }
-}
 
 // So many of you wanted this
 // And I can relate to such a problem

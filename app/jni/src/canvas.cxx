@@ -2,10 +2,11 @@
 #include <SDL3/SDL_keycode.h>
 #include <SDL3/SDL_messagebox.h>
 #include <SDL3/SDL_oldnames.h>
-#include <cmath>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_oldnames.h>
 #include <iostream>
+#include <cmath>
+#include <algorithm>
 
 
 //#include <SDL_image.h>
@@ -16,6 +17,7 @@
 #include "extern/imgui_sdl3/imgui_impl_sdlrenderer3.h"
 
 
+#include "common.hxx"
 #include "canvas.hxx"
 #include "Gui.hxx"
 //#include "Utils.hxx"
@@ -239,6 +241,36 @@ void Canvas::canvas_clear()
     }
 }
 
+void Canvas::Note(int k, int yb, int ye, unsigned int c)
+{
+    int x  = KeyX[KeyMap[k]]-1, w = (k >= 75? BkeyW : WkeyW)+1;
+    int  h = yb - ye ;
+	unsigned short r=c&0xFF;
+    unsigned short g=(c&0xFF00)>>8;
+	unsigned short b=(c&0xFF0000)>>16;
+	unsigned short r1=r*0.6f;
+    unsigned short g1=g*0.6f;
+	unsigned short b1=b*0.6f;
+	unsigned short r2=r*0.2f;
+    unsigned short g2=g*0.2f;
+	unsigned short b2=b*0.2f;
+
+    // const RGBA_pix &p = getColor(c);
+    // SDL_SetTextureColorMod(note, r, g, b);
+    // SDL_SetRenderDrawColor(Ren, r, g, b, 255);
+    // SDL_FRect R{ (float)x, (float)ye, (float)w+1, (float)h}; //SDL_RenderRect(Ren, &R);
+    // SDL_RenderTexture(Ren,note, nullptr, &R);
+    // SDL_SetRenderDrawColor(Ren, r/5, g/5, b/5, 255); // Set the border color to green
+	DrawRect(Ren, x, ye, w, h, 0xFF000000|r2|g2<<8|b2<<16, 0xFF000000|r2|g2<<8|b2<<16, 0xFF000000|r2|g2<<8|b2<<16, 0xFF000000|r2|g2<<8|b2<<16);
+	// SDL_FRect s{ (float)x, (float)ye+1, (float)w, (float)h-2}; //SDL_RenderRect(Ren, &R);
+	// SDL_SetTextureColorMod(note, r, g, b);
+    // SDL_SetRenderDrawColor(Ren, r, g, b, 255);
+    // SDL_RenderTexture(Ren,note, nullptr, &s);
+    if(h-2.0f*fDeflate>0)
+		DrawRect(Ren, x+fDeflate, ye+fDeflate, w-2.0f*fDeflate, h-2.0f*fDeflate, c,0xFF000000|r1|g1<<8|b1<<16, 0xFF000000|r1|g1<<8|b1<<16,c);
+
+}
+
 void Canvas::DrawKeyBoard()
 {
 	float fTransitionPct = .02f;
@@ -404,34 +436,21 @@ void Canvas::DrawKeyBoard()
     }*/
 }
 
-void Canvas::Note(int k, int yb, int ye, unsigned int c)
+void Canvas::DrawNote(NVi::u16_t k, const NVnote &n, int pps)
 {
-    int x  = KeyX[KeyMap[k]]-1, w = (k >= 75? BkeyW : WkeyW)+1;
-    int  h = yb - ye ;
-	unsigned short r=c&0xFF;
-    unsigned short g=(c&0xFF00)>>8;
-	unsigned short b=(c&0xFF0000)>>16;
-	unsigned short r1=r*0.6f;
-    unsigned short g1=g*0.6f;
-	unsigned short b1=b*0.6f;
-	unsigned short r2=r*0.2f;
-    unsigned short g2=g*0.2f;
-	unsigned short b2=b*0.2f;
-
-    // const RGBA_pix &p = getColor(c);
-    // SDL_SetTextureColorMod(note, r, g, b);
-    // SDL_SetRenderDrawColor(Ren, r, g, b, 255);
-    // SDL_FRect R{ (float)x, (float)ye, (float)w+1, (float)h}; //SDL_RenderRect(Ren, &R);
-    // SDL_RenderTexture(Ren,note, nullptr, &R);
-    // SDL_SetRenderDrawColor(Ren, r/5, g/5, b/5, 255); // Set the border color to green
-	DrawRect(Ren, x, ye, w, h, 0xFF000000|r2|g2<<8|b2<<16, 0xFF000000|r2|g2<<8|b2<<16, 0xFF000000|r2|g2<<8|b2<<16, 0xFF000000|r2|g2<<8|b2<<16);
-	// SDL_FRect s{ (float)x, (float)ye+1, (float)w, (float)h-2}; //SDL_RenderRect(Ren, &R);
-	// SDL_SetTextureColorMod(note, r, g, b);
-    // SDL_SetRenderDrawColor(Ren, r, g, b, 255);
-    // SDL_RenderTexture(Ren,note, nullptr, &s);
-    if(h-2.0f*fDeflate>0)
-		DrawRect(Ren, x+fDeflate, ye+fDeflate, w-2.0f*fDeflate, h-2.0f*fDeflate, c,0xFF000000|r1|g1<<8|b1<<16, 0xFF000000|r1|g1<<8|b1<<16,c);
-
+    unsigned int c = Col[(n.track % 16 + n.chn) % 16];
+    int key = KeyMap[k];
+    
+    int y_0 = std::clamp((int)floor(_WinH - (n.Tstart - Tplay) * pps + 0.5f), 0, _WinH);
+    int y_1 = (n.Tend < Tplay + Tscr) ? std::clamp((int)floor(_WinH - (n.Tend - Tplay) * pps + 0.5f), 0, _WinH) : 0;
+    
+        if (n.Tstart <= Tplay && Tplay < n.Tend)
+        {
+            CvWin->KeyPress[key] = true;
+            CvWin->KeyColor[key] = c;
+        }
+    
+        CvWin->Note(k, y_0, y_1, c);
 }
 
 int Canvas::scale(int x) const

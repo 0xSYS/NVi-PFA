@@ -25,10 +25,8 @@ static NVnoteList MIDI;
 class NVGui
 {
     public:
-    
-    //static ImGuiIO& io ;
-    static void Setup(SDL_Window *w, SDL_Renderer *r);
-    static void SetDefaultTheme();
-    static void Run(SDL_Renderer *r);
-    static std::vector<std::string> GetCheckedSoundfonts(const std::vector<SoundfontItem>& items);
+        static void Setup(SDL_Window *w, SDL_Renderer *r);
+        static void SetDefaultTheme();
+        static void Run(SDL_Renderer *r);
+        static std::vector<std::string> GetCheckedSoundfonts(const std::vector<SoundfontItem>& items);
 };

@@ -4,8 +4,29 @@
 
 #include <complex>
 #include <SDL3/SDL.h>
+#include "Nlist.hxx"
 
 extern const unsigned char KeyMap[128];
+
+static constexpr unsigned int Col[]= 
+{
+    0xFFFF33CC,
+    0xFF4EFF33,
+    0xFF9933FF,
+    0xFFE7FF33,
+    0xFF3366FF,
+    0xFFFF7E33,
+    0xFF33FF66,
+    0xFFFF3381,
+    0xFF33E1E1,
+    0xFFE433E1,
+    0xFF99E133,
+    0xFF4B33E1,
+    0xFFFFCC33,
+    0xFF33B4FF,
+    0xFFFF3333,
+    0xFF33FFB1
+};
 
 class Canvas
 {
@@ -32,6 +53,7 @@ public:
     void canvas_clear();
 
     void DrawKeyBoard();
+    void DrawNote(NVi::u16_t k, const NVnote &n, int pps);
 
     void Note(int k, int yb, int ye, unsigned int c);
 
@@ -47,3 +69,6 @@ private:
 
     RGBA_pix getColor(color C) const;
 };
+
+
+inline Canvas     *CvWin;
