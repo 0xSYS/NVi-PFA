@@ -189,6 +189,7 @@ BOOL CALLBACK filter(HSTREAM S, DWORD trk, BASS_MIDI_EVENT *E, BOOL sk, void *u)
 bool is_paused = false;
 QWORD saved_position = 0; // For storing position when paused
 const double SEEK_AMOUNT = 3.0; // 3 seconds for seeking
+bool playback_ended = false;
 
 void reloadSoundfonts() {
     if (!Stm || !BASS_ChannelIsActive(Stm)) {
@@ -284,10 +285,20 @@ void loadMidiFile(const std::string& midi_path) {
         BASS_StreamFree(Stm);
     }
     
-    // Reset note lists
+    // Reset note lists and playback state
     for (int i = 0; i < 128; ++i) {
         MIDI.L[i].clear();
     }
+    
+    // Reset keyboard state
+    for (int i = 0; i < 128; ++i) {
+        Win->KeyPress[i] = false;
+        Win->KeyColor[i] = 0;
+    }
+    
+    // Reset playback flags
+    playback_ended = false;
+    is_paused = false;
     
     // Parse new MIDI file
     if (!MIDI.start_parse(midi_path.c_str())) {
@@ -340,10 +351,13 @@ void loadMidiFile(const std::string& midi_path) {
     
     // Reset playback variables
     Tplay = 0.0;
-    is_paused = false;
     
     // Update current midi path
     parsed_config.last_midi_path = midi_path;
+    
+    // Make sure MIDI visualization state is properly initialized
+    MIDI.list_seek(0);
+    MIDI.update_to(Tscr); // Update for initial screen worth of notes
 }
 
 // Function to handle seeking
@@ -362,17 +376,21 @@ void seek_playback(double seconds) {
     // Update our playback time
     Tplay = BASS_ChannelBytes2Seconds(Stm, new_pos);
     
-    // When seeking backwards, reload the note data
-    if (seconds < 0) {
-        // Clear the note list
-        for (int i = 0; i < 128; ++i) {
-            MIDI.L[i].clear();
-        }
-        
-        // Seek the list to the new position and update
-        MIDI.list_seek(Tplay);
-        MIDI.update_to(Tplay + Tscr);
+    // If we were at the end and now seeking back, resume playback
+    if (playback_ended) {
+        playback_ended = false;
+        BASS_ChannelPlay(Stm, FALSE);
+        is_paused = false;
     }
+    
+    // Clear the note list and reload it
+    for (int i = 0; i < 128; ++i) {
+        MIDI.L[i].clear();
+    }
+    
+    // Seek the list to the new position and update
+    MIDI.list_seek(Tplay);
+    MIDI.update_to(Tplay + Tscr);
 }
 
 // Function to toggle pause/play
@@ -688,27 +706,75 @@ int SDL_main(int ac, char **av)
     // 0 note speed results in invisible notes and extreme lag
     
     // updated tplay method
-	while (BASS_ChannelIsActive(Stm) != BASS_ACTIVE_STOPPED)
+	while (true) // Keep running regardless of playback state
 	{
-	    _WinH = Win->WinH - Win->WinW * 80 / 1000; Tscr = (double)_WinH / live_note_speed; // On desktop it seems to cause frame shifting or icomplete frame rendering
+		// Check if playback just ended (and we need to handle that)
+		if (!playback_ended && BASS_ChannelIsActive(Stm) == BASS_ACTIVE_STOPPED) {
+			playback_ended = true;
+			is_paused = true; // Just mark as paused when it ends
+			// Save the position at the end
+			saved_position = BASS_ChannelGetPosition(Stm, BASS_POS_BYTE);
+		}
+		
+		_WinH = Win->WinH - Win->WinW * 80 / 1000; Tscr = (double)_WinH / live_note_speed;
+		
+		// Always update MIDI notes regardless of playback state
 		MIDI.update_to(Tplay + Tscr);
 		MIDI.remove_to(Tplay);
+		
 		Win->canvas_clear();
+		
 		while (SDL_PollEvent(&Evt)) 
 		{
 			ImGui_ImplSDL3_ProcessEvent(&Evt);
 			if (Evt.type == SDL_EVENT_QUIT)
-				break;
+				NVi::Quit();
 				
 			// Add keyboard controls for playback
 			if (Evt.type == SDL_EVENT_KEY_DOWN) 
 			{
 				switch (Evt.key.key) {
 					case SDLK_SPACE:
-						toggle_pause();
+						if (playback_ended) {
+							// If at the end and we press space, restart from beginning
+							BASS_ChannelSetPosition(Stm, 0, BASS_POS_BYTE);
+							BASS_ChannelPlay(Stm, FALSE);
+							Tplay = 0.0;
+							playback_ended = false;
+							is_paused = false;
+							
+							// Reset visualization state
+							for (int i = 0; i < 128; ++i) {
+								MIDI.L[i].clear();
+							}
+							MIDI.list_seek(0);
+						} else {
+							toggle_pause();
+						}
 						break;
 					case SDLK_LEFT:
-						seek_playback(-SEEK_AMOUNT);
+						if (playback_ended) {
+							// If at the end and trying to seek back, restart playback from desired position
+							double new_time = Tplay + (-SEEK_AMOUNT);
+							if (new_time < 0) new_time = 0;
+							
+							QWORD new_pos = BASS_ChannelSeconds2Bytes(Stm, new_time);
+							BASS_ChannelSetPosition(Stm, new_pos, BASS_POS_BYTE);
+							BASS_ChannelPlay(Stm, FALSE);
+							
+							// Reset visualization properly
+							for (int i = 0; i < 128; ++i) {
+								MIDI.L[i].clear();
+							}
+							
+							// Update time and reset flags
+							Tplay = new_time;
+							MIDI.list_seek(Tplay);
+							playback_ended = false;
+							is_paused = false;
+						} else {
+							seek_playback(-SEEK_AMOUNT);
+						}
 						break;
 					case SDLK_RIGHT:
 						seek_playback(SEEK_AMOUNT);
@@ -720,24 +786,23 @@ int SDL_main(int ac, char **av)
 			}
 		}
 		
-		//pps = live_note_speed;
-		
 		SDL_SetRenderDrawColor(Win->Ren, liveColor.r, liveColor.g, liveColor.b, liveColor.a);
 		
-		for(int i=0;i!=128;++i)
+		// Always draw notes
+		for(int i = 0; i != 128; ++i)
 		{
-	        for (const NVnote &n : MIDI.L[KeyMap[i]])
-	        {
+			for (const NVnote &n : MIDI.L[KeyMap[i]])
+			{
 				DrawNote(i, n, live_note_speed);
-	        }
+			}
 		}
 		
 		Win->DrawKeyBoard();
 		NVGui::Run(Win->Ren);
 		SDL_RenderPresent(Win->Ren);
 		
-		// Only update Tplay if not paused
-		if (!is_paused) {
+		// Only update Tplay if actively playing and not at the end
+		if (!is_paused && !playback_ended) {
 			Tplay = BASS_ChannelBytes2Seconds(Stm, BASS_ChannelGetPosition(Stm, BASS_POS_BYTE));
 		}
 		
