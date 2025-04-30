@@ -6,8 +6,11 @@
 #include "Config_Utils.hxx"
 #include "Nlist.hxx"
 
-// Add these declarations for the playback control
-// Add to Gui.hxx or an appropriate header
+
+// Add to existing extern declarations
+extern void reloadSoundfonts();
+extern std::vector<std::string> checked_soundfonts;
+extern void updateBassVoiceCount(int voiceCount);
 extern void loadMidiFile(const std::string& midi_path);
 extern bool is_paused;
 extern const double SEEK_AMOUNT; // Add this line

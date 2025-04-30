@@ -1,5 +1,4 @@
 
-
 #include <iostream>
 #include <string>
 
@@ -261,6 +260,8 @@ void RenderSoundfontList(std::vector<SoundfontItem>& items, std::string find_ite
 {
     ImGui::BeginChild("ListRegion", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar);
     
+    bool soundfont_changed = false;
+    
     for (int i = 0; i < items.size(); ++i) 
     {
         std::string filename = FilenameOnly(items[i].label);
@@ -268,12 +269,27 @@ void RenderSoundfontList(std::vector<SoundfontItem>& items, std::string find_ite
         // Filter check
         if (!find_item.empty() && filename.find(find_item) == std::string::npos)
             continue;
+        
+        // Store previous checkbox state
+        bool previous_state = items[i].checked;
     
         // Unique ID to avoid conflicts
         ImGui::Checkbox((filename + "##" + std::to_string(i)).c_str(), &items[i].checked);
+        
+        // Check if state changed
+        if (previous_state != items[i].checked) {
+            soundfont_changed = true;
+        }
     }
     
     ImGui::EndChild();
+    
+    // If any soundfont selection changed, update the checked_soundfonts list
+    // and reload soundfonts immediately
+    if (soundfont_changed) {
+        checked_soundfonts = NVGui::GetCheckedSoundfonts(items);
+        reloadSoundfonts();
+    }
 }
 
 std::vector<std::string> NVGui::GetCheckedSoundfonts(const std::vector<SoundfontItem>& items)
@@ -460,71 +476,94 @@ void NVGui::Run(SDL_Renderer *r)
                         ImGui::EndTabItem();
                     }
                     
-                    if (ImGui::BeginTabItem("Soundfonts"))
-                    {
-                        ImGui::SetNextItemWidth(300);
-                        ImGui::InputText("##E", sf_search, 128);
-                        
-                        sf_search_text = sf_search;
-                        
-                        // Draw placeholder text if empty and not focused
-                        if (strlen(midi_search) == 0 && !ImGui::IsItemActive()) 
-                        {
-                            ImVec2 pos = ImGui::GetItemRectMin();
-                            ImVec2 text_pos = ImVec2(pos.x + ImGui::GetStyle().FramePadding.x, pos.y + ImGui::GetStyle().FramePadding.y);
-                            ImGui::GetWindowDrawList()->AddText(text_pos, ImGui::GetColorU32(ImGuiCol_TextDisabled), "Search soundfonts");
-                        }
-                        
-                        ImGui::SameLine();
-                        
-                        if(ImGui::Button("Refresh List"))
-                        {
-                            NVi::RefreshSFList();
-                        }
-                        if (ImGui::BeginItemTooltip())
-                        {
-                            ImGui::Text("Synchronize the soundfont file list with the new files created");
-                            ImGui::EndTooltip();
-                        }
-                        
-                        ImGui::SameLine();
-                        
-                        if(ImGui::Button("Save Soundfont List"))
-                        {
-                            NVConf::CreateSoundfontList(live_soundfont_list);
-                        }
-                        if (ImGui::BeginItemTooltip())
-                        {
-                            ImGui::Text("Save the modified soundfont list");
-                            ImGui::EndTooltip();
-                        }
-                        RenderSoundfontList(live_soundfont_list, sf_search_text);
-                            
-                        ImGui::EndTabItem();
-                    }
+					if (ImGui::BeginTabItem("Soundfonts"))
+					{
+						ImGui::SetNextItemWidth(300);
+						ImGui::InputText("##E", sf_search, 128);
+						
+						sf_search_text = sf_search;
+						
+						// Draw placeholder text if empty and not focused
+						if (strlen(sf_search) == 0 && !ImGui::IsItemActive()) 
+						{
+							ImVec2 pos = ImGui::GetItemRectMin();
+							ImVec2 text_pos = ImVec2(pos.x + ImGui::GetStyle().FramePadding.x, pos.y + ImGui::GetStyle().FramePadding.y);
+							ImGui::GetWindowDrawList()->AddText(text_pos, ImGui::GetColorU32(ImGuiCol_TextDisabled), "Search soundfonts");
+						}
+						
+						ImGui::SameLine();
+						
+						if(ImGui::Button("Refresh List"))
+						{
+							NVi::RefreshSFList();
+						}
+						if (ImGui::BeginItemTooltip())
+						{
+							ImGui::Text("Synchronize the soundfont file list with the new files created");
+							ImGui::EndTooltip();
+						}
+						
+						ImGui::SameLine();
+						
+						if(ImGui::Button("Save Soundfont List"))
+						{
+							NVConf::CreateSoundfontList(live_soundfont_list);
+						}
+						if (ImGui::BeginItemTooltip())
+						{
+							ImGui::Text("Save the modified soundfont list (changes are applied immediately)");
+							ImGui::EndTooltip();
+						}
+						
+						// Modified to track changes and apply them immediately
+						RenderSoundfontList(live_soundfont_list, sf_search_text);
+							
+						ImGui::EndTabItem();
+					}
                     
-                    if (ImGui::BeginTabItem("Settings"))
-                    {
-                        ImGui::Text("Settings marked with * require restart of NV PFA\n\n");
-                        ImGui::SliderInt("Note Speed", &live_note_speed, 100, 20000);
-                        ImGui::Text("Background Color");
-                        clear_color = ImVec4(live_conf.bg_R / 255.0f, live_conf.bg_G / 255.0f, live_conf.bg_B / 255.0f, live_conf.bg_A / 255.0f);
-                        ImGui::ColorEdit3("##H", (float*)&clear_color);
-                        if (ImGui::BeginItemTooltip())
-                        {
-                            ImGui::Text("Change the background color of the main scene");
-                            ImGui::EndTooltip();
-                        }
-                        liveColor = NVi::Frgba2Irgba(clear_color);
-                        ImGui::Text("\n");
-                        ImGui::Text("Voice Count *");
-                        static int i0 = 123;
-                        ImGui::InputInt("##LOL", &live_conf.bass_voice_count);
-                        if (ImGui::BeginItemTooltip())
-                        {
-                            ImGui::Text("Set how many notes can be played on specific instruments");
-                            ImGui::EndTooltip();
-                        }
+					if (ImGui::BeginTabItem("Settings"))
+					{
+						ImGui::Text("Settings marked with * require restart of NV PFA\n\n");
+						
+						// Note speed slider (unchanged)
+						ImGui::SliderInt("Note Speed", &live_note_speed, 100, 20000);
+						
+						// Background color (unchanged)
+						ImGui::Text("Background Color");
+						clear_color = ImVec4(live_conf.bg_R / 255.0f, live_conf.bg_G / 255.0f, live_conf.bg_B / 255.0f, live_conf.bg_A / 255.0f);
+						ImGui::ColorEdit3("##H", (float*)&clear_color);
+						if (ImGui::BeginItemTooltip())
+						{
+							ImGui::Text("Change the background color of the main scene");
+							ImGui::EndTooltip();
+						}
+						liveColor = NVi::Frgba2Irgba(clear_color);
+						ImGui::Text("\n");
+						
+						// Voice Count - MODIFIED to apply changes in real-time
+						ImGui::Text("Voice Count");  // Removed the asterisk since it doesn't require restart anymore
+						
+						// Store the previous value to detect changes
+						static int prev_voice_count = live_conf.bass_voice_count;
+						
+						// Input widget for voice count
+						if (ImGui::InputInt("##LOL", &live_conf.bass_voice_count)) {
+							// Ensure value is within reasonable limits
+							if (live_conf.bass_voice_count < 1) live_conf.bass_voice_count = 1;
+							if (live_conf.bass_voice_count > 5000) live_conf.bass_voice_count = 5000;
+							
+							// Apply the change in real-time if the value has changed
+							if (prev_voice_count != live_conf.bass_voice_count) {
+								updateBassVoiceCount(live_conf.bass_voice_count);
+								prev_voice_count = live_conf.bass_voice_count;
+							}
+						}
+						
+						if (ImGui::BeginItemTooltip())
+						{
+							ImGui::Text("Set how many notes can be played on specific instruments (changes apply immediately)");
+							ImGui::EndTooltip();
+						}
                         
                         // Keeping the background color updated
                         live_conf.bg_R = liveColor.r;

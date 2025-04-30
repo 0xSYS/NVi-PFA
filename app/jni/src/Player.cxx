@@ -190,6 +190,93 @@ bool is_paused = false;
 QWORD saved_position = 0; // For storing position when paused
 const double SEEK_AMOUNT = 3.0; // 3 seconds for seeking
 
+void reloadSoundfonts() {
+    if (!Stm || !BASS_ChannelIsActive(Stm)) {
+        return; // No active stream to modify
+    }
+    
+    // Save current playback position and state
+    QWORD position = BASS_ChannelGetPosition(Stm, BASS_POS_BYTE);
+    bool was_playing = !is_paused;
+    
+    // Get current midi file path
+    std::string current_midi = parsed_config.last_midi_path;
+    
+    // Stop and free the current stream
+    BASS_ChannelStop(Stm);
+    BASS_StreamFree(Stm);
+    
+    // Create new stream with the same MIDI file
+    Stm = BASS_StreamCreateFile(0, current_midi.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+    BASS_ChannelSetDSP(Stm, &dsp_limiter, 0, 0);
+    
+    // Load the selected soundfonts
+    if (checked_soundfonts.size() == 0) {
+        #ifndef NON_ANDROID
+        std::string default_sf_path = NVFileUtils::GetFilePathA("piano_maganda.sf2", "rb");
+        HSOUNDFONT Sf = BASS_MIDI_FontInit(default_sf_path.c_str(), 0);
+        #else
+        HSOUNDFONT Sf = BASS_MIDI_FontInit(DEFAULT_SOUNDFONT, 0);
+        #endif
+        
+        BASS_MIDI_FONT FontSet{Sf, -1, 0};
+        BASS_MIDI_FontSetVolume(Sf, 0.15);
+        BASS_MIDI_StreamSetFonts(Stm, &FontSet, 1);
+    } 
+    else {
+        // Load all checked soundfonts
+        std::vector<BASS_MIDI_FONT> fontSet;
+        fontSet.reserve(checked_soundfonts.size());
+        
+        for (int i = 0; i < checked_soundfonts.size(); i++) {
+            HSOUNDFONT Sf = BASS_MIDI_FontInit(checked_soundfonts[i].c_str(), 0);
+            if (Sf) {
+                BASS_MIDI_FontSetVolume(Sf, 0.15);
+                BASS_MIDI_FONT font = {Sf, -1, 0};
+                fontSet.push_back(font);
+            }
+        }
+        
+        if (!fontSet.empty()) {
+            BASS_MIDI_StreamSetFonts(Stm, fontSet.data(), fontSet.size());
+        }
+    }
+    
+    // Restore other settings
+    BASS_ChannelSetAttribute(Stm, BASS_ATTRIB_MIDI_VOICES, parsed_config.bass_voice_count);
+    BASS_MIDI_StreamSetFilter(Stm, 0, reinterpret_cast<BOOL (*)(HSTREAM, int, BASS_MIDI_EVENT *, BOOL, void *)>(filter), nullptr);
+    
+    // Restore position
+    BASS_ChannelSetPosition(Stm, position, BASS_POS_BYTE);
+    
+    // Resume playback if it was playing before
+    if (was_playing) {
+        BASS_ChannelPlay(Stm, FALSE);
+        is_paused = false;
+    } else {
+        is_paused = true;
+    }
+    
+    // Update our playback time
+    Tplay = BASS_ChannelBytes2Seconds(Stm, position);
+    
+    // Log the change
+    NVi::info("Player", "Soundfonts reloaded");
+}
+
+void updateBassVoiceCount(int voiceCount) {
+    if (Stm && BASS_ChannelIsActive(Stm)) {
+        // Update the voice count for the current stream
+        BASS_ChannelSetAttribute(Stm, BASS_ATTRIB_MIDI_VOICES, voiceCount);
+        
+        // Update the configuration
+        parsed_config.bass_voice_count = voiceCount;
+        
+        // Optional: Log the change
+        NVi::info("Player", "Voice count updated to %d", voiceCount);
+    }
+}
+
 void loadMidiFile(const std::string& midi_path) {
     // Stop current playback and free resources
     if (Stm) {
@@ -216,23 +303,34 @@ void loadMidiFile(const std::string& midi_path) {
     BASS_ChannelSetDSP(Stm, &dsp_limiter, 0, 0);
     
     // Setup soundfonts
-    HSOUNDFONT Sf;
     if (checked_soundfonts.size() == 0) {
         #ifndef NON_ANDROID
         std::string default_sf_path = NVFileUtils::GetFilePathA("piano_maganda.sf2", "rb");
-        Sf = BASS_MIDI_FontInit(default_sf_path.c_str(), 0);
+        HSOUNDFONT Sf = BASS_MIDI_FontInit(default_sf_path.c_str(), 0);
         #else
-        Sf = BASS_MIDI_FontInit(DEFAULT_SOUNDFONT, 0);
+        HSOUNDFONT Sf = BASS_MIDI_FontInit(DEFAULT_SOUNDFONT, 0);
         #endif
+        BASS_MIDI_FONT FontSet{Sf, -1, 0};
+        BASS_MIDI_FontSetVolume(Sf, 0.15);
+        BASS_MIDI_StreamSetFonts(Stm, &FontSet, 1);
     } else {
+        // Load all checked soundfonts
+        std::vector<BASS_MIDI_FONT> fontSet;
+        fontSet.reserve(checked_soundfonts.size());
+        
         for (int i = 0; i < checked_soundfonts.size(); i++) {
-            Sf = BASS_MIDI_FontInit(checked_soundfonts[i].c_str(), 0);
+            HSOUNDFONT Sf = BASS_MIDI_FontInit(checked_soundfonts[i].c_str(), 0);
+            if (Sf) {
+                BASS_MIDI_FontSetVolume(Sf, 0.15);
+                BASS_MIDI_FONT font = {Sf, -1, 0};
+                fontSet.push_back(font);
+            }
+        }
+        
+        if (!fontSet.empty()) {
+            BASS_MIDI_StreamSetFonts(Stm, fontSet.data(), fontSet.size());
         }
     }
-    
-    BASS_MIDI_FONT FontSet{Sf, -1, 0};
-    BASS_MIDI_FontSetVolume(Sf, 0.15);
-    BASS_MIDI_StreamSetFonts(Stm, &FontSet, 1);
     
     BASS_ChannelSetAttribute(Stm, BASS_ATTRIB_MIDI_VOICES, parsed_config.bass_voice_count);
     BASS_MIDI_StreamSetFilter(Stm, 0, reinterpret_cast<BOOL (*)(HSTREAM, int, BASS_MIDI_EVENT *, BOOL, void *)>(filter), nullptr);
