@@ -24,6 +24,7 @@ This clone is powered by Qishipai's [midi processing library](https://github.com
 - [X] Better UI layout on mobile
 - [ ] File information support
 - [ ] Custom note color array support
+- [ ] Loading color arrays from images
 - [ ] Veritcal lines on the background
 - [ ] Background image support
 - [ ] Setting custom key ranges

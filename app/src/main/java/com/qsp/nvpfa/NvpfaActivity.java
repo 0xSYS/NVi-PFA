@@ -36,10 +36,10 @@ public class NvpfaActivity extends SDLActivity {
             
         getFilesDir();
 
-        // 检查是否已经拥有权限
+        // Check permissions
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            // 如果没有权限，申请权限
+            // If no permission, request for file IO permissions
             ActivityCompat.requestPermissions(this,
                 new String[]{
                     Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -47,15 +47,15 @@ public class NvpfaActivity extends SDLActivity {
                 },
                 REQUEST_STORAGE_PERMISSION);
         } else {
-            // 检查是否拥有 MANAGE_EXTERNAL_STORAGE 权限
+            // Check if you have the MANAGE_EXTERNAL_STORAGE privilege.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (!Environment.isExternalStorageManager()) {
-                    // 如果没有该权限，引导用户手动开启
+                    // If this permission is not available, direct the user to turn it on manually
                     Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
                     intent.setData(Uri.parse("package:" + getPackageName()));
                     startActivityForResult(intent, REQUEST_MANAGE_EXTERNAL_STORAGE);
                 } else {
-                    // 如果已经拥有所有权限，直接初始化应用
+                    // If you already have all permissions, initialize the application directly
                     initializeApp();
                 }
             }
@@ -125,20 +125,20 @@ public class NvpfaActivity extends SDLActivity {
             if (grantResults.length > 0 &&
                 grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                 grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                // 权限申请成功，检查 MANAGE_EXTERNAL_STORAGE 权限
+                // Permission applied successfully, check MANAGE_EXTERNAL_STORAGE permission.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     if (!Environment.isExternalStorageManager()) {
-                        // 如果没有该权限，引导用户手动开启
+                        // If this permission is not available, direct the user to turn it on manually
                         Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
                         intent.setData(Uri.parse("package:" + getPackageName()));
                         startActivityForResult(intent, REQUEST_MANAGE_EXTERNAL_STORAGE);
                     } else {
-                        // 如果已经拥有所有权限，直接初始化应用
+                        // If you already have all permissions, initialize the application directly
                         initializeApp();
                     }
                 }
             } else {
-                // 权限申请失败，提示用户
+                // The permission request fails, prompting the user to
                 System.out.println("Storage permissions were not granted.");
             }
         }
@@ -149,17 +149,17 @@ public class NvpfaActivity extends SDLActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_MANAGE_EXTERNAL_STORAGE) {
             if (Environment.isExternalStorageManager()) {
-                // 用户已经手动开启了 MANAGE_EXTERNAL_STORAGE 权限
+                // The user has manually enabled the MANAGE_EXTERNAL_STORAGE privilege.
                 initializeApp();
             } else {
-                // 用户拒绝了权限，提示用户
+                // The user has denied permission, prompting the user to
                 System.out.println("MANAGE_EXTERNAL_STORAGE permission was not granted.");
             }
         }
     }
 
     private void initializeApp() {
-        // 在这里执行应用的初始化逻辑
+        // Perform the application's initialization logic here
         System.out.println("NvpfaActivity initialized with storage permissions.");
     }
 }
