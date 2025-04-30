@@ -395,6 +395,7 @@ void NVGui::Run(SDL_Renderer *r)
 							if (!live_midi_list.empty() && selIndex >= 0 && selIndex < live_midi_list.size())
 							{
 								loadMidiFile(live_midi_list[selIndex]);
+								NVConf::WriteConfig(live_conf); // Also save the last selected midi file bc why not
 							}
 							else
 							{
