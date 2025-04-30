@@ -45,6 +45,7 @@ std::vector<BASS_MIDI_FONT> font_list;
 QWORD saved_position = 0; // For storing position when paused
 const double SEEK_AMOUNT = 3.0; // 3 seconds for seeking
 bool is_paused = false;
+bool playback_ended = false;
 
 unsigned char events[6144];
 int eventCount = 0;
@@ -63,7 +64,168 @@ Canvas cv;
 
 
 
+void reloadSoundfonts() {
+    if (!Stm || !BASS_ChannelIsActive(Stm)) {
+        return; // No active stream to modify
+    }
+    
+    // Save current playback position and state
+    QWORD position = BASS_ChannelGetPosition(Stm, BASS_POS_BYTE);
+    bool was_playing = !is_paused;
+    
+    // Get current midi file path
+    std::string current_midi = parsed_config.last_midi_path;
+    
+    // Stop and free the current stream
+    BASS_ChannelStop(Stm);
+    BASS_StreamFree(Stm);
+    
+    // Create new stream with the same MIDI file
+    Stm = BASS_StreamCreateFile(0, current_midi.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+    BASS_ChannelSetDSP(Stm, &dsp_limiter, 0, 0);
+    
+    // Load the selected soundfonts
+    if (checked_soundfonts.size() == 0) {
+#ifndef NON_ANDROID
+        std::string default_sf_path = NVFileUtils::GetFilePathA("piano_maganda.sf2", "rb");
+        HSOUNDFONT Sf = BASS_MIDI_FontInit(default_sf_path.c_str(), 0);
+#else
+        HSOUNDFONT Sf = BASS_MIDI_FontInit(DEFAULT_SOUNDFONT, 0);
+#endif
+        
+        BASS_MIDI_FONT FontSet{Sf, -1, 0};
+        BASS_MIDI_FontSetVolume(Sf, 0.15);
+        BASS_MIDI_StreamSetFonts(Stm, &FontSet, 1);
+    } 
+    else {
+        // Load all checked soundfonts
+        std::vector<BASS_MIDI_FONT> fontSet;
+        fontSet.reserve(checked_soundfonts.size());
+        
+        for (int i = 0; i < checked_soundfonts.size(); i++) {
+            HSOUNDFONT Sf = BASS_MIDI_FontInit(checked_soundfonts[i].c_str(), 0);
+            if (Sf) {
+                BASS_MIDI_FontSetVolume(Sf, 0.15);
+                BASS_MIDI_FONT font = {Sf, -1, 0};
+                fontSet.push_back(font);
+            }
+        }
+        
+        if (!fontSet.empty()) {
+            BASS_MIDI_StreamSetFonts(Stm, fontSet.data(), fontSet.size());
+        }
+    }
+    
+    // Restore other settings
+    BASS_ChannelSetAttribute(Stm, BASS_ATTRIB_MIDI_VOICES, parsed_config.bass_voice_count);
+    BASS_MIDI_StreamSetFilter(Stm, 0, reinterpret_cast<BOOL (*)(HSTREAM, int, BASS_MIDI_EVENT *, BOOL, void *)>(filter), nullptr);
+    
+    // Restore position
+    BASS_ChannelSetPosition(Stm, position, BASS_POS_BYTE);
+    
+    // Resume playback if it was playing before
+    if (was_playing) {
+        BASS_ChannelPlay(Stm, FALSE);
+        is_paused = false;
+    } else {
+        is_paused = true;
+    }
+    
+    // Update our playback time
+    Tplay = BASS_ChannelBytes2Seconds(Stm, position);
+    
+    // Log the change
+    NVi::info("Player", "Soundfonts reloaded\n");
+}
 
+
+void updateBassVoiceCount(int voiceCount) {
+    if (Stm && BASS_ChannelIsActive(Stm)) {
+        // Update the voice count for the current stream
+        BASS_ChannelSetAttribute(Stm, BASS_ATTRIB_MIDI_VOICES, voiceCount);
+        
+        // Update the configuration
+        parsed_config.bass_voice_count = voiceCount;
+        
+        // Optional: Log the change
+        NVi::info("Player", "Voice count updated to %d\n", voiceCount);
+    }
+}
+
+
+void loadMidiFile(const std::string& midi_path) {
+    // Stop current playback and free resources
+    if (Stm) {
+        BASS_ChannelStop(Stm);
+        BASS_StreamFree(Stm);
+    }
+    
+    // Reset note lists
+    for (int i = 0; i < 128; ++i) {
+        MIDI.L[i].clear();
+    }
+    
+    // Parse new MIDI file
+    if (!MIDI.start_parse(midi_path.c_str())) {
+        Canvas C;
+        std::ostringstream temp_msg;
+        temp_msg << "Failed to load '" << midi_path << "'";
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", temp_msg.str().c_str(), nullptr);
+        return;
+    }
+    
+    // Create new stream
+    Stm = BASS_StreamCreateFile(0, midi_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+    BASS_ChannelSetDSP(Stm, &dsp_limiter, 0, 0);
+    
+    // Setup soundfonts
+    if (checked_soundfonts.size() == 0) {
+#ifndef NON_ANDROID
+        std::string default_sf_path = NVFileUtils::GetFilePathA("piano_maganda.sf2", "rb");
+        HSOUNDFONT Sf = BASS_MIDI_FontInit(default_sf_path.c_str(), 0);
+#else
+        HSOUNDFONT Sf = BASS_MIDI_FontInit(DEFAULT_SOUNDFONT, 0);
+#endif
+        BASS_MIDI_FONT FontSet{Sf, -1, 0};
+        BASS_MIDI_FontSetVolume(Sf, 0.15);
+        BASS_MIDI_StreamSetFonts(Stm, &FontSet, 1);
+    } 
+    else 
+    {
+        // Load all checked soundfonts
+        std::vector<BASS_MIDI_FONT> fontSet;
+        fontSet.reserve(checked_soundfonts.size());
+        
+        for (int i = 0; i < checked_soundfonts.size(); i++) 
+        {
+            HSOUNDFONT Sf = BASS_MIDI_FontInit(checked_soundfonts[i].c_str(), 0);
+            if (Sf) 
+            {
+                BASS_MIDI_FontSetVolume(Sf, 0.15);
+                BASS_MIDI_FONT font = {Sf, -1, 0};
+                fontSet.push_back(font);
+            }
+        }
+        
+        if (!fontSet.empty()) 
+        {
+            BASS_MIDI_StreamSetFonts(Stm, fontSet.data(), fontSet.size());
+        }
+    }
+    
+    BASS_ChannelSetAttribute(Stm, BASS_ATTRIB_MIDI_VOICES, parsed_config.bass_voice_count);
+    BASS_MIDI_StreamSetFilter(Stm, 0, reinterpret_cast<BOOL (*)(HSTREAM, int, BASS_MIDI_EVENT *, BOOL, void *)>(filter), nullptr);
+    
+    // Start playback
+    BASS_ChannelPlay(Stm, 1);
+    
+    // Reset playback variables
+    Tplay = 0.0;
+    is_paused = false;
+    
+    // Update current midi path
+    parsed_config.last_midi_path = midi_path;
+}
 
 
 // Function to handle seeking
@@ -379,28 +541,84 @@ int SDL_main(int ac, char **av)
     /*
     App Main loop
     */
-	while (BASS_ChannelIsActive(Stm) != BASS_ACTIVE_STOPPED)
+    while (true) // Keep running regardless of playback state
 	{
-	    _WinH = CvWin->WinH - CvWin->WinW * 80 / 1000; Tscr = (double)_WinH / live_note_speed; // On desktop it seems to cause frame shifting or icomplete frame rendering
+		// Check if playback just ended (and we need to handle that)
+		if (!playback_ended && BASS_ChannelIsActive(Stm) == BASS_ACTIVE_STOPPED) {
+			playback_ended = true;
+			is_paused = true; // Just mark as paused when it ends
+			// Save the position at the end
+			saved_position = BASS_ChannelGetPosition(Stm, BASS_POS_BYTE);
+		}
+		
+		_WinH = CvWin->WinH - CvWin->WinW * 80 / 1000; Tscr = (double)_WinH / live_note_speed;
+		
+		// Always update MIDI notes regardless of playback state
 		MIDI.update_to(Tplay + Tscr);
 		MIDI.remove_to(Tplay);
+		
 		CvWin->canvas_clear();
+		
 		while (SDL_PollEvent(&Evt)) 
 		{
 			ImGui_ImplSDL3_ProcessEvent(&Evt);
 			if (Evt.type == SDL_EVENT_QUIT)
-				break;
-			
-#ifdef NON_ANDROID	
-			// Allow keyboard events only on desktop
+				NVi::Quit();
+				
+			// Add keyboard controls for playback
 			if (Evt.type == SDL_EVENT_KEY_DOWN) 
 			{
-				switch (Evt.key.key) {
+				switch (Evt.key.key) 
+				{
 					case SDLK_SPACE:
-						toggle_pause();
+						if (playback_ended) 
+						{
+							// If at the end and we press space, restart from beginning
+							BASS_ChannelSetPosition(Stm, 0, BASS_POS_BYTE);
+							BASS_ChannelPlay(Stm, FALSE);
+							Tplay = 0.0;
+							playback_ended = false;
+							is_paused = false;
+							
+							// Reset visualization state
+							for (int i = 0; i < 128; ++i) 
+							{
+								MIDI.L[i].clear();
+							}
+							MIDI.list_seek(0);
+						} 
+						else 
+						{
+							toggle_pause();
+						}
 						break;
 					case SDLK_LEFT:
-						seek_playback(-SEEK_AMOUNT);
+						if (playback_ended) 
+						{
+							// If at the end and trying to seek back, restart playback from desired position
+							double new_time = Tplay + (-SEEK_AMOUNT);
+							if (new_time < 0) new_time = 0;
+							
+							QWORD new_pos = BASS_ChannelSeconds2Bytes(Stm, new_time);
+							BASS_ChannelSetPosition(Stm, new_pos, BASS_POS_BYTE);
+							BASS_ChannelPlay(Stm, FALSE);
+							
+							// Reset visualization properly
+							for (int i = 0; i < 128; ++i) 
+							{
+								MIDI.L[i].clear();
+							}
+							
+							// Update time and reset flags
+							Tplay = new_time;
+							MIDI.list_seek(Tplay);
+							playback_ended = false;
+							is_paused = false;
+						} 
+						else 
+						{
+							seek_playback(-SEEK_AMOUNT);
+						}
 						break;
 					case SDLK_RIGHT:
 						seek_playback(SEEK_AMOUNT);
@@ -410,26 +628,25 @@ int SDL_main(int ac, char **av)
 						break;
 				}
 			}
-#endif
 		}
-		
 		
 		SDL_SetRenderDrawColor(CvWin->Ren, liveColor.r, liveColor.g, liveColor.b, liveColor.a);
 		
-		for(int i=0;i!=128;++i)
+		// Always draw notes
+		for(int i = 0; i != 128; ++i)
 		{
-	        for (const NVnote &n : MIDI.L[KeyMap[i]])
-	        {
+			for (const NVnote &n : MIDI.L[KeyMap[i]])
+			{
 				CvWin->DrawNote(i, n, live_note_speed);
-	        }
+			}
 		}
 		
 		CvWin->DrawKeyBoard();
 		NVGui::Run(CvWin->Ren);
 		SDL_RenderPresent(CvWin->Ren);
 		
-		// Only update Tplay if not paused
-		if (!is_paused) {
+		// Only update Tplay if actively playing and not at the end
+		if (!is_paused && !playback_ended) {
 			Tplay = BASS_ChannelBytes2Seconds(Stm, BASS_ChannelGetPosition(Stm, BASS_POS_BYTE));
 		}
 		

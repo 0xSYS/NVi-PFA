@@ -32,16 +32,6 @@ void android_log(int priority, const char * prefix, const char *fmt, va_list arg
     // Send to Android log
     __android_log_print(priority, APP_NAME, "%s", final_buf);
 }
-
-void log_warn_va(const char *fmt, va_list args)
-{
-    __android_log_vprint(ANDROID_LOG_WARN, APP_NAME, fmt, args);
-}
-
-void log_err_va(const char *fmt, va_list args)
-{
-    __android_log_vprint(ANDROID_LOG_ERROR, APP_NAME, fmt, args);
-}
 #endif
 
 

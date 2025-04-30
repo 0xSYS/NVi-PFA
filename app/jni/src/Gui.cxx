@@ -389,18 +389,24 @@ void NVGui::Run(SDL_Renderer *r)
                         
                         ImGui::SameLine();
                         
-                        if (ImGui::Button("Save to config"))
-                        {
-                            live_conf.last_midi_path = live_midi_list[selIndex];
-                            NVConf::WriteConfig(live_conf);
-                            //std::cout << "Loading mede feile\n";
-                        }
-                            
-                        if (ImGui::BeginItemTooltip())
-                        {
-                            ImGui::Text("Saves and play the selected midi on the next run");
-                            ImGui::EndTooltip();
-                        }
+                        if (ImGui::Button("Load Selected"))
+						{
+							// Check if the list is not empty and selIndex is valid before loading
+							if (!live_midi_list.empty() && selIndex >= 0 && selIndex < live_midi_list.size())
+							{
+								loadMidiFile(live_midi_list[selIndex]);
+							}
+							else
+							{
+								printf("No MIDI file selected or MIDI list is empty\n");
+							}
+						}
+						if (ImGui::BeginItemTooltip())
+						{
+							ImGui::Text("Load and play the selected MIDI file");
+							ImGui::EndTooltip();
+						}
+
                         
                         //ImGui::SameLine();
                         
@@ -409,11 +415,11 @@ void NVGui::Run(SDL_Renderer *r)
                         //    //NVi::CloseMidiPlayback();
                         //    std::cout << "Close midi playback\n";
                         
-                        if (ImGui::BeginItemTooltip())
-                        {
-                            ImGui::Text("Close and reset midi playback");
-                            ImGui::EndTooltip();
-                        }
+                        //if (ImGui::BeginItemTooltip())
+                        //{
+                        //    ImGui::Text("Close and reset midi playback");
+                        //    ImGui::EndTooltip();
+                        //}
                         
                         RenderMidiList(live_midi_list, selIndex, midi_search_text);
                         //std::cout << "Selection index: " << live_midi_list[selIndex] << "\n";
@@ -477,14 +483,28 @@ void NVGui::Run(SDL_Renderer *r)
                         }
                         liveColor = NVi::Frgba2Irgba(clear_color);
                         ImGui::Text("\n");
-                        ImGui::Text("Voice Count *");
-                        static int i0 = 123;
-                        ImGui::InputInt("##LOL", &live_conf.bass_voice_count);
-                        if (ImGui::BeginItemTooltip())
-                        {
-                            ImGui::Text("Set how many notes can be played on specific instruments");
-                            ImGui::EndTooltip();
-                        }
+                        ImGui::Text("Voice Count");
+                        // Store the previous value to detect changes
+						static int prev_voice_count = live_conf.bass_voice_count;
+						
+						// Input widget for voice count
+						if (ImGui::InputInt("##LOL", &live_conf.bass_voice_count)) {
+							// Ensure value is within reasonable limits
+							if (live_conf.bass_voice_count < 1) live_conf.bass_voice_count = 1;
+							if (live_conf.bass_voice_count > 5000) live_conf.bass_voice_count = 5000;
+							
+							// Apply the change in real-time if the value has changed
+							if (prev_voice_count != live_conf.bass_voice_count) {
+								updateBassVoiceCount(live_conf.bass_voice_count);
+								prev_voice_count = live_conf.bass_voice_count;
+							}
+						}
+						
+						if (ImGui::BeginItemTooltip())
+						{
+							ImGui::Text("Set how many notes can be played on specific instruments (changes apply immediately)");
+							ImGui::EndTooltip();
+						}
                         
                         // Keeping the background color updated
                         live_conf.bg_R = liveColor.r;
