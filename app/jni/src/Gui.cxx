@@ -42,6 +42,7 @@ static ImVec2 lastTapPos = ImVec2(0.0f, 0.0f);
 //ImGuiIO& io = ImGui::GetIO();
 
 // Add these to your other extern declarations
+extern void loadMidiFile(const std::string& midi_path);
 extern bool is_paused;
 extern void seek_playback(double seconds);
 extern void toggle_pause();
@@ -234,26 +235,26 @@ void RenderMidiList(const std::vector<std::string>& items, int& selectedIndex, s
 {
     ImGui::BeginChild("ListRegion", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar);
     
-        for (int i = 0; i < items.size(); ++i) 
+    for (int i = 0; i < items.size(); ++i) 
+    {
+        std::string filename = FilenameOnly(items[i]);
+
+        // Filter check (case-insensitive optional)
+        if (!find_item.empty() && filename.find(find_item) == std::string::npos)
+            continue;
+
+        bool isSelected = (i == selectedIndex);
+
+        if (ImGui::Selectable((filename + "##" + std::to_string(i)).c_str(), isSelected)) 
         {
-            std::string filename = FilenameOnly(items[i]);
-    
-            // Filter check (case-insensitive optional)
-            if (!find_item.empty() && filename.find(find_item) == std::string::npos)
-                continue;
-    
-            bool isSelected = (i == selectedIndex);
-    
-            if (ImGui::Selectable((filename + "##" + std::to_string(i)).c_str(), isSelected)) 
-            {
-                selectedIndex = i;
-            }
-    
-            if (isSelected)
-                ImGui::SetItemDefaultFocus();
+            selectedIndex = i; 
         }
-    
-        ImGui::EndChild();
+
+        if (isSelected)
+            ImGui::SetItemDefaultFocus();
+    }
+
+    ImGui::EndChild();
 }
 
 void RenderSoundfontList(std::vector<SoundfontItem>& items, std::string find_item)
@@ -404,45 +405,42 @@ void NVGui::Run(SDL_Renderer *r)
                 {
                     if (ImGui::BeginTabItem("Play MIDI Files"))
                     {
-                        ImGui::SetNextItemWidth(300);
-                        ImGui::InputText("##A", midi_search, 128);
-                        
-                        midi_search_text = midi_search;
-                        
-                        // Draw placeholder text if empty and not focused
-                        if (strlen(midi_search) == 0 && !ImGui::IsItemActive()) 
-                        {
-                            ImVec2 pos = ImGui::GetItemRectMin();
-                            ImVec2 text_pos = ImVec2(pos.x + ImGui::GetStyle().FramePadding.x, pos.y + ImGui::GetStyle().FramePadding.y);
-                            ImGui::GetWindowDrawList()->AddText(text_pos, ImGui::GetColorU32(ImGuiCol_TextDisabled), "Search midis");
-                        }
-                        
-                        ImGui::SameLine();
-                        
-                        if(ImGui::Button("Refresh List"))
-                        {
-                            NVi::CreateMidiList(); // It simply overwrites to the present midi list
-                        }
-                        if (ImGui::BeginItemTooltip())
-                        {
-                            ImGui::Text("Synchronize the midi file list with the new files created");
-                            ImGui::EndTooltip();
-                        }
-                        
-                        ImGui::SameLine();
-                        
-                        if (ImGui::Button("Save to config"))
-                        {
-                            live_conf.last_midi_path = live_midi_list[selIndex];
-                            NVConf::WriteConfig(live_conf);
-                            //std::cout << "Loading mede feile\n";
-                        }
-                            
-                        if (ImGui::BeginItemTooltip())
-                        {
-                            ImGui::Text("Saves and play the selected midi on the next run");
-                            ImGui::EndTooltip();
-                        }
+						ImGui::SetNextItemWidth(300);
+						ImGui::InputText("##A", midi_search, 128);
+						midi_search_text = midi_search;
+						
+						// Draw placeholder text if empty and not focused
+						if (strlen(midi_search) == 0 && !ImGui::IsItemActive()) 
+						{
+							ImVec2 pos = ImGui::GetItemRectMin();
+							ImVec2 text_pos = ImVec2(pos.x + ImGui::GetStyle().FramePadding.x, pos.y + ImGui::GetStyle().FramePadding.y);
+							ImGui::GetWindowDrawList()->AddText(text_pos, ImGui::GetColorU32(ImGuiCol_TextDisabled), "Search midis");
+						}
+						
+						ImGui::SameLine();
+						
+						if (ImGui::Button("Load Selected"))
+						{
+							loadMidiFile(live_midi_list[selIndex]);
+						}
+						if (ImGui::BeginItemTooltip())
+						{
+							ImGui::Text("Load and play the selected MIDI file");
+							ImGui::EndTooltip();
+						}
+						ImGui::SameLine();
+						
+						if(ImGui::Button("Refresh List"))
+						{
+							NVi::CreateMidiList(); // It simply overwrites to the present midi list
+						}
+						if (ImGui::BeginItemTooltip())
+						{
+							ImGui::Text("Synchronize the midi file list with the new files created");
+							ImGui::EndTooltip();
+						}
+						
+						// Removed "Save to config" button here
                         
                         //ImGui::SameLine();
                         

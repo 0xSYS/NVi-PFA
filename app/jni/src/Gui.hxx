@@ -7,6 +7,8 @@
 #include "Nlist.hxx"
 
 // Add these declarations for the playback control
+// Add to Gui.hxx or an appropriate header
+extern void loadMidiFile(const std::string& midi_path);
 extern bool is_paused;
 extern const double SEEK_AMOUNT; // Add this line
 extern void seek_playback(double seconds);

@@ -190,6 +190,64 @@ bool is_paused = false;
 QWORD saved_position = 0; // For storing position when paused
 const double SEEK_AMOUNT = 3.0; // 3 seconds for seeking
 
+void loadMidiFile(const std::string& midi_path) {
+    // Stop current playback and free resources
+    if (Stm) {
+        BASS_ChannelStop(Stm);
+        BASS_StreamFree(Stm);
+    }
+    
+    // Reset note lists
+    for (int i = 0; i < 128; ++i) {
+        MIDI.L[i].clear();
+    }
+    
+    // Parse new MIDI file
+    if (!MIDI.start_parse(midi_path.c_str())) {
+        Canvas C;
+        std::ostringstream temp_msg;
+        temp_msg << "Failed to load '" << midi_path << "'";
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", temp_msg.str().c_str(), nullptr);
+        return;
+    }
+    
+    // Create new stream
+    Stm = BASS_StreamCreateFile(0, midi_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+    BASS_ChannelSetDSP(Stm, &dsp_limiter, 0, 0);
+    
+    // Setup soundfonts
+    HSOUNDFONT Sf;
+    if (checked_soundfonts.size() == 0) {
+        #ifndef NON_ANDROID
+        std::string default_sf_path = NVFileUtils::GetFilePathA("piano_maganda.sf2", "rb");
+        Sf = BASS_MIDI_FontInit(default_sf_path.c_str(), 0);
+        #else
+        Sf = BASS_MIDI_FontInit(DEFAULT_SOUNDFONT, 0);
+        #endif
+    } else {
+        for (int i = 0; i < checked_soundfonts.size(); i++) {
+            Sf = BASS_MIDI_FontInit(checked_soundfonts[i].c_str(), 0);
+        }
+    }
+    
+    BASS_MIDI_FONT FontSet{Sf, -1, 0};
+    BASS_MIDI_FontSetVolume(Sf, 0.15);
+    BASS_MIDI_StreamSetFonts(Stm, &FontSet, 1);
+    
+    BASS_ChannelSetAttribute(Stm, BASS_ATTRIB_MIDI_VOICES, parsed_config.bass_voice_count);
+    BASS_MIDI_StreamSetFilter(Stm, 0, reinterpret_cast<BOOL (*)(HSTREAM, int, BASS_MIDI_EVENT *, BOOL, void *)>(filter), nullptr);
+    
+    // Start playback
+    BASS_ChannelPlay(Stm, 1);
+    
+    // Reset playback variables
+    Tplay = 0.0;
+    is_paused = false;
+    
+    // Update current midi path
+    parsed_config.last_midi_path = midi_path;
+}
+
 // Function to handle seeking
 void seek_playback(double seconds) {
     QWORD current_byte_pos = BASS_ChannelGetPosition(Stm, BASS_POS_BYTE);
