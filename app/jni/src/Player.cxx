@@ -57,7 +57,7 @@ SDL_Event Evt;
 NVmidiFile M;
 NVsequencer S;
 NVi::u32_t nowtick;
-Canvas cv;
+//Canvas cv;
 
 
 
@@ -274,11 +274,12 @@ void toggle_pause() {
 
 void NVi::Quit()
 {
-    // Causes runtime errors
+    // Caused runtime errors bc the destructor was called twice
     //ImGui_ImplSDLRenderer3_Shutdown();
     //ImGui_ImplSDL3_Shutdown();
     //ImGui::DestroyContext();
-    delete CvWin;
+    //delete CvWin; // This results in undefined behavior for both SDL and Imgui
+    // The destructor is called automatically when the object goes out of scope
     BASS_Free();
     BASS_PluginFree(0);
     MIDI.destroy_all();
@@ -463,7 +464,7 @@ int SDL_main(int ac, char **av)
     {
         if(!MIDI.start_parse(parsed_config.last_midi_path.c_str()))
         {
-            Canvas C;
+            //Canvas C;
             std::ostringstream temp_msg;
             temp_msg << "Failed to load '" << parsed_config.last_midi_path << "'";
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", temp_msg.str().c_str(), nullptr);

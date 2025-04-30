@@ -27,6 +27,7 @@
 
 
 int _KeyWidth[128];
+int fn_call_index = 0;
 const float SharpRatio = 0.64f;
 typedef unsigned long DWORD;
 float fDeflate;
@@ -127,54 +128,43 @@ static const short GenKeyX[] =
     0, 12, 18, 33, 36, 54, 66, 72, 85, 90, 105, 108
 };
 
-static int call_index = 0;
-
 Canvas::Canvas()
 {
-    call_index++; // Increment the index each time this method gets called
-    
-    // Avoiding to initialize SDL and imgui 2 times bc apparently this class method gets called 2 times
-    // Very weird
-    if(call_index == 2)
-    {
-        SDL_Init(SDL_INIT_VIDEO); //IMG_Init(IMG_INIT_PNG);
-        //Win = SDL_CreateWindow("NVplayer++", parsed_config.window_w, parsed_config.window_h, 0);
-        //Win = SDL_CreateWindow("NVplayer++", 1900, 900, 0);
+    NVi::info("canvas", "Init\n");
+    SDL_Init(SDL_INIT_VIDEO); //IMG_Init(IMG_INIT_PNG);
+    //Win = SDL_CreateWindow("NVplayer++", parsed_config.window_w, parsed_config.window_h, 0);
+    //Win = SDL_CreateWindow("NVplayer++", 1900, 900, 0);
 #ifndef NON_ANDROID
-        Win = SDL_CreateWindow("NVplayer++", 1920, 1080, 0);
+    Win = SDL_CreateWindow("NVplayer++", 1920, 1080, 0);
 #else
-        Win = SDL_CreateWindow("NVplayer++", 1900, 900, 0);
+    Win = SDL_CreateWindow("NVplayer++", 1900, 900, 0);
 #endif
-        if(Win == nullptr)
-        {
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", "Failed to create window" , nullptr);
-        }
-        
-        
-        Ren = SDL_CreateRenderer(Win, "opengles2");
-        if(Ren == nullptr)
-        {
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", "Failed to create render context" , nullptr);
-        }
-        
-	    SDL_SetRenderVSync(Ren, 1);
-	    SDL_SetWindowPosition(Win, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-	
-	    SDL_DisplayID sid = SDL_GetDisplayForWindow(Win);
-	    mod = SDL_GetDesktopDisplayMode(sid);
-	    SDL_SetRenderDrawBlendMode(Ren, SDL_BLENDMODE_BLEND);
-	    //R, G, B, A
-        // SDL_SetRenderDrawColor(Ren, parsed_config.bg_R, parsed_config.bg_G, parsed_config.bg_B, 255); // Background color
-        SDL_SetRenderDrawColorFloat(Ren, parsed_config.bg_R, parsed_config.bg_G, parsed_config.bg_B, parsed_config.bg_A);
-        SDL_GetWindowSize(Win, &WinW, &WinH);
-        NVGui::Setup(Win, Ren);
+    if(Win == nullptr)
+    {
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", "Failed to create window" , nullptr);
     }
+        
+        
+    Ren = SDL_CreateRenderer(Win, "opengles2");
+    if(Ren == nullptr)
+    {
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", "Failed to create render context" , nullptr);
+    }
+        
+	SDL_SetRenderVSync(Ren, 1);
+	SDL_SetWindowPosition(Win, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+	
+	SDL_DisplayID sid = SDL_GetDisplayForWindow(Win);
+	mod = SDL_GetDesktopDisplayMode(sid);
+	SDL_SetRenderDrawBlendMode(Ren, SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawColorFloat(Ren, parsed_config.bg_R, parsed_config.bg_G, parsed_config.bg_B, parsed_config.bg_A);
+    SDL_GetWindowSize(Win, &WinW, &WinH);
+    NVGui::Setup(Win, Ren);
 
 	for (int i = 0; i != 128; ++i)
 	{
 		KeyX[i] = (i / 12 * 126 + GenKeyX[i % 12]) * WinW / 1350;
 	}
-
 
     for (int i = 0; i != 127; ++i)
     {
@@ -210,18 +200,14 @@ Canvas::Canvas()
 
 Canvas::~Canvas()
 {
-    /*Hmmm this returns suntime error for some reason
-    Error:
-    void ImGui_ImplSDLRenderer3_Shutdown(): Assertion `bd != nullptr && "No renderer backend to shutdown, or already shutdown?"' failed.
-    Well ig this is not a big problem XD
-    */
-    // Disabled bc I had enough of it lmaooo
+    NVi::info("canvas", "Destroy canvas\n");
     
-    //ImGui_ImplSDLRenderer3_Shutdown();
-    //ImGui_ImplSDL3_Shutdown();
-    //ImGui::DestroyContext();
+    ImGui_ImplSDLRenderer3_Shutdown();
+    ImGui_ImplSDL3_Shutdown();
+    ImGui::DestroyContext();
     
-    SDL_DestroySurface(colors);
+    // This was forgotten for a long time wtff
+    //SDL_DestroySurface(colors); // Not even a thing anymore lmao
     SDL_DestroyTexture(Bk0);
     SDL_DestroyTexture(Bk1);
     SDL_DestroyTexture(Wk);

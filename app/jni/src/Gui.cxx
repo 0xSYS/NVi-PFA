@@ -3,9 +3,6 @@
 #include <iostream>
 #include <string>
 
-//#include <android/asset_manager.h>
-//#include <android/asset_manager_jni.h>
-//#include <SDL_android.h>   // Add this for SDL_AndroidGetAssetManager
 
 #include "Gui.hxx"
 #include "Config_Utils.hxx"
@@ -460,6 +457,7 @@ void NVGui::Run(SDL_Renderer *r)
                         if(ImGui::Button("Save Soundfont List"))
                         {
                             NVConf::CreateSoundfontList(live_soundfont_list);
+                            reloadSoundfonts();
                         }
                         if (ImGui::BeginItemTooltip())
                         {
