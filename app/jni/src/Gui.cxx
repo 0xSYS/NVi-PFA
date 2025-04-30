@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <string>
 
@@ -437,7 +436,15 @@ void NVGui::Run(SDL_Renderer *r)
 						
 						if (ImGui::Button("Load Selected"))
 						{
-							loadMidiFile(live_midi_list[selIndex]);
+							// Check if the list is not empty and selIndex is valid before loading
+							if (!live_midi_list.empty() && selIndex >= 0 && selIndex < live_midi_list.size())
+							{
+								loadMidiFile(live_midi_list[selIndex]);
+							}
+							else
+							{
+								printf("No MIDI file selected or MIDI list is empty\n");
+							}
 						}
 						if (ImGui::BeginItemTooltip())
 						{
