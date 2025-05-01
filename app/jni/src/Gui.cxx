@@ -412,10 +412,6 @@ void NVGui::Run(SDL_Renderer *r)
 								live_conf.last_midi_path = live_midi_list[selIndex];
 								NVConf::WriteConfig(live_conf); // Also save the last selected midi file bc why not
 							}
-							else
-							{
-								printf("No MIDI file selected or MIDI list is empty\n");
-							}
 						}
 						if (ImGui::BeginItemTooltip())
 						{
