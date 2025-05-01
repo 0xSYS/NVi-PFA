@@ -586,6 +586,7 @@ int SDL_main(int ac, char **av)
 						}
 						break;
 					case SDLK_LEFT:
+					/*
 						if (playback_ended) 
 						{
 							// If at the end and trying to seek back, restart playback from desired position
@@ -607,11 +608,11 @@ int SDL_main(int ac, char **av)
 							MIDI.list_seek(Tplay);
 							playback_ended = false;
 							is_paused = false;
-						} 
-						else 
-						{
+							}*/
+						//else 
+						//{
 							seek_playback(-SEEK_AMOUNT);
-						}
+						//}
 						break;
 					case SDLK_RIGHT:
 						seek_playback(SEEK_AMOUNT);
