@@ -215,6 +215,8 @@ void RenderSoundfontList(std::vector<SoundfontItem>& items, std::string find_ite
 {
     ImGui::BeginChild("ListRegion", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar);
     
+    bool soundfont_changed = false;
+    
     for (int i = 0; i < items.size(); ++i) 
     {
         std::string filename = FilenameOnly(items[i].label);
@@ -222,12 +224,27 @@ void RenderSoundfontList(std::vector<SoundfontItem>& items, std::string find_ite
         // Filter check
         if (!find_item.empty() && filename.find(find_item) == std::string::npos)
             continue;
+            
+        // Store previous checkbox state
+        bool previous_state = items[i].checked;
     
         // Unique ID to avoid conflicts
         ImGui::Checkbox((filename + "##" + std::to_string(i)).c_str(), &items[i].checked);
+        
+        // Check if state changed
+        if (previous_state != items[i].checked) {
+            soundfont_changed = true;
+        }
     }
     
     ImGui::EndChild();
+    
+    // If any soundfont selection changed, update the checked_soundfonts list
+    // and reload soundfonts immediately
+    if (soundfont_changed) {
+        checked_soundfonts = NVGui::GetCheckedSoundfonts(items);
+        reloadSoundfonts();
+    }
 }
 
 std::vector<std::string> NVGui::GetCheckedSoundfonts(const std::vector<SoundfontItem>& items)
@@ -457,7 +474,6 @@ void NVGui::Run(SDL_Renderer *r)
                         if(ImGui::Button("Save Soundfont List"))
                         {
                             NVConf::CreateSoundfontList(live_soundfont_list);
-                            reloadSoundfonts();
                         }
                         if (ImGui::BeginItemTooltip())
                         {

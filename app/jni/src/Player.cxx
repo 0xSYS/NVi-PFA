@@ -274,12 +274,7 @@ void toggle_pause() {
 
 void NVi::Quit()
 {
-    // Caused runtime errors bc the destructor was called twice
-    //ImGui_ImplSDLRenderer3_Shutdown();
-    //ImGui_ImplSDL3_Shutdown();
-    //ImGui::DestroyContext();
-    //delete CvWin; // This results in undefined behavior for both SDL and Imgui
-    // The destructor is called automatically when the object goes out of scope
+    // The canvas destructor occurs automatically so no need to delete it
     BASS_Free();
     BASS_PluginFree(0);
     MIDI.destroy_all();
@@ -338,7 +333,6 @@ void NVi::CreateMidiList()
     } 
     else 
     {
-        Canvas C;
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", "Failed to save midi list", nullptr);
     }
 }
@@ -354,7 +348,6 @@ void NVi::ReadMidiList()
         } 
         else 
         {
-            Canvas C;
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", "'midi_files' array not found!!", nullptr);
             NVi::error("Player", "'midi_files' array not found or invalid");
             exit(1);
@@ -464,7 +457,6 @@ int SDL_main(int ac, char **av)
     {
         if(!MIDI.start_parse(parsed_config.last_midi_path.c_str()))
         {
-            //Canvas C;
             std::ostringstream temp_msg;
             temp_msg << "Failed to load '" << parsed_config.last_midi_path << "'";
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", temp_msg.str().c_str(), nullptr);
@@ -496,7 +488,7 @@ int SDL_main(int ac, char **av)
     
     if(live_soundfont_list.size() == 0)
     {
-        std::cout << "Default sf\n";
+        NVi::info("Player", "Default sf\n");
 #ifndef NON_ANDROID
         Sf = BASS_MIDI_FontInit(default_sf_path.c_str(), 0);
 #else
@@ -657,8 +649,6 @@ int SDL_main(int ac, char **av)
 			SDL_Log("SDL Error: %s", sdl_err);
 		}
 	}
-    
-    //NVi::Quit();
 #else
     TestStuff();
 #endif
