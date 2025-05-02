@@ -599,7 +599,7 @@ int SDL_main(int ac, char **av)
 				NVi::Quit();
 		    
 		    // Allow keyboard handlinng only on desktop		
-#ifndef NON_ANDROID
+#ifdef NON_ANDROID
 			// Add keyboard controls for playback
 			if (Evt.type == SDL_EVENT_KEY_DOWN) 
 			{
