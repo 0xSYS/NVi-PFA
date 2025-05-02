@@ -255,6 +255,29 @@ void seek_playback(double seconds) {
         MIDI.list_seek(Tplay);
         MIDI.update_to(Tplay + Tscr);
     }
+    
+    if (playback_ended) 
+	{
+		// If at the end and trying to seek back, restart playback from desired position
+		double new_time = Tplay + (-SEEK_AMOUNT);
+		if (new_time < 0) new_time = 0;
+		
+		QWORD new_pos = BASS_ChannelSeconds2Bytes(Stm, new_time);
+		BASS_ChannelSetPosition(Stm, new_pos, BASS_POS_BYTE);
+		BASS_ChannelPlay(Stm, FALSE);
+		
+		// Reset visualization properly
+		for (int i = 0; i < 128; ++i) 
+		{
+			MIDI.L[i].clear();
+		}
+		
+		// Update time and reset flags
+		Tplay = new_time;
+		MIDI.list_seek(Tplay);
+		playback_ended = false;
+		is_paused = false;
+	}
 }
 
 // Function to toggle pause/play
@@ -270,6 +293,23 @@ void toggle_pause() {
         BASS_ChannelPause(Stm);
         is_paused = true;
     }
+    
+    if (playback_ended) 
+	{
+		// If at the end and we press space, restart from beginning
+		BASS_ChannelSetPosition(Stm, 0, BASS_POS_BYTE);
+		BASS_ChannelPlay(Stm, FALSE);
+		Tplay = 0.0;
+		playback_ended = false;
+		is_paused = false;
+		
+		// Reset visualization state
+		for (int i = 0; i < 128; ++i) 
+		{
+			MIDI.L[i].clear();
+		}
+		MIDI.list_seek(0);
+	}
 }
 
 void NVi::Quit()
@@ -557,62 +597,19 @@ int SDL_main(int ac, char **av)
 			ImGui_ImplSDL3_ProcessEvent(&Evt);
 			if (Evt.type == SDL_EVENT_QUIT)
 				NVi::Quit();
-				
+		    
+		    // Allow keyboard handlinng only on desktop		
+#ifndef NON_ANDROID
 			// Add keyboard controls for playback
 			if (Evt.type == SDL_EVENT_KEY_DOWN) 
 			{
 				switch (Evt.key.key) 
 				{
 					case SDLK_SPACE:
-						if (playback_ended) 
-						{
-							// If at the end and we press space, restart from beginning
-							BASS_ChannelSetPosition(Stm, 0, BASS_POS_BYTE);
-							BASS_ChannelPlay(Stm, FALSE);
-							Tplay = 0.0;
-							playback_ended = false;
-							is_paused = false;
-							
-							// Reset visualization state
-							for (int i = 0; i < 128; ++i) 
-							{
-								MIDI.L[i].clear();
-							}
-							MIDI.list_seek(0);
-						} 
-						else 
-						{
-							toggle_pause();
-						}
+						toggle_pause();
 						break;
 					case SDLK_LEFT:
-					/*
-						if (playback_ended) 
-						{
-							// If at the end and trying to seek back, restart playback from desired position
-							double new_time = Tplay + (-SEEK_AMOUNT);
-							if (new_time < 0) new_time = 0;
-							
-							QWORD new_pos = BASS_ChannelSeconds2Bytes(Stm, new_time);
-							BASS_ChannelSetPosition(Stm, new_pos, BASS_POS_BYTE);
-							BASS_ChannelPlay(Stm, FALSE);
-							
-							// Reset visualization properly
-							for (int i = 0; i < 128; ++i) 
-							{
-								MIDI.L[i].clear();
-							}
-							
-							// Update time and reset flags
-							Tplay = new_time;
-							MIDI.list_seek(Tplay);
-							playback_ended = false;
-							is_paused = false;
-							}*/
-						//else 
-						//{
-							seek_playback(-SEEK_AMOUNT);
-						//}
+						seek_playback(-SEEK_AMOUNT);
 						break;
 					case SDLK_RIGHT:
 						seek_playback(SEEK_AMOUNT);
@@ -622,6 +619,7 @@ int SDL_main(int ac, char **av)
 						break;
 				}
 			}
+#endif
 		}
 		
 		SDL_SetRenderDrawColor(CvWin->Ren, liveColor.r, liveColor.g, liveColor.b, liveColor.a);
