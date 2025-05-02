@@ -167,7 +167,6 @@ void loadMidiFile(const std::string& midi_path) {
     
     // Parse new MIDI file
     if (!MIDI.start_parse(midi_path.c_str())) {
-        Canvas C;
         std::ostringstream temp_msg;
         temp_msg << "Failed to load '" << midi_path << "'";
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", temp_msg.str().c_str(), nullptr);
@@ -222,6 +221,7 @@ void loadMidiFile(const std::string& midi_path) {
     // Reset playback variables
     Tplay = 0.0;
     is_paused = false;
+    playback_ended = false; // Allow the playback to start with the audio playback
     
     // Update current midi path
     parsed_config.last_midi_path = midi_path;
