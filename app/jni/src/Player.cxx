@@ -583,6 +583,7 @@ int SDL_main(int ac, char **av)
 		// Check if playback just ended (and we need to handle that)
 		if (!playback_ended && BASS_ChannelIsActive(Stm) == BASS_ACTIVE_STOPPED) {
 			playback_ended = true;
+			Tplay = 1.0; // Add a bit more to fully finish the note visualization
 			is_paused = true; // Just mark as paused when it ends
 			// Save the position at the end
 			saved_position = BASS_ChannelGetPosition(Stm, BASS_POS_BYTE);
