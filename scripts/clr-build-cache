@@ -2,9 +2,60 @@
 
 
 # Clear the leftover build cache after building the apk or desktop version of NVi PFA
+# This is helpful in cases when old cached files cause build errors.
 
 
-DOT_CXX="../app/.cxx/*"
-BUILD_DIR1="../app/build/generated/*"
-BUILD_DIR2="../app/build/intermediates/*"
-BUILD_DIR3="../app/build/tmp/*"
+
+
+DOT_CXX="../app/.cxx"
+FULL_BUILD_DIR="../app/build/*"
+SRC_BUILD_DIR="../app/jni/src/build/*"
+EXT_BUILD_DIR="../build/*"
+
+
+cli_help=$(cat <<EOF
+-h | --help : Shows this help message
+--all : Remove all build caches $(date).
+'$DOT_CXX'
+'$FULL_BUILD_DIR'
+'$SRC_BUILD_DIR'
+'$EXT_BUILD_DIR'
+
+--save-apk : Save the last built apk before clearing the build cache
+APK is saved in 'scripts/out/apk-saved'
+
+--ext : Remove external build cache
+--src-build : Remove source build cache
+
+By default it only removes:
+$DOT_CXX
+$FULL_BUILD_DIR
+EOF
+)
+
+
+for args in "$@"
+do
+    if [ "$1" == "--save-apk" ]; then
+        mkdir -p "out/apk-saved"
+        cp "../app/build/outputs/apk/debug/app-debug.apk" "out/apk-saved/"
+        echo -e "\e[38;5;83mAPK Saved!!!\e[0m"
+    elif [ "$args" == "--all" ]; then
+        rm -rf $DOT_CXX
+        rm -rf $FULL_BUILD_DIR
+        rm -rf $SRC_BUILD_DIR
+        rm -rf $EXT_BUILD_DIR
+        echo "Removed all build caches"
+    elif [ "$args" == "--ext" ]; then
+        rm -rf $EXT_BUILD_DIR
+        echo "Removed external build cache"
+    elif [ "$args" == "--src-build" ]; then
+        rm -rf $SRC_BUILD_DIR
+        echo "Removed source build cache"
+    elif [ "$args" == "--help" ] || [ "$args" == "-h" ]; then
+        echo "$cli_help"
+    else
+        rm -rf $DOT_CXX
+        rm -rf $FULL_BUILD_DIR
+    fi
+done

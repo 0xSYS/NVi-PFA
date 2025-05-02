@@ -1,0 +1,7 @@
+#!/bin/bash
+
+
+# Allows all scripts to be executed
+
+
+sudo chmod +777 *
