@@ -2,7 +2,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include <iostream>
-#include <limits>
+#include <unistd.h>
 
 
 #include "extern/audio/bassmidi.h"
@@ -214,6 +214,8 @@ void loadMidiFile(const std::string& midi_path) {
     
     BASS_ChannelSetAttribute(Stm, BASS_ATTRIB_MIDI_VOICES, parsed_config.bass_voice_count);
     BASS_MIDI_StreamSetFilter(Stm, 0, reinterpret_cast<BOOL (*)(HSTREAM, int, BASS_MIDI_EVENT *, BOOL, void *)>(filter), nullptr);
+    
+    sleep(1); // Sleep 1 second before starting playback
     
     // Start playback
     BASS_ChannelPlay(Stm, 1);
@@ -511,6 +513,8 @@ int SDL_main(int ac, char **av)
 
     CvWin = new Canvas;
     
+    double StartDelay = 1.0;
+    
     // Set the last background color
     SDL_SetRenderDrawColor(CvWin->Ren, liveColor.r, liveColor.g, liveColor.b, liveColor.a);
 
@@ -560,7 +564,7 @@ int SDL_main(int ac, char **av)
 
     
     BASS_MIDI_StreamSetFilter(Stm, 0, reinterpret_cast<BOOL (*)(HSTREAM, int, BASS_MIDI_EVENT *, BOOL, void *)>(filter), nullptr);
-    BASS_ChannelPlay(Stm, 1);
+    BASS_ChannelPlay(Stm, 1); // Start playback after the delay
     
     const unsigned int FPS=1000000/CvWin->mod->refresh_rate;// 20 may be replaced with a limited frame rate
 

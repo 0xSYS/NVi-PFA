@@ -7,7 +7,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sstream>
-#include <iostream>
 #include <fstream>
 
 #include <SDL3/SDL.h>

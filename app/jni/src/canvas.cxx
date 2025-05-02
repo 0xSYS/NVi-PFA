@@ -1,15 +1,10 @@
-
 #include <SDL3/SDL_keycode.h>
 #include <SDL3/SDL_messagebox.h>
 #include <SDL3/SDL_oldnames.h>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_oldnames.h>
-#include <iostream>
 #include <cmath>
 #include <algorithm>
-
-
-//#include <SDL_image.h>
 
 
 #include "extern/imgui/imgui.h"

@@ -1,10 +1,9 @@
-#include <cmath>
 #include "Utils.hxx"
 #include "MIDI.hxx"
 #include "Sequ.hxx"
 #include "Nlist.hxx"
 
-#include <iostream>
+
 
 
 

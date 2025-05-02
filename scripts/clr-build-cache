@@ -1,0 +1,10 @@
+#!/bin/bash
+
+
+# Clear the leftover build cache after building the apk or desktop version of NVi PFA
+
+
+DOT_CXX="../app/.cxx/*"
+BUILD_DIR1="../app/build/generated/*"
+BUILD_DIR2="../app/build/intermediates/*"
+BUILD_DIR3="../app/build/tmp/*"
