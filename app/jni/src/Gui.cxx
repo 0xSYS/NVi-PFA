@@ -341,7 +341,6 @@ void NVGui::Run(SDL_Renderer *r)
     }
     
     ImGui::Columns(1); // Reset to single column
-    ImGui::End();
     
     
     // Show the main GUI window
@@ -351,6 +350,7 @@ void NVGui::Run(SDL_Renderer *r)
         ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f)); // Pivot 0.5 = center
 #ifdef NON_ANDROID
         ImGui::SetNextWindowSizeConstraints(ImVec2(700, 380), ImVec2(FLT_MAX, FLT_MAX));
+        ImGui::SetNextWindowFocus();
         ImGui::Begin("NVi PFA", &main_gui_window);
 #else   // Setting up a different ui layout for mobile users
         ImGui::SetNextWindowSize(ImVec2(900.0f, 600.0f));
@@ -399,20 +399,20 @@ void NVGui::Run(SDL_Renderer *r)
                 ImGui::SameLine();
                 
                 if (ImGui::Button("Load Selected"))
-				{
-					// Check if the list is not empty and selIndex is valid before loading
-					if (!live_midi_list.empty() && selIndex >= 0 && selIndex < live_midi_list.size())
-					{
-						loadMidiFile(live_midi_list[selIndex]);
-						live_conf.last_midi_path = live_midi_list[selIndex];
-						NVConf::WriteConfig(live_conf); // Also save the last selected midi file bc why not
-					}
-				}
-				if (ImGui::BeginItemTooltip())
-				{
-					ImGui::Text("Load and play the selected MIDI file");
-					ImGui::EndTooltip();
-				}
+		{
+			// Check if the list is not empty and selIndex is valid before loading
+			if (!live_midi_list.empty() && selIndex >= 0 && selIndex < live_midi_list.size())
+			{
+				loadMidiFile(live_midi_list[selIndex]);
+				live_conf.last_midi_path = live_midi_list[selIndex];
+				NVConf::WriteConfig(live_conf); // Also save the last selected midi file bc why not
+			}
+		}
+		if (ImGui::BeginItemTooltip())
+		{
+			ImGui::Text("Load and play the selected MIDI file");
+			ImGui::EndTooltip();
+		}
 
                 
                 //ImGui::SameLine();
@@ -492,26 +492,26 @@ void NVGui::Run(SDL_Renderer *r)
                 ImGui::Text("\n");
                 ImGui::Text("Voice Count");
                 // Store the previous value to detect changes
-				static int prev_voice_count = live_conf.bass_voice_count;
-				
-				// Input widget for voice count
-				if (ImGui::InputInt("##LOL", &live_conf.bass_voice_count)) {
-					// Ensure value is within reasonable limits
-					if (live_conf.bass_voice_count < 1) live_conf.bass_voice_count = 1;
-					if (live_conf.bass_voice_count > 5000) live_conf.bass_voice_count = 5000;
-					
-					// Apply the change in real-time if the value has changed
-					if (prev_voice_count != live_conf.bass_voice_count) {
-						updateBassVoiceCount(live_conf.bass_voice_count);
-						prev_voice_count = live_conf.bass_voice_count;
-					}
-				}
-				
-				if (ImGui::BeginItemTooltip())
-				{
-					ImGui::Text("Set how many notes can be played on specific instruments (changes apply immediately)");
-					ImGui::EndTooltip();
-				}
+		static int prev_voice_count = live_conf.bass_voice_count;
+		
+		// Input widget for voice count
+		if (ImGui::InputInt("##LOL", &live_conf.bass_voice_count)) {
+			// Ensure value is within reasonable limits
+			if (live_conf.bass_voice_count < 1) live_conf.bass_voice_count = 1;
+			if (live_conf.bass_voice_count > 5000) live_conf.bass_voice_count = 5000;
+			
+			// Apply the change in real-time if the value has changed
+			if (prev_voice_count != live_conf.bass_voice_count) {
+				updateBassVoiceCount(live_conf.bass_voice_count);
+				prev_voice_count = live_conf.bass_voice_count;
+			}
+		}
+		
+		if (ImGui::BeginItemTooltip())
+		{
+			ImGui::Text("Set how many notes can be played on specific instruments (changes apply immediately)");
+			ImGui::EndTooltip();
+		}
                 
                 // Keeping the background color updated
                 live_conf.bg_R = liveColor.r;
@@ -550,6 +550,8 @@ void NVGui::Run(SDL_Renderer *r)
         }
         ImGui::End();
     } // Main window
+    
+    ImGui::End();
     
     // Rendering
     ImGui::Render();
