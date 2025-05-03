@@ -420,6 +420,7 @@ void Canvas::DrawKeyBoard()
 void Canvas::DrawNote(NVi::u16_t k, const NVnote &n, int pps)
 {
     unsigned int c = Col[(n.track % 16 + n.chn) % 16];
+    //unsigned int c = Col[n.track % 16];
     int key = KeyMap[k];
     
     int y_0 = std::clamp((int)floor(_WinH - (n.Tstart - Tplay) * pps + 0.5f), 0, _WinH);
