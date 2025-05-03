@@ -266,75 +266,13 @@ void NVGui::Run(SDL_Renderer *r)
     ImGui_ImplSDL3_NewFrame();
     ImGui::NewFrame();
     
-    //HandleDoubleTap();
+    ImGuiIO& io = ImGui::GetIO();
     
-    ImGui::SetNextWindowPos(ImVec2(10.0f, 18.0f)); // Position on the screen
-    ImGui::SetNextWindowSize(ImVec2(0.0f, 0.0f));    // No size constraints
+    bool seek_back_fn = false;
     
-        // Create an invisible window
-    ImGui::Begin("InvisibleWindow", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBackground);
     
-
-	// Add playback control buttons at the bottom right
-	ImGuiIO& io = ImGui::GetIO();
-	float button_size = 80.0f;
-	float spacing = 5.0f;
-	float total_width = 2 * button_size + spacing;
-	float y_position = io.DisplaySize.y - button_size - 170.0f;
-	
-	// Backward button
-	ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x - total_width - button_size - spacing - 10.0f, y_position));
-	ImGui::SetNextWindowSize(ImVec2(button_size, button_size));
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin("BackwardButton", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
-	if (ImGui::Button("<<", ImVec2(button_size, button_size))) {
-		seek_playback(-SEEK_AMOUNT); // Negative value for backwards
-	}
-	ImGui::End();
-	ImGui::PopStyleVar();
-	
-	// Play/Pause button
-	ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x - total_width - 10.0f, y_position));
-	ImGui::SetNextWindowSize(ImVec2(button_size, button_size));
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin("PlayPauseButton", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
-	if (ImGui::Button(is_paused ? "|>" : "||", ImVec2(button_size, button_size))) {
-		toggle_pause();
-	}
-	ImGui::End();
-	ImGui::PopStyleVar();
-	
-	// Fast forward button
-	ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x - button_size - 10.0f, y_position));
-	ImGui::SetNextWindowSize(ImVec2(button_size, button_size));
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin("ForwardButton", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
-	if (ImGui::Button(">>", ImVec2(button_size, button_size))) {
-		seek_playback(SEEK_AMOUNT);
-	}
-	ImGui::End();
-	ImGui::PopStyleVar();
-	
-	//ImVec2 button_sz = ImVec2(100, 30); // Area size
-	
-	/*
-	We can use invisible buttons that cover the entire screen to create a layout where users can click them for playing / 
-	pausing the playback, seeking forward and backwards, and opening the settings by double clicking / taping them
-	*/
-    //ImGui::SetCursorPos(ImVec2(5.0f, 400.0f));
-    //if (ImGui::InvisibleButton(" hiddend settigs btn", button_sz))
-    //    main_gui_window = true;
-    
-    ImGui::SetCursorPos(ImVec2(5.0f, 400.0f));   
-    if (ImGui::Button("#"))
-        main_gui_window = true;
-    
-    ImGui::End();
-    
-    //if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) 
-    //{
-    //    main_gui_window = true;
-    //}
+    ImVec2 displaySize = io.DisplaySize;
+    const float longClickThreshold = 0.5f;
     
     // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
     //if (show_demo_window)
@@ -344,217 +282,276 @@ void NVGui::Run(SDL_Renderer *r)
             //ImGui::Text("%.1f FPS", nvg.io.Framerate);
     
     
-            // Show the main GUI window
-            if (main_gui_window)
-            {
-                ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
-                ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f)); // Pivot 0.5 = center
+    ImVec2 windowPos = ImVec2((displaySize.x - displaySize.x + 15) * 0.5f,(displaySize.y - displaySize.y + 15) * 0.5f);
+    ImGui::SetNextWindowSize(ImVec2(displaySize.x - 15, displaySize.y - 15));    // No size constraints
+    ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always);
+    ImGui::Begin("InvisibleWindow", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBackground);
+    
+    ImGui::Columns(3, "ResizableColumns", false); // 2 columns, resizable
+    float sb_col_w = ImGui::GetColumnWidth();
+    float sb_btn_h = ImGui::GetContentRegionAvail().y;
+    if (ImGui::InvisibleButton("<<" , ImVec2(sb_col_w, sb_btn_h)))
+        seek_playback(-SEEK_AMOUNT);
+    
+    if (ImGui::IsItemActive())
+    {
+        float holdDuration = ImGui::GetIO().MouseDownDuration[0]; // [0] is for the left mouse button
+    
+        // Handling long click / tap event
+        if (holdDuration > longClickThreshold)
+        {
+            main_gui_window = true;
+        }
+    }
+    
+    ImGui::NextColumn();
+
+    float ps_col_w = ImGui::GetColumnWidth();
+    float ps_btn_h = ImGui::GetContentRegionAvail().y;
+    if (ImGui::InvisibleButton(is_paused ? "|>" : "||" , ImVec2(ps_col_w, ps_btn_h)))
+        toggle_pause();
+        
+    if (ImGui::IsItemActive())
+    {
+        float holdDuration = ImGui::GetIO().MouseDownDuration[0]; // [0] is for the left mouse button
+    
+        // Handling long click / tap event to open up the settings window
+        if (holdDuration > longClickThreshold)
+        {
+            main_gui_window = true;
+        }
+    }    
+    
+    ImGui::NextColumn();
+    
+    float sf_col_w = ImGui::GetColumnWidth();
+    float sf_btn_h = ImGui::GetContentRegionAvail().y;
+    if (ImGui::InvisibleButton(">>" , ImVec2(sf_col_w, sf_btn_h)))
+        seek_playback(SEEK_AMOUNT);
+        
+    if (ImGui::IsItemActive())
+    {
+        float holdDuration = ImGui::GetIO().MouseDownDuration[0]; // [0] is for the left mouse button
+    
+        // Handling long click / tap event to open up the settings window
+        if (holdDuration > longClickThreshold)
+        {
+            main_gui_window = true;
+        }
+    }
+    
+    ImGui::Columns(1); // Reset to single column
+    ImGui::End();
+    
+    
+    // Show the main GUI window
+    if (main_gui_window)
+    {
+        ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+        ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f)); // Pivot 0.5 = center
 #ifdef NON_ANDROID
-                ImGui::SetNextWindowSizeConstraints(ImVec2(700, 380), ImVec2(FLT_MAX, FLT_MAX));
-                ImGui::Begin("NVi PFA", &main_gui_window);
-#else           // Setting up a different ui layout for mobile users
-                ImGui::SetNextWindowSize(ImVec2(900.0f, 600.0f));
-                ImGui::Begin("NVi PFA", &main_gui_window, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImGui::SetNextWindowSizeConstraints(ImVec2(700, 380), ImVec2(FLT_MAX, FLT_MAX));
+        ImGui::Begin("NVi PFA", &main_gui_window);
+#else   // Setting up a different ui layout for mobile users
+        ImGui::SetNextWindowSize(ImVec2(900.0f, 600.0f));
+        ImGui::Begin("NVi PFA", &main_gui_window, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 #endif
+
+        
+        if (ImGui::Button("Quit"))
+            NVi::Quit();
+            
+        if (ImGui::BeginItemTooltip())
+        {
+            ImGui::Text("Quit NVi PFA");
+            ImGui::EndTooltip();
+        }
                 
-                //ImGui::SameLine();
+        if(ImGui::BeginTabBar("tabs", ImGuiTabBarFlags_None))
+        {
+            if (ImGui::BeginTabItem("Play MIDI Files"))
+            {
+                ImGui::SetNextItemWidth(300);
+                ImGui::InputText("##A", midi_search, 128);
                 
-                if (ImGui::Button("Quit"))
-                    NVi::Quit();
-                    
+                midi_search_text = midi_search;
+                
+                // Draw placeholder text if empty and not focused
+                if (strlen(midi_search) == 0 && !ImGui::IsItemActive()) 
+                {
+                    ImVec2 pos = ImGui::GetItemRectMin();
+                    ImVec2 text_pos = ImVec2(pos.x + ImGui::GetStyle().FramePadding.x, pos.y + ImGui::GetStyle().FramePadding.y);
+                    ImGui::GetWindowDrawList()->AddText(text_pos, ImGui::GetColorU32(ImGuiCol_TextDisabled), "Search midis");
+                }
+                
+                ImGui::SameLine();
+                
+                if(ImGui::Button("Refresh List"))
+                {
+                    NVi::CreateMidiList(); // It simply overwrites to the present midi list
+                }
                 if (ImGui::BeginItemTooltip())
                 {
-                    ImGui::Text("Quit NVi PFA");
+                    ImGui::Text("Synchronize the midi file list with the new files created");
                     ImGui::EndTooltip();
                 }
+                
+                ImGui::SameLine();
+                
+                if (ImGui::Button("Load Selected"))
+				{
+					// Check if the list is not empty and selIndex is valid before loading
+					if (!live_midi_list.empty() && selIndex >= 0 && selIndex < live_midi_list.size())
+					{
+						loadMidiFile(live_midi_list[selIndex]);
+						live_conf.last_midi_path = live_midi_list[selIndex];
+						NVConf::WriteConfig(live_conf); // Also save the last selected midi file bc why not
+					}
+				}
+				if (ImGui::BeginItemTooltip())
+				{
+					ImGui::Text("Load and play the selected MIDI file");
+					ImGui::EndTooltip();
+				}
+
+                
                 //ImGui::SameLine();
                 
-                if(ImGui::BeginTabBar("tabs", ImGuiTabBarFlags_None))
-                {
-                    if (ImGui::BeginTabItem("Play MIDI Files"))
-                    {
-                        ImGui::SetNextItemWidth(300);
-                        ImGui::InputText("##A", midi_search, 128);
-                        
-                        midi_search_text = midi_search;
-                        
-                        // Draw placeholder text if empty and not focused
-                        if (strlen(midi_search) == 0 && !ImGui::IsItemActive()) 
-                        {
-                            ImVec2 pos = ImGui::GetItemRectMin();
-                            ImVec2 text_pos = ImVec2(pos.x + ImGui::GetStyle().FramePadding.x, pos.y + ImGui::GetStyle().FramePadding.y);
-                            ImGui::GetWindowDrawList()->AddText(text_pos, ImGui::GetColorU32(ImGuiCol_TextDisabled), "Search midis");
-                        }
-                        
-                        ImGui::SameLine();
-                        
-                        if(ImGui::Button("Refresh List"))
-                        {
-                            NVi::CreateMidiList(); // It simply overwrites to the present midi list
-                        }
-                        if (ImGui::BeginItemTooltip())
-                        {
-                            ImGui::Text("Synchronize the midi file list with the new files created");
-                            ImGui::EndTooltip();
-                        }
-                        
-                        ImGui::SameLine();
-                        
-                        if (ImGui::Button("Load Selected"))
-						{
-							// Check if the list is not empty and selIndex is valid before loading
-							if (!live_midi_list.empty() && selIndex >= 0 && selIndex < live_midi_list.size())
-							{
-								loadMidiFile(live_midi_list[selIndex]);
-								live_conf.last_midi_path = live_midi_list[selIndex];
-								NVConf::WriteConfig(live_conf); // Also save the last selected midi file bc why not
-							}
-						}
-						if (ImGui::BeginItemTooltip())
-						{
-							ImGui::Text("Load and play the selected MIDI file");
-							ImGui::EndTooltip();
-						}
-
-                        
-                        //ImGui::SameLine();
-                        
-                        // Not used yet...
-                        //if (ImGui::Button("Close"))
-                        //    //NVi::CloseMidiPlayback();
-                        //    std::cout << "Close midi playback\n";
-                        
-                        //if (ImGui::BeginItemTooltip())
-                        //{
-                        //    ImGui::Text("Close and reset midi playback");
-                        //    ImGui::EndTooltip();
-                        //}
-                        
-                        RenderMidiList(live_midi_list, selIndex, midi_search_text);
-                        //std::cout << "Selection index: " << live_midi_list[selIndex] << "\n";
-                        ImGui::EndTabItem();
-                    }
-                    
-                    if (ImGui::BeginTabItem("Soundfonts"))
-                    {
-                        ImGui::SetNextItemWidth(300);
-                        ImGui::InputText("##E", sf_search, 128);
-                        
-                        sf_search_text = sf_search;
-                        
-                        // Draw placeholder text if empty and not focused
-                        if (strlen(midi_search) == 0 && !ImGui::IsItemActive()) 
-                        {
-                            ImVec2 pos = ImGui::GetItemRectMin();
-                            ImVec2 text_pos = ImVec2(pos.x + ImGui::GetStyle().FramePadding.x, pos.y + ImGui::GetStyle().FramePadding.y);
-                            ImGui::GetWindowDrawList()->AddText(text_pos, ImGui::GetColorU32(ImGuiCol_TextDisabled), "Search soundfonts");
-                        }
-                        
-                        ImGui::SameLine();
-                        
-                        if(ImGui::Button("Refresh List"))
-                        {
-                            NVi::RefreshSFList();
-                        }
-                        if (ImGui::BeginItemTooltip())
-                        {
-                            ImGui::Text("Synchronize the soundfont file list with the new files created");
-                            ImGui::EndTooltip();
-                        }
-                        
-                        ImGui::SameLine();
-                        
-                        if(ImGui::Button("Save Soundfont List"))
-                        {
-                            NVConf::CreateSoundfontList(live_soundfont_list);
-                        }
-                        if (ImGui::BeginItemTooltip())
-                        {
-                            ImGui::Text("Save the modified soundfont list");
-                            ImGui::EndTooltip();
-                        }
-                        RenderSoundfontList(live_soundfont_list, sf_search_text);
-                            
-                        ImGui::EndTabItem();
-                    }
-                    
-                    if (ImGui::BeginTabItem("Settings"))
-                    {
-                        ImGui::Text("Settings marked with * require restart of NV PFA\n\n");
-                        ImGui::SliderInt("Note Speed", &live_note_speed, 100, 20000);
-                        ImGui::Text("Background Color");
-                        clear_color = ImVec4(live_conf.bg_R / 255.0f, live_conf.bg_G / 255.0f, live_conf.bg_B / 255.0f, live_conf.bg_A / 255.0f);
-                        ImGui::ColorEdit3("##H", (float*)&clear_color);
-                        if (ImGui::BeginItemTooltip())
-                        {
-                            ImGui::Text("Change the background color of the main scene");
-                            ImGui::EndTooltip();
-                        }
-                        liveColor = NVi::Frgba2Irgba(clear_color);
-                        ImGui::Text("\n");
-                        ImGui::Text("Voice Count");
-                        // Store the previous value to detect changes
-						static int prev_voice_count = live_conf.bass_voice_count;
-						
-						// Input widget for voice count
-						if (ImGui::InputInt("##LOL", &live_conf.bass_voice_count)) {
-							// Ensure value is within reasonable limits
-							if (live_conf.bass_voice_count < 1) live_conf.bass_voice_count = 1;
-							if (live_conf.bass_voice_count > 5000) live_conf.bass_voice_count = 5000;
-							
-							// Apply the change in real-time if the value has changed
-							if (prev_voice_count != live_conf.bass_voice_count) {
-								updateBassVoiceCount(live_conf.bass_voice_count);
-								prev_voice_count = live_conf.bass_voice_count;
-							}
-						}
-						
-						if (ImGui::BeginItemTooltip())
-						{
-							ImGui::Text("Set how many notes can be played on specific instruments (changes apply immediately)");
-							ImGui::EndTooltip();
-						}
-                        
-                        // Keeping the background color updated
-                        live_conf.bg_R = liveColor.r;
-                        live_conf.bg_G = liveColor.g;
-                        live_conf.bg_B = liveColor.b;
-                        live_conf.bg_A = liveColor.a;
-                        live_conf.note_speed = live_note_speed;
-                        
-                        if(ImGui::Button("Save"))
-                        {
-                            NVConf::WriteConfig(live_conf);
-                        }
-                        if (ImGui::BeginItemTooltip())
-                        {
-                            ImGui::Text("Save settings to configuration file");
-                            ImGui::EndTooltip();
-                        }
-                        ImGui::EndTabItem();
-                    }
-                    if (ImGui::BeginTabItem("About"))
-                    {
-                        ImGui::BeginChild("ScrollRegion", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_AlwaysVerticalScrollbar);
-                        ImGui::Text("A clone of the original Piano From Above for mobile based on Qishipai's midi processing library.");
-                        ImGui::Text("Authors:");
-                        ImGui::Text("NVirsual: Qishipai");
-                        ImGui::Text("Piano From Above imitation: Tweak1600");
-                        ImGui::Text("Improved by:");
-                        ImGui::Text("0xsys");
-                        ImGui::Text("Hexagon-Midis\n\n");
-                        ImGui::Text("Icon Made by Zeal");
-                        ImGui::Text("Powered by: SDL3, Imgui, bass and bass plugins");
-                        ImGui::EndChild();
-                        ImGui::EndTabItem();
-                    }
-                    ImGui::EndTabBar();
-                }
-                ImGui::End();
+                // Not used yet...
+                //if (ImGui::Button("Close"))
+                //    //NVi::CloseMidiPlayback();
+                //    std::cout << "Close midi playback\n";
+                
+                //if (ImGui::BeginItemTooltip())
+                //{
+                //    ImGui::Text("Close and reset midi playback");
+                //    ImGui::EndTooltip();
+                //}
+                
+                RenderMidiList(live_midi_list, selIndex, midi_search_text);
+                //std::cout << "Selection index: " << live_midi_list[selIndex] << "\n";
+                ImGui::EndTabItem();
             }
+            
+            if (ImGui::BeginTabItem("Soundfonts"))
+            {
+                ImGui::SetNextItemWidth(300);
+                ImGui::InputText("##E", sf_search, 128);
+                
+                sf_search_text = sf_search;
+                
+                // Draw placeholder text if empty and not focused
+                if (strlen(midi_search) == 0 && !ImGui::IsItemActive()) 
+                {
+                    ImVec2 pos = ImGui::GetItemRectMin();
+                    ImVec2 text_pos = ImVec2(pos.x + ImGui::GetStyle().FramePadding.x, pos.y + ImGui::GetStyle().FramePadding.y);
+                    ImGui::GetWindowDrawList()->AddText(text_pos, ImGui::GetColorU32(ImGuiCol_TextDisabled), "Search soundfonts");
+                }
+                
+                ImGui::SameLine();
+                
+                if(ImGui::Button("Refresh List"))
+                {
+                    NVi::RefreshSFList();
+                }
+                if (ImGui::BeginItemTooltip())
+                {
+                    ImGui::Text("Synchronize the soundfont file list with the new files created");
+                    ImGui::EndTooltip();
+                }
+                
+                ImGui::SameLine();
+                
+                if(ImGui::Button("Save Soundfont List"))
+                {
+                    NVConf::CreateSoundfontList(live_soundfont_list);
+                }
+                if (ImGui::BeginItemTooltip())
+                {
+                    ImGui::Text("Save the modified soundfont list");
+                    ImGui::EndTooltip();
+                }
+                RenderSoundfontList(live_soundfont_list, sf_search_text);
+                    
+                ImGui::EndTabItem();
+            }
+            
+            if (ImGui::BeginTabItem("Settings"))
+            {
+                ImGui::Text("Settings marked with * require restart of NV PFA\n\n");
+                ImGui::SliderInt("Note Speed", &live_note_speed, 100, 20000);
+                ImGui::Text("Background Color");
+                clear_color = ImVec4(live_conf.bg_R / 255.0f, live_conf.bg_G / 255.0f, live_conf.bg_B / 255.0f, live_conf.bg_A / 255.0f);
+                ImGui::ColorEdit3("##H", (float*)&clear_color);
+                if (ImGui::BeginItemTooltip())
+                {
+                    ImGui::Text("Change the background color of the main scene");
+                    ImGui::EndTooltip();
+                }
+                liveColor = NVi::Frgba2Irgba(clear_color);
+                ImGui::Text("\n");
+                ImGui::Text("Voice Count");
+                // Store the previous value to detect changes
+				static int prev_voice_count = live_conf.bass_voice_count;
+				
+				// Input widget for voice count
+				if (ImGui::InputInt("##LOL", &live_conf.bass_voice_count)) {
+					// Ensure value is within reasonable limits
+					if (live_conf.bass_voice_count < 1) live_conf.bass_voice_count = 1;
+					if (live_conf.bass_voice_count > 5000) live_conf.bass_voice_count = 5000;
+					
+					// Apply the change in real-time if the value has changed
+					if (prev_voice_count != live_conf.bass_voice_count) {
+						updateBassVoiceCount(live_conf.bass_voice_count);
+						prev_voice_count = live_conf.bass_voice_count;
+					}
+				}
+				
+				if (ImGui::BeginItemTooltip())
+				{
+					ImGui::Text("Set how many notes can be played on specific instruments (changes apply immediately)");
+					ImGui::EndTooltip();
+				}
+                
+                // Keeping the background color updated
+                live_conf.bg_R = liveColor.r;
+                live_conf.bg_G = liveColor.g;
+                live_conf.bg_B = liveColor.b;
+                live_conf.bg_A = liveColor.a;
+                live_conf.note_speed = live_note_speed;
+                
+                if(ImGui::Button("Save"))
+                {
+                    NVConf::WriteConfig(live_conf);
+                }
+                if (ImGui::BeginItemTooltip())
+                {
+                    ImGui::Text("Save settings to configuration file");
+                    ImGui::EndTooltip();
+                }
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("About"))
+            {
+                ImGui::BeginChild("ScrollRegion", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_AlwaysVerticalScrollbar);
+                ImGui::Text("A clone of the original Piano From Above for mobile based on Qishipai's midi processing library.");
+                ImGui::Text("Authors:");
+                ImGui::Text("NVirsual: Qishipai");
+                ImGui::Text("Piano From Above imitation: Tweak1600");
+                ImGui::Text("Improved by:");
+                ImGui::Text("0xsys");
+                ImGui::Text("Hexagon-Midis\n\n");
+                ImGui::Text("Icon Made by Zeal");
+                ImGui::Text("Powered by: SDL3, Imgui, bass and bass plugins");
+                ImGui::EndChild();
+                ImGui::EndTabItem();
+            }
+            ImGui::EndTabBar();
+        }
+        ImGui::End();
+    } // Main window
     
-            // Rendering
-            ImGui::Render();
-            //SDL_RenderClear(r); // Don't clear the render bc no midi scene will show up
-            ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), r);
+    // Rendering
+    ImGui::Render();
+    ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), r);
 }
