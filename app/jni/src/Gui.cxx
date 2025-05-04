@@ -276,12 +276,15 @@ void NVGui::Run(SDL_Renderer *r)
     
     // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
     //if (show_demo_window)
+    //{
+    ////ImGui::SetNextWindowFocus();
     //    ImGui::ShowDemoWindow(&show_demo_window);
-    //
+    //}
+    
             // Reserved for future use
             //ImGui::Text("%.1f FPS", nvg.io.Framerate);
     
-    
+
     ImVec2 windowPos = ImVec2((displaySize.x - displaySize.x + 15) * 0.5f,(displaySize.y - displaySize.y + 15) * 0.5f);
     ImGui::SetNextWindowSize(ImVec2(displaySize.x - 15, displaySize.y - 15));    // No size constraints
     ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always);
@@ -354,6 +357,7 @@ void NVGui::Run(SDL_Renderer *r)
         ImGui::Begin("NVi PFA", &main_gui_window);
 #else   // Setting up a different ui layout for mobile users
         ImGui::SetNextWindowSize(ImVec2(900.0f, 600.0f));
+        ImGui::SetNextWindowFocus();
         ImGui::Begin("NVi PFA", &main_gui_window, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 #endif
 
@@ -483,6 +487,7 @@ void NVGui::Run(SDL_Renderer *r)
                 ImGui::Text("Background Color");
                 clear_color = ImVec4(live_conf.bg_R / 255.0f, live_conf.bg_G / 255.0f, live_conf.bg_B / 255.0f, live_conf.bg_A / 255.0f);
                 ImGui::ColorEdit3("##H", (float*)&clear_color);
+                //ImGui::SetWindowFocus("picker");
                 if (ImGui::BeginItemTooltip())
                 {
                     ImGui::Text("Change the background color of the main scene");
