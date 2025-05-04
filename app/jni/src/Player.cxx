@@ -530,6 +530,24 @@ int SDL_main(int ac, char **av)
     HSOUNDFONT Sf;
     
     
+    // Experimental stuff
+    BASS_DEVICEINFO deviceInfo;
+        int deviceIndex = 0;
+    
+        printf("Available audio devices:\n");
+    
+        // Enumerate devices
+        while (BASS_GetDeviceInfo(deviceIndex, &deviceInfo)) {
+            printf("Device %d:\n", deviceIndex);
+            printf("  Name: %s\n", deviceInfo.name);
+            printf("  Driver: %s\n", deviceInfo.driver);
+            printf("  Is Default: %s\n", (deviceInfo.flags & BASS_DEVICE_DEFAULT) ? "Yes" : "No");
+            printf("  Is Enabled: %s\n", (deviceInfo.flags & BASS_DEVICE_ENABLED) ? "Yes" : "No");
+            printf("\n");
+            deviceIndex++;
+        }
+    
+    
     if(live_soundfont_list.size() == 0)
     {
         NVi::info("Player", "Default sf\n");
