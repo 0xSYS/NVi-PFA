@@ -310,10 +310,10 @@ void NVGui::Run(SDL_Renderer *r)
     const float longClickThreshold = 0.5f;
     
     // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-    //if (show_demo_window)
-    //{
-    //    ImGui::ShowDemoWindow(&show_demo_window);
-    //}
+    if (show_demo_window)
+    {
+        ImGui::ShowDemoWindow(&show_demo_window);
+    }
     
     // Reserved for future use
     //ImGui::Text("%.1f FPS", nvg.io.Framerate);
@@ -410,17 +410,9 @@ void NVGui::Run(SDL_Renderer *r)
             if (ImGui::BeginTabItem("Play MIDI Files"))
             {
                 ImGui::SetNextItemWidth(300);
-                ImGui::InputText("##A", midi_search, 128);
+                ImGui::InputTextWithHint("##EHE", "Search midis", midi_search, IM_ARRAYSIZE(midi_search));
                 
                 midi_search_text = midi_search;
-                
-                // Draw placeholder text if empty and not focused
-                if (strlen(midi_search) == 0 && !ImGui::IsItemActive()) 
-                {
-                    ImVec2 pos = ImGui::GetItemRectMin();
-                    ImVec2 text_pos = ImVec2(pos.x + ImGui::GetStyle().FramePadding.x, pos.y + ImGui::GetStyle().FramePadding.y);
-                    ImGui::GetWindowDrawList()->AddText(text_pos, ImGui::GetColorU32(ImGuiCol_TextDisabled), "Search midis");
-                }
                 
                 ImGui::SameLine();
                 
@@ -474,17 +466,9 @@ void NVGui::Run(SDL_Renderer *r)
             if (ImGui::BeginTabItem("Soundfonts"))
             {
                 ImGui::SetNextItemWidth(300);
-                ImGui::InputText("##E", sf_search, 128);
+                ImGui::InputTextWithHint("##XD", "Search soundfonts", sf_search, IM_ARRAYSIZE(sf_search));
                 
                 sf_search_text = sf_search;
-                
-                // Draw placeholder text if empty and not focused
-                if (strlen(midi_search) == 0 && !ImGui::IsItemActive()) 
-                {
-                    ImVec2 pos = ImGui::GetItemRectMin();
-                    ImVec2 text_pos = ImVec2(pos.x + ImGui::GetStyle().FramePadding.x, pos.y + ImGui::GetStyle().FramePadding.y);
-                    ImGui::GetWindowDrawList()->AddText(text_pos, ImGui::GetColorU32(ImGuiCol_TextDisabled), "Search soundfonts");
-                }
                 
                 ImGui::SameLine();
                 
