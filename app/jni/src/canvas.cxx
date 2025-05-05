@@ -132,7 +132,7 @@ Canvas::Canvas()
 #ifndef NON_ANDROID
     Win = SDL_CreateWindow("NVplayer++", 1920, 1080, 0);
 #else
-    Win = SDL_CreateWindow("NVplayer++", 1900, 900, 0);
+    Win = SDL_CreateWindow("NVplayer++", 1910, 900, 0);
 #endif
     if(Win == nullptr)
     {
