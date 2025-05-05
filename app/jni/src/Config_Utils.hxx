@@ -40,6 +40,7 @@ class NVConf
     typedef struct
     {
         int bass_voice_count;
+        int audio_device_index;
         int note_speed;
         int window_w; // Custom width and height for the SDL window
         int window_h;

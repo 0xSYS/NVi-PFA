@@ -24,7 +24,7 @@
 int _KeyWidth[128];
 int fn_call_index = 0;
 const float SharpRatio = 0.64f;
-typedef unsigned long DWORD;
+//typedef unsigned long DWORD;  //Causes conflicts with bass and what's this for ???
 float fDeflate;
 // Define the vertex structure
 SDL_Vertex vert[4];

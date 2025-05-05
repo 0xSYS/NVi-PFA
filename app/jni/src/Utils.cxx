@@ -1,5 +1,6 @@
 #include <cstdarg>
 #include <cstdio>
+#include <string>
 
 #ifndef NON_ANDROID
     #include <android/log.h>
@@ -160,3 +161,17 @@ void NVi::revU32(u32_t &x)
 {
     x = x >> 24 | (x & 0xFF0000) >> 8 | (x & 0xFF00) << 8 | x << 24;
 }
+
+// Code took from SPM lool
+#ifdef NON_ANDROID
+std::string NVi::GetHomeDir()
+{
+#ifdef __linux
+  return std::getenv("HOME");
+#endif
+
+#if defined (_WIN32) || defined (_WIN64)
+  return std::getenv("USERPROFILE");
+#endif 
+}
+#endif

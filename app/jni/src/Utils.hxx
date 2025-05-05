@@ -7,6 +7,7 @@
 
 #include "Config_Utils.hxx"
 #include "extern/imgui/imgui.h"
+#include "extern/audio/bass.h"
 
 
 inline NVConf::configuration parsed_config;
@@ -30,6 +31,16 @@ namespace  NVi   /* ===== Tool function namespace ===== */
         int a;
     }RGBAint;
     
+    typedef struct
+    {
+        int index;
+        const char * name;
+        const char * driver;
+        bool is_default;
+        bool is_enabled;
+    }AudioDevice;
+
+    
     using nv_ul64 = unsigned long long;
     using u32_t   = unsigned int;
     using u16_t   = unsigned short;
@@ -46,7 +57,7 @@ namespace  NVi   /* ===== Tool function namespace ===== */
     void CreateMidiList();
     void ReadMidiList();
     void RefreshSFList();
-    //void RefreshMIDIList();
+    std::vector<AudioDevice> GetAudioOutputs();
     
     // Float rgb to int rgb
     RGBAint Frgba2Irgba(ImVec4& col);
@@ -70,4 +81,6 @@ namespace  NVi   /* ===== Tool function namespace ===== */
     void revU16(u16_t &x); // Reversing the end-order of a 16-bit integer variable
 
     void revU32(u32_t &x); // Reversing the end-order of a 32-bit integer variable
+    
+    std::string GetHomeDir();
 };

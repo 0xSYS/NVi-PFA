@@ -1,7 +1,6 @@
 #include <cstdio>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
-#include <iostream>
 #include <unistd.h>
 
 
@@ -57,7 +56,6 @@ SDL_Event Evt;
 NVmidiFile M;
 NVsequencer S;
 NVi::u32_t nowtick;
-//Canvas cv;
 
 
 
@@ -332,14 +330,20 @@ void NVi::CreateMidiList()
     // Insert all midi and soundfont file paths
     
     std::vector<std::string> all_midi_files;
+    std::ostringstream base_dir;
+#ifdef NON_ANDROID
+    base_dir << NVi::GetHomeDir() << "/Desktop/";
+#else
+    base_dir << BASE_DIRECTORY;
+#endif
     
     //All possibilities
-    auto mid_files       = NVFileUtils::GetFilesByExtension(BASE_DIRECTORY, ".mid");
-    auto midi_files      = NVFileUtils::GetFilesByExtension(BASE_DIRECTORY, ".midi");
-    auto smf_files       = NVFileUtils::GetFilesByExtension(BASE_DIRECTORY, ".smf");
-    auto mid_caps_files  = NVFileUtils::GetFilesByExtension(BASE_DIRECTORY, ".MID");
-    auto midi_caps_files = NVFileUtils::GetFilesByExtension(BASE_DIRECTORY, ".MIDI");
-    auto smf_caps_files  = NVFileUtils::GetFilesByExtension(BASE_DIRECTORY, ".SMF");
+    auto mid_files       = NVFileUtils::GetFilesByExtension(base_dir.str(), ".mid");
+    auto midi_files      = NVFileUtils::GetFilesByExtension(base_dir.str(), ".midi");
+    auto smf_files       = NVFileUtils::GetFilesByExtension(base_dir.str(), ".smf");
+    auto mid_caps_files  = NVFileUtils::GetFilesByExtension(base_dir.str(), ".MID");
+    auto midi_caps_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".MIDI");
+    auto smf_caps_files  = NVFileUtils::GetFilesByExtension(base_dir.str(), ".SMF");
     
     all_midi_files.insert(all_midi_files.end(), mid_files.begin(), mid_files.end());
     all_midi_files.insert(all_midi_files.end(), midi_files.begin(), midi_files.end());
@@ -371,7 +375,7 @@ void NVi::CreateMidiList()
     if (out.is_open()) 
     {
         out << (*root);
-        std::cout << "TOML written to output.toml\n";
+        NVi::info("Player", "Midi list saved\n");
     } 
     else 
     {
@@ -408,8 +412,14 @@ void NVi::ReadMidiList()
 
 void NVi::RefreshSFList()
 {
-    live_soundfont_files = NVFileUtils::GetFilesByExtension(BASE_DIRECTORY, ".sf2");
-    auto sfz_files = NVFileUtils::GetFilesByExtension(BASE_DIRECTORY, ".sfz");
+    std::ostringstream base_dir;
+#ifdef NON_ANDROID
+    base_dir << NVi::GetHomeDir() << "/Desktop/";
+#else 
+    base_dir << BASE_DIRECTORY;
+#endif
+    live_soundfont_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".sf2");
+    auto sfz_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".sfz");
     live_soundfont_files.insert(live_soundfont_files.end(), sfz_files.begin(), sfz_files.end());
     live_soundfont_list.resize(live_soundfont_files.size());
     
@@ -419,6 +429,26 @@ void NVi::RefreshSFList()
     }
     NVConf::CreateSoundfontList(live_soundfont_list);
 }
+
+
+std::vector<NVi::AudioDevice> NVi::GetAudioOutputs()
+{
+    std::vector<AudioDevice> res;
+    BASS_DEVICEINFO dev_info;
+    int deviceIndex = 0;
+    
+    while (BASS_GetDeviceInfo(deviceIndex, &dev_info)) 
+    {
+        deviceIndex++;
+        res.push_back({deviceIndex, dev_info.name, dev_info.driver, (dev_info.flags & BASS_DEVICE_DEFAULT) ? true : false, (dev_info.flags & BASS_DEVICE_ENABLED) ? true : false});
+    }
+   
+    return res;
+}
+
+
+
+
 
 #ifdef NON_ANDROID
 int main(int ac, char **av)
@@ -446,6 +476,7 @@ int SDL_main(int ac, char **av)
         liveColor.b = parsed_config.bg_B;
         liveColor.a = parsed_config.bg_A;
         live_note_speed = parsed_config.note_speed;
+        current_audio_dev = live_conf.audio_device_index;
     }
     else 
     {
@@ -517,12 +548,69 @@ int SDL_main(int ac, char **av)
     
     // Set the last background color
     SDL_SetRenderDrawColor(CvWin->Ren, liveColor.r, liveColor.g, liveColor.b, liveColor.a);
+    
+    availableAudioDevices = NVi::GetAudioOutputs();
 
     // Bass, bassmidi stuff
     BASS_PluginLoad(BASSMIDI_LIB, 0);
     BASS_SetConfig(BASS_CONFIG_BUFFER, 500); // Set buffer size to 500ms
     BASS_SetConfig(BASS_CONFIG_MIDI_AUTOFONT, 0);
-    BASS_Init(-1, 44100, 0, 0, nullptr);
+    NVi::info("Player", "array size: %d\n", availableAudioDevices.size());
+    
+    if(availableAudioDevices.size() == 0)
+    {
+        NVi::warn("Player", "No audio devices found!!!\n");
+        NVi::info("Player", "Using default audio device (-1)\n");
+        BASS_Init(-1, 44100, 0, 0, nullptr);
+    }
+    else
+    {
+        if(!BASS_Init(parsed_config.audio_device_index, 44100, 0, 0, nullptr))
+        {
+            // Initialization failed, get the error code
+           int errorCode = BASS_ErrorGetCode();
+           std::ostringstream msg_str;
+    
+            // Handle specific error codes
+            switch (errorCode)
+            {
+                case BASS_ERROR_DEVICE:
+                    msg_str << "Device index is invalid\n";
+                    break;
+                case BASS_ERROR_ALREADY:
+                    msg_str << "BASS Already initialized\n";
+                    break;
+                case BASS_ERROR_DRIVER:
+                    msg_str << "Unavailable device driver\n";
+                    break;
+                case BASS_ERROR_FORMAT:
+                    msg_str << "Unsupported format by device\n";
+                    break;
+                case BASS_ERROR_MEM:
+                    msg_str << "Insufficient memory\n";
+                    break;
+                case BASS_ERROR_NO3D:
+                    msg_str << "Failed to initialize 3D support\n";
+                    break;
+                case BASS_ERROR_UNKNOWN:
+                    msg_str << "Unknown error occured!!!\n";
+                    break;
+                default:
+                    msg_str << "Unhandled error code!!!\n";
+                    break;
+            }
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Bass Init Error", msg_str.str().c_str(), NULL);
+        }
+        else
+        {
+            int currentDeviceIndex = BASS_GetDevice();
+            BASS_DEVICEINFO deviceInfo;
+            if (BASS_GetDeviceInfo(currentDeviceIndex, &deviceInfo))
+            {
+                NVi::info("Player", "BASS Successfully Initialized with audio device:\nName: %s\nDriver: %s\nDefault: %s\nEnabled: %s\nIndex: %d\n", deviceInfo.name, deviceInfo.driver, (deviceInfo.flags & BASS_DEVICE_DEFAULT) ? "Yes" : "No", (deviceInfo.flags & BASS_DEVICE_ENABLED) ? "Yes" : "No", currentDeviceIndex);
+            }
+        }
+    }
     
     // Load the selected midi file
     Stm = BASS_StreamCreateFile(0, parsed_config.last_midi_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
@@ -531,22 +619,23 @@ int SDL_main(int ac, char **av)
     
     
     // Experimental stuff
+/*
     BASS_DEVICEINFO deviceInfo;
-        int deviceIndex = 0;
+    int deviceIndex = 0;
     
-        printf("Available audio devices:\n");
+    printf("Available audio devices:\n");
     
-        // Enumerate devices
-        while (BASS_GetDeviceInfo(deviceIndex, &deviceInfo)) {
-            printf("Device %d:\n", deviceIndex);
-            printf("  Name: %s\n", deviceInfo.name);
-            printf("  Driver: %s\n", deviceInfo.driver);
-            printf("  Is Default: %s\n", (deviceInfo.flags & BASS_DEVICE_DEFAULT) ? "Yes" : "No");
-            printf("  Is Enabled: %s\n", (deviceInfo.flags & BASS_DEVICE_ENABLED) ? "Yes" : "No");
-            printf("\n");
-            deviceIndex++;
-        }
-    
+    // Enumerate devices
+    while (BASS_GetDeviceInfo(deviceIndex, &deviceInfo)) {
+        printf("Device %d:\n", deviceIndex);
+        printf("  Name: %s\n", deviceInfo.name);
+        printf("  Driver: %s\n", deviceInfo.driver);
+        printf("  Is Default: %s\n", (deviceInfo.flags & BASS_DEVICE_DEFAULT) ? "Yes" : "No");
+        printf("  Is Enabled: %s\n", (deviceInfo.flags & BASS_DEVICE_ENABLED) ? "Yes" : "No");
+        printf("\n");
+        deviceIndex++;
+    }
+*/
     
     if(live_soundfont_list.size() == 0)
     {

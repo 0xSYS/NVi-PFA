@@ -26,6 +26,8 @@ static std::string sf_search_text;
 
 
 
+
+
 // Add these to your other extern declarations
 extern bool is_paused;
 extern void seek_playback(double seconds);
@@ -259,6 +261,39 @@ std::vector<std::string> NVGui::GetCheckedSoundfonts(const std::vector<Soundfont
     return checkedItems;
 }
 
+void ShowAudioDeviceList(const std::vector<NVi::AudioDevice>& audioDevices)
+{
+    std::vector<const char*> deviceNames;
+    for (const auto& device : audioDevices)
+    {
+        deviceNames.push_back(device.name);
+    }
+
+    // Display the combo box
+    if (ImGui::BeginCombo("* Audio Devices", deviceNames[current_audio_dev]))
+    {
+        for (int i = 0; i < deviceNames.size(); i++)
+        {
+            // Check if this item is selected
+            bool isSelected = (current_audio_dev == i);
+
+            // Add the item to the combo box
+            if (ImGui::Selectable(deviceNames[i], isSelected))
+            {
+                // Update the current index if the user selects this item
+                current_audio_dev = i;
+            }
+
+            // Set the initial focus when opening the combo box
+            if (isSelected)
+            {
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+        ImGui::EndCombo();
+    }
+}
+
 void NVGui::Run(SDL_Renderer *r)
 {
     NVGui nvg;
@@ -277,18 +312,17 @@ void NVGui::Run(SDL_Renderer *r)
     // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
     //if (show_demo_window)
     //{
-    ////ImGui::SetNextWindowFocus();
     //    ImGui::ShowDemoWindow(&show_demo_window);
     //}
     
-            // Reserved for future use
-            //ImGui::Text("%.1f FPS", nvg.io.Framerate);
+    // Reserved for future use
+    //ImGui::Text("%.1f FPS", nvg.io.Framerate);
     
 
     ImVec2 windowPos = ImVec2((displaySize.x - displaySize.x + 15) * 0.5f,(displaySize.y - displaySize.y + 15) * 0.5f);
     ImGui::SetNextWindowSize(ImVec2(displaySize.x - 15, displaySize.y - 15));    // No size constraints
     ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always);
-    ImGui::Begin("InvisibleWindow", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBackground);
+    ImGui::Begin("InvisibleWindow", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoBringToFrontOnFocus);
     
     ImGui::Columns(3, "ResizableColumns", false); // 2 columns, resizable
     float sb_col_w = ImGui::GetColumnWidth();
@@ -353,11 +387,11 @@ void NVGui::Run(SDL_Renderer *r)
         ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f)); // Pivot 0.5 = center
 #ifdef NON_ANDROID
         ImGui::SetNextWindowSizeConstraints(ImVec2(700, 380), ImVec2(FLT_MAX, FLT_MAX));
-        ImGui::SetNextWindowFocus();
+        //ImGui::SetNextWindowFocus(); // This is just wrong
         ImGui::Begin("NVi PFA", &main_gui_window);
 #else   // Setting up a different ui layout for mobile users
         ImGui::SetNextWindowSize(ImVec2(900.0f, 600.0f));
-        ImGui::SetNextWindowFocus();
+        //ImGui::SetNextWindowFocus();
         ImGui::Begin("NVi PFA", &main_gui_window, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 #endif
 
@@ -370,7 +404,7 @@ void NVGui::Run(SDL_Renderer *r)
             ImGui::Text("Quit NVi PFA");
             ImGui::EndTooltip();
         }
-                
+
         if(ImGui::BeginTabBar("tabs", ImGuiTabBarFlags_None))
         {
             if (ImGui::BeginTabItem("Play MIDI Files"))
@@ -402,21 +436,21 @@ void NVGui::Run(SDL_Renderer *r)
                 
                 ImGui::SameLine();
                 
-                if (ImGui::Button("Load Selected"))
-		{
-			// Check if the list is not empty and selIndex is valid before loading
-			if (!live_midi_list.empty() && selIndex >= 0 && selIndex < live_midi_list.size())
-			{
-				loadMidiFile(live_midi_list[selIndex]);
-				live_conf.last_midi_path = live_midi_list[selIndex];
-				NVConf::WriteConfig(live_conf); // Also save the last selected midi file bc why not
-			}
-		}
-		if (ImGui::BeginItemTooltip())
-		{
-			ImGui::Text("Load and play the selected MIDI file");
-			ImGui::EndTooltip();
-		}
+            if (ImGui::Button("Load Selected"))
+		    {
+	    	    // Check if the list is not empty and selIndex is valid before loading
+	    	    if (!live_midi_list.empty() && selIndex >= 0 && selIndex < live_midi_list.size())
+	    	    {
+				    loadMidiFile(live_midi_list[selIndex]);
+				    live_conf.last_midi_path = live_midi_list[selIndex];
+				    NVConf::WriteConfig(live_conf); // Also save the last selected midi file bc why not
+	    	    }
+		    }
+		    if (ImGui::BeginItemTooltip())
+		    {
+	    	    ImGui::Text("Load and play the selected MIDI file");
+	    	    ImGui::EndTooltip();
+		    }
 
                 
                 //ImGui::SameLine();
@@ -482,49 +516,6 @@ void NVGui::Run(SDL_Renderer *r)
             
             if (ImGui::BeginTabItem("Settings"))
             {
-                ImGui::Text("Settings marked with * require restart of NV PFA\n\n");
-                ImGui::SliderInt("Note Speed", &live_note_speed, 100, 20000);
-                ImGui::Text("Background Color");
-                clear_color = ImVec4(live_conf.bg_R / 255.0f, live_conf.bg_G / 255.0f, live_conf.bg_B / 255.0f, live_conf.bg_A / 255.0f);
-                ImGui::ColorEdit3("##H", (float*)&clear_color);
-                //ImGui::SetWindowFocus("picker");
-                if (ImGui::BeginItemTooltip())
-                {
-                    ImGui::Text("Change the background color of the main scene");
-                    ImGui::EndTooltip();
-                }
-                liveColor = NVi::Frgba2Irgba(clear_color);
-                ImGui::Text("\n");
-                ImGui::Text("Voice Count");
-                // Store the previous value to detect changes
-		static int prev_voice_count = live_conf.bass_voice_count;
-		
-		// Input widget for voice count
-		if (ImGui::InputInt("##LOL", &live_conf.bass_voice_count)) {
-			// Ensure value is within reasonable limits
-			if (live_conf.bass_voice_count < 1) live_conf.bass_voice_count = 1;
-			if (live_conf.bass_voice_count > 5000) live_conf.bass_voice_count = 5000;
-			
-			// Apply the change in real-time if the value has changed
-			if (prev_voice_count != live_conf.bass_voice_count) {
-				updateBassVoiceCount(live_conf.bass_voice_count);
-				prev_voice_count = live_conf.bass_voice_count;
-			}
-		}
-		
-		if (ImGui::BeginItemTooltip())
-		{
-			ImGui::Text("Set how many notes can be played on specific instruments (changes apply immediately)");
-			ImGui::EndTooltip();
-		}
-                
-                // Keeping the background color updated
-                live_conf.bg_R = liveColor.r;
-                live_conf.bg_G = liveColor.g;
-                live_conf.bg_B = liveColor.b;
-                live_conf.bg_A = liveColor.a;
-                live_conf.note_speed = live_note_speed;
-                
                 if(ImGui::Button("Save"))
                 {
                     NVConf::WriteConfig(live_conf);
@@ -534,6 +525,77 @@ void NVGui::Run(SDL_Renderer *r)
                     ImGui::Text("Save settings to configuration file");
                     ImGui::EndTooltip();
                 }
+                
+                ImGui::SameLine();
+                
+                ImGui::Text("Settings marked with * require restart of NV PFA\n\n");
+                
+                if(ImGui::BeginTabBar("sub-tabs", ImGuiTabBarFlags_None))
+                {
+                    if (ImGui::BeginTabItem("General"))
+                    {
+                        ImGui::Text("General Settings will come soon...");
+                        ImGui::EndTabItem();
+                    }
+                    
+                    if (ImGui::BeginTabItem("Visual"))
+                    {
+                        ImGui::SliderInt("Note Speed", &live_note_speed, 100, 20000);
+                        ImGui::Text("Background Color");
+                        clear_color = ImVec4(live_conf.bg_R / 255.0f, live_conf.bg_G / 255.0f, live_conf.bg_B / 255.0f, live_conf.bg_A / 255.0f);
+                        ImGui::ColorEdit3("##H", (float*)&clear_color);
+                        //ImGui::SetWindowFocus("picker");
+                        if (ImGui::BeginItemTooltip())
+                        {
+                            ImGui::Text("Change the background color of the main scene");
+                            ImGui::EndTooltip();
+                        }
+                        liveColor = NVi::Frgba2Irgba(clear_color);
+                        ImGui::EndTabItem();
+                    }
+                    
+                    if (ImGui::BeginTabItem("Audio"))
+                    {
+                        //current_audio_dev = live_conf.audio_device_index;
+                        //NVi::info("Gui", "Current audio device index: %d\n", current_audio_dev);
+                        live_conf.audio_device_index = current_audio_dev;
+                        ShowAudioDeviceList(availableAudioDevices);
+                        ImGui::Text("\n");
+                        ImGui::Text("Voice Count");
+                        // Store the previous value to detect changes
+		                static int prev_voice_count = live_conf.bass_voice_count;
+		
+		                // Input widget for voice count
+		                if (ImGui::InputInt("##LOL", &live_conf.bass_voice_count)) {
+			                // Ensure value is within reasonable limits
+			                if (live_conf.bass_voice_count < 1) live_conf.bass_voice_count = 1;
+			                if (live_conf.bass_voice_count > 5000) live_conf.bass_voice_count = 5000;
+			
+			                // Apply the change in real-time if the value has changed
+			                if (prev_voice_count != live_conf.bass_voice_count) {
+								updateBassVoiceCount(live_conf.bass_voice_count);
+								prev_voice_count = live_conf.bass_voice_count;
+			                }
+                        }
+                        ImGui::EndTabItem();
+                    }
+                    ImGui::EndTabBar();
+                    ImGui::Text("\n");
+		        }
+		
+		        if (ImGui::BeginItemTooltip())
+		        {
+					ImGui::Text("Set how many notes can be played on specific instruments (changes apply immediately)");
+					ImGui::EndTooltip();
+		        }
+                
+                // Keeping the background color updated
+                live_conf.bg_R = liveColor.r;
+                live_conf.bg_G = liveColor.g;
+                live_conf.bg_B = liveColor.b;
+                live_conf.bg_A = liveColor.a;
+                live_conf.note_speed = live_note_speed;
+
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("About"))
