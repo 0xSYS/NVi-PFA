@@ -23,7 +23,7 @@ void NVConf::WriteConfig(configuration cfg)
     auto audio = cpptoml::make_table();
     audio->insert("VoiceCount", cfg.bass_voice_count);
     audio->insert("LastMIDIpath", cfg.last_midi_path);
-    audio->insert("CurrentAudioDevice", cfg.audio_device_index);
+    audio->insert("DeviceID", cfg.audio_device_index);
     out_cfg->insert("Audio", audio);
     
     auto vis = cpptoml::make_table();
@@ -53,7 +53,7 @@ NVConf::configuration NVConf::ReadConfig()
     auto audio = cfg->get_table("Audio");
     in_cfg.bass_voice_count = *audio->get_as<int>("VoiceCount");
     in_cfg.last_midi_path = *audio->get_as<std::string>("LastMIDIpath");
-    in_cfg.audio_device_index = *audio->get_as<int>("CurrentAudioDevice");
+    in_cfg.audio_device_index = *audio->get_as<int>("DeviceID");
     
     auto vis = cfg->get_table("Visual");
     in_cfg.window_w = *vis->get_as<int>("Window_w");

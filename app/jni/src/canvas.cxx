@@ -2,7 +2,6 @@
 #include <SDL3/SDL_messagebox.h>
 #include <SDL3/SDL_oldnames.h>
 #include <SDL3/SDL.h>
-#include <SDL3/SDL_oldnames.h>
 #include <cmath>
 #include <algorithm>
 
