@@ -476,7 +476,7 @@ int SDL_main(int ac, char **av)
         liveColor.b = parsed_config.bg_B;
         liveColor.a = parsed_config.bg_A;
         live_note_speed = parsed_config.note_speed;
-        current_audio_dev = live_conf.audio_device_index;
+        current_audio_dev = live_conf.audio_device_index; // Used to set the last selected audio device in the combobox
     }
     else 
     {
@@ -489,6 +489,7 @@ int SDL_main(int ac, char **av)
         default_config.bg_G = 43;
         default_config.bg_B = 43;
         default_config.bg_A = 255;
+        default_config.audio_device_index = -1; // Also set default audio device output
         liveColor.r = default_config.bg_R;
         liveColor.g = default_config.bg_G;
         liveColor.b = default_config.bg_B;
@@ -565,7 +566,7 @@ int SDL_main(int ac, char **av)
     }
     else
     {
-        if(!BASS_Init(parsed_config.audio_device_index, 44100, 0, 0, nullptr))
+        if(!BASS_Init(live_conf.audio_device_index, 44100, 0, 0, nullptr))
         {
             // Initialization failed, get the error code
            int errorCode = BASS_ErrorGetCode();
