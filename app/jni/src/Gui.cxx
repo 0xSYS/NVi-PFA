@@ -23,6 +23,10 @@ static char midi_search[128];
 static char sf_search[128];
 static std::string midi_search_text;
 static std::string sf_search_text;
+static char midi_path_entry[1024];
+static char soundfons_path_entry[1024];
+int selected_midi_path_entry;
+int selected_soundfont_path_etry;
 
 
 
@@ -186,7 +190,7 @@ std::string FilenameOnly(const std::string& path)
 
 void RenderMidiList(const std::vector<std::string>& items, int& selectedIndex, std::string find_item)
 {
-    ImGui::BeginChild("ListRegion", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("##midils", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar);
     
         for (int i = 0; i < items.size(); ++i) 
         {
@@ -212,7 +216,7 @@ void RenderMidiList(const std::vector<std::string>& items, int& selectedIndex, s
 
 void RenderSoundfontList(std::vector<SoundfontItem>& items, std::string find_item)
 {
-    ImGui::BeginChild("ListRegion", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("##sfls", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar);
     
     bool soundfont_changed = false;
     
@@ -259,6 +263,46 @@ std::vector<std::string> NVGui::GetCheckedSoundfonts(const std::vector<Soundfont
     }
     
     return checkedItems;
+}
+
+void RenderMidiPathsList(const std::vector<std::string>& items, int& selectedIndex)
+{
+    ImGui::BeginChild("##midipathls", ImVec2(0, 100), true, ImGuiWindowFlags_HorizontalScrollbar);
+    
+        for (int i = 0; i < items.size(); ++i) 
+        {
+            bool isSelected = (i == selectedIndex);
+    
+            if (ImGui::Selectable((items[i] + "##" + std::to_string(i)).c_str(), isSelected)) 
+            {
+                selectedIndex = i;
+            }
+    
+            if (isSelected)
+                ImGui::SetItemDefaultFocus();
+        }
+    
+        ImGui::EndChild();
+}
+
+void RenderSoundfontsPathsList(const std::vector<std::string>& items, int& selectedIndex)
+{
+    ImGui::BeginChild("##soundfontspathls", ImVec2(0, 100), true, ImGuiWindowFlags_HorizontalScrollbar);
+    
+        for (int i = 0; i < items.size(); ++i) 
+        {
+            bool isSelected = (i == selectedIndex);
+    
+            if (ImGui::Selectable((items[i] + "##" + std::to_string(i)).c_str(), isSelected)) 
+            {
+                selectedIndex = i;
+            }
+    
+            if (isSelected)
+                ImGui::SetItemDefaultFocus();
+        }
+    
+        ImGui::EndChild();
 }
 
 void ShowAudioDeviceList(const std::vector<NVi::AudioDevice>& audioDevices)
@@ -518,7 +562,76 @@ void NVGui::Run(SDL_Renderer *r)
                 {
                     if (ImGui::BeginTabItem("General"))
                     {
-                        ImGui::Text("General Settings will come soon...");
+                        ImGui::Text("Add directories to scan for midis");
+                        ImGui::InputTextWithHint("##XD", "New entry", midi_path_entry, IM_ARRAYSIZE(midi_path_entry));
+                        
+                        ImGui::SameLine();
+                        
+                        if(ImGui::Button("+"))
+                        {
+                            if(strlen(midi_path_entry) > 0)
+                            {
+                                live_conf.extra_midi_paths.push_back(midi_path_entry); // Add the input text to the list
+                                midi_path_entry[0] = '\0';
+                            }
+                        }
+                        if (ImGui::BeginItemTooltip())
+                        {
+                            ImGui::Text("Add new midi path entry");
+                            ImGui::EndTooltip();
+                        }
+                        
+                        ImGui::SameLine();
+                        
+                        if(ImGui::Button("-"))
+                        {
+                            if (selected_midi_path_entry >= 0 && selected_midi_path_entry < live_conf.extra_midi_paths.size())
+                            {
+                                live_conf.extra_midi_paths.erase(live_conf.extra_midi_paths.begin() + selected_midi_path_entry);
+                                selected_midi_path_entry = -1;
+                            }
+                        }
+                        if (ImGui::BeginItemTooltip())
+                        {
+                            ImGui::Text("Remove midi path entry");
+                            ImGui::EndTooltip();
+                        }
+                        
+                        RenderSoundfontsPathsList(live_conf.extra_midi_paths, selected_midi_path_entry);
+                        
+                        ImGui::Text("Add directories to scan for soundfonts");
+                        ImGui::InputTextWithHint("##idk", "New entry", soundfons_path_entry, IM_ARRAYSIZE(soundfons_path_entry));
+                        ImGui::SameLine();
+                        if(ImGui::Button("+##sf"))
+                        {
+                            if(strlen(soundfons_path_entry) > 0)
+                            {
+                                live_conf.extra_sf_paths.push_back(soundfons_path_entry);
+                                soundfons_path_entry[0] = '\0';
+                            }
+                        }
+                        if (ImGui::BeginItemTooltip())
+                        {
+                            ImGui::Text("Add new soundfonts path entry");
+                            ImGui::EndTooltip();
+                        }
+                        
+                        ImGui::SameLine();
+                        
+                        if(ImGui::Button("-##sf1"))
+                        {
+                            if (selected_soundfont_path_etry >= 0 && selected_soundfont_path_etry < live_conf.extra_sf_paths.size())
+                            {
+                                live_conf.extra_sf_paths.erase(live_conf.extra_sf_paths.begin() + selected_midi_path_entry);
+                                selected_soundfont_path_etry = -1;
+                            }
+                        }
+                        if (ImGui::BeginItemTooltip())
+                        {
+                            ImGui::Text("Remove soundfonts path entry");
+                            ImGui::EndTooltip();
+                        }
+                        RenderMidiPathsList(live_conf.extra_sf_paths, selected_soundfont_path_etry);
                         ImGui::EndTabItem();
                     }
                     
@@ -528,7 +641,7 @@ void NVGui::Run(SDL_Renderer *r)
                         ImGui::Text("Background Color");
                         clear_color = ImVec4(live_conf.bg_R / 255.0f, live_conf.bg_G / 255.0f, live_conf.bg_B / 255.0f, live_conf.bg_A / 255.0f);
                         ImGui::ColorEdit3("##H", (float*)&clear_color);
-                        //ImGui::SetWindowFocus("picker");
+
                         if (ImGui::BeginItemTooltip())
                         {
                             ImGui::Text("Change the background color of the main scene");
@@ -540,8 +653,6 @@ void NVGui::Run(SDL_Renderer *r)
                     
                     if (ImGui::BeginTabItem("Audio"))
                     {
-                        //current_audio_dev = live_conf.audio_device_index;
-                        //NVi::info("Gui", "Current audio device index: %d\n", current_audio_dev);
                         live_conf.audio_device_index = current_audio_dev;
                         ShowAudioDeviceList(availableAudioDevices);
                         ImGui::Text("\n");

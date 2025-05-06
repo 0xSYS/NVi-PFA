@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <SDL3/SDL.h>
 #include "extern/cpptoml/cpptoml.h"
 
 
@@ -39,6 +40,24 @@ void NVConf::WriteConfig(configuration cfg)
     bg_col->insert("A", cfg.bg_A);
     out_cfg->insert("BackgroundColor", bg_col);
     
+    auto midi_paths_out = cpptoml::make_array();
+    
+    for (const auto& path : cfg.extra_midi_paths) 
+    {
+        midi_paths_out->push_back(path);
+    }
+    
+    out_cfg->insert("midi_paths", midi_paths_out);
+    
+    auto sf_paths_out = cpptoml::make_array();
+    
+    for (const auto& path : cfg.extra_sf_paths) 
+    {
+        sf_paths_out->push_back(path);
+    }
+    
+    out_cfg->insert("soundfonts_paths", sf_paths_out);
+    
     std::ofstream out(CONFIG_PATH);
     out << (*out_cfg); // cpptoml overloads the << operator
     out.close();
@@ -65,6 +84,13 @@ NVConf::configuration NVConf::ReadConfig()
     in_cfg.bg_G = *bg_col->get_as<int>("G");
     in_cfg.bg_B = *bg_col->get_as<int>("B");
     in_cfg.bg_A = *bg_col->get_as<int>("A");
+    
+    auto midi_paths = cfg->get_array_of<std::string>("midi_paths");
+    in_cfg.extra_midi_paths = *midi_paths;
+    
+    auto sf_paths = cfg->get_array_of<std::string>("soundfonts_paths");
+    in_cfg.extra_sf_paths = *sf_paths;
+   
     
     return in_cfg;
 }

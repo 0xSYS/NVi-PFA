@@ -336,6 +336,22 @@ void NVi::CreateMidiList()
 #else
     base_dir << BASE_DIRECTORY;
 #endif
+
+for (const auto& path : live_conf.extra_midi_paths) {
+    auto mid_files       = NVFileUtils::GetFilesByExtension(path, ".mid");
+    auto midi_files      = NVFileUtils::GetFilesByExtension(path, ".midi");
+    auto smf_files       = NVFileUtils::GetFilesByExtension(path, ".smf");
+    auto mid_caps_files  = NVFileUtils::GetFilesByExtension(path, ".MID");
+    auto midi_caps_files = NVFileUtils::GetFilesByExtension(path, ".MIDI");
+    auto smf_caps_files  = NVFileUtils::GetFilesByExtension(path, ".SMF");
+
+    all_midi_files.insert(all_midi_files.end(), mid_files.begin(), mid_files.end());
+    all_midi_files.insert(all_midi_files.end(), midi_files.begin(), midi_files.end());
+    all_midi_files.insert(all_midi_files.end(), smf_files.begin(), smf_files.end());
+    all_midi_files.insert(all_midi_files.end(), mid_caps_files.begin(), mid_caps_files.end());
+    all_midi_files.insert(all_midi_files.end(), midi_caps_files.begin(), midi_caps_files.end());
+    all_midi_files.insert(all_midi_files.end(), smf_caps_files.begin(), smf_caps_files.end());
+}
     
     //All possibilities
     auto mid_files       = NVFileUtils::GetFilesByExtension(base_dir.str(), ".mid");
@@ -418,11 +434,29 @@ void NVi::RefreshSFList()
 #else 
     base_dir << BASE_DIRECTORY;
 #endif
-    live_soundfont_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".sf2");
+
+    live_soundfont_files.clear();
+    live_soundfont_list.clear();    
+
+    for (const auto& path : live_conf.extra_sf_paths) 
+    {
+        NVi::info("Player", "SF path Array: %s\n", path.c_str());
+        
+        auto sf2_files = NVFileUtils::GetFilesByExtension(path, ".sf2");
+        live_soundfont_files.insert(live_soundfont_files.end(), sf2_files.begin(), sf2_files.end());
+    
+        auto sfz_files = NVFileUtils::GetFilesByExtension(path, ".sfz");
+        live_soundfont_files.insert(live_soundfont_files.end(), sfz_files.begin(), sfz_files.end());
+    }
+
+
+    auto sf2_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".sf2");
+    live_soundfont_files.insert(live_soundfont_files.end(), sf2_files.begin(), sf2_files.end());
+    
     auto sfz_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".sfz");
     live_soundfont_files.insert(live_soundfont_files.end(), sfz_files.begin(), sfz_files.end());
-    live_soundfont_list.resize(live_soundfont_files.size());
     
+    live_soundfont_list.resize(live_soundfont_files.size());
     for(size_t i = 0; i < live_soundfont_files.size(); i++)
     {
         live_soundfont_list[i] = {live_soundfont_files[i], false};

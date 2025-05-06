@@ -50,6 +50,8 @@ class NVConf
         int bg_A;
         std::string last_midi_path;
         std::vector<std::string> current_soundfonts;
+        std::vector<std::string> extra_midi_paths;
+        std::vector<std::string> extra_sf_paths;
     }configuration;
     
     static configuration ReadConfig();
