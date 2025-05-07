@@ -27,9 +27,7 @@ const float SharpRatio = 0.64f;
 float fDeflate;
 // Define the vertex structure
 SDL_Vertex vert[4];
-// unsigned short r=c&0xFF;
-// unsigned short g=(c&0xFF00)>>8;
-// unsigned short b=(c&0xFF0000)>>16;
+
 // Implementing the DrawRect Function
 void DrawRect(SDL_Renderer* renderer, float x, float y, float cx, float cy, DWORD c1, DWORD c2, DWORD c3, DWORD c4)
 {
@@ -235,17 +233,8 @@ void Canvas::Note(int k, int yb, int ye, unsigned int c)
     unsigned short g2=g*0.2f;
 	unsigned short b2=b*0.2f;
 
-    // const RGBA_pix &p = getColor(c);
-    // SDL_SetTextureColorMod(note, r, g, b);
-    // SDL_SetRenderDrawColor(Ren, r, g, b, 255);
-    // SDL_FRect R{ (float)x, (float)ye, (float)w+1, (float)h}; //SDL_RenderRect(Ren, &R);
-    // SDL_RenderTexture(Ren,note, nullptr, &R);
-    // SDL_SetRenderDrawColor(Ren, r/5, g/5, b/5, 255); // Set the border color to green
 	DrawRect(Ren, x, ye, w, h, 0xFF000000|r2|g2<<8|b2<<16, 0xFF000000|r2|g2<<8|b2<<16, 0xFF000000|r2|g2<<8|b2<<16, 0xFF000000|r2|g2<<8|b2<<16);
-	// SDL_FRect s{ (float)x, (float)ye+1, (float)w, (float)h-2}; //SDL_RenderRect(Ren, &R);
-	// SDL_SetTextureColorMod(note, r, g, b);
-    // SDL_SetRenderDrawColor(Ren, r, g, b, 255);
-    // SDL_RenderTexture(Ren,note, nullptr, &s);
+
     if(h-2.0f*fDeflate>0)
 		DrawRect(Ren, x+fDeflate, ye+fDeflate, w-2.0f*fDeflate, h-2.0f*fDeflate, c,0xFF000000|r1|g1<<8|b1<<16, 0xFF000000|r1|g1<<8|b1<<16,c);
 
@@ -267,7 +256,6 @@ void Canvas::DrawKeyBoard()
     float fCurY = fTransitionCY + fRedCY + fSpacerCY;
 
 	DrawRect(Ren, 0, WinH - WinW * 82 / 1000, WinW, WinW * 82 / 1000, 0xFF000000,0xFF000000,0xFF000000,0xFF000000 );
-    // DrawRect(Ren, 0, 0, WinW, fTransitionCY, 0xFF999999, 0xFF999999, 0xFF000000, 0xFF000000 );
     DrawRect(Ren, 0, WinH - WinW * 82 / 1000 + fTransitionCY, WinW, fRedCY, 0xFF06054C, 0xFF06054C, 0xFF0D0A98, 0xFF0D0A98 );
     DrawRect(Ren, 0, WinH - WinW * 82 / 1000 + fTransitionCY + fRedCY, WinW, fSpacerCY, 0xFF1C1C1C, 0xFF1C1C1C, 0xFF1C1C1C, 0xFF1C1C1C );
     for (int i = 0; i != 75; ++i)
@@ -307,20 +295,10 @@ void Canvas::DrawKeyBoard()
                 float fMXGap = floor( _KeyWidth[j] * 0.25f + 0.5f );
                 float fMCX = _KeyWidth[j] - fMXGap * 2.0f - fKeyGap;
                 float fMY = std::max( fCurY + fTopCY + fNearCY - fMCX - 7.0f, fCurY + fSharpCY + 5.0f );
-                // DrawRect(Ren, fCurX + fKeyGap1+WinH - WinW * 82 / 1000 + fMXGap, fMY, fMCX, fCurY + fTopCY + fNearCY - 7.0f - fMY, m_csKBWhite.iDarkRGB );
                 DrawRect(Ren, fCurX + fKeyGap1 + fMXGap , fMY+WinH - WinW * 82 / 1000, fMCX, fCurY + fTopCY + fNearCY - 7.0f - fMY, 0xFF000000|r2|g2<<8|b2<<16,0xFF000000|r2|g2<<8|b2<<16,0xFF000000|r2|g2<<8|b2<<16,0xFF000000|r2|g2<<8|b2<<16);
             }
         }
-
-
-	    //DrawGrayRect(_KeyX[j], 0, _KeyWidth[j], _KeyHeight,KeyColors[j],1.05);
-	    //DrawRectangle(_KeyX[j], 0, _KeyWidth[j] + 1, _KeyHeight, 0xFF000000); // Drawing separator lines between keys
-	    //DrawGrayRect(_KeyX[j]+1, 0, _KeyWidth[j]-1, bgr/3+1,KeyColors[j],2); // The darker color at the bottom of the white key after it is pressed
-	    //if (!KeyPressed[j])//If the key is not pressed
-	    //{
-	    //	DrawRectangle(_KeyX[j], 0, _KeyWidth[j]+1, bgr, 0xFF000000);
-	    //	Draw3Drect2(_KeyX[j]+1, 1, _KeyWidth[j]-1, bgr-2, 0xFFAFAFAF,1.3);
-	    //}
+        
 		//Drawing shadows on the bottom of the keys
 		DrawRect(Ren, floor( fCurX + fKeyGap1 + _KeyWidth[j] - fKeyGap + 0.5f ), fCurY+WinH - WinW * 82 / 1000, fKeyGap, fTopCY + fNearCY, 0xFF000000, 0xFF999999, 0xFF999999, 0xFF000000 );
 		fCurX+=_KeyWidth[j];
@@ -332,9 +310,6 @@ void Canvas::DrawKeyBoard()
     {
 	    int j = KeyMap[i];
 	    float fNudgeX = 0.3;
-        // MIDI::Note eNote = MIDI::NoteVal( i );
-        // if ( eNote == MIDI::CS || eNote == MIDI::FS ) fNudgeX = -SharpRatio / 5.0f;
-        // else if ( eNote == MIDI::AS || eNote == MIDI::DS ) fNudgeX = SharpRatio / 5.0f;
         fCurX = KeyX[j];
         const float cx = _KeyWidth[0] * SharpRatio;
         const float x = fCurX - _KeyWidth[0] * ( SharpRatio / 2.0f - fNudgeX );
@@ -367,53 +342,6 @@ void Canvas::DrawKeyBoard()
             DrawSkew(Ren, fSharpTopX1, fCurY - fNewNear + fSharpCY * 0.25f+WinH - WinW * 82 / 1000, fSharpTopX2, fCurY - fNewNear + fSharpCY * 0.35f+WinH - WinW * 82 / 1000, fSharpTopX2, fCurY - fNewNear + fSharpCY * 0.75f+WinH - WinW * 82 / 1000, fSharpTopX1, fCurY - fNewNear + fSharpCY * 0.65f+WinH - WinW * 82 / 1000, c, c, 0xFF000000|r1|g1<<8|b1<<16, 0xFF000000|r1|g1<<8|b1<<16 );
         }
     }
-
-    /*int y = WinH - TH + 1, i, y_;
-
-    for (i = 0, y_ = y + WkeyH; i < 75; ++i)
-    {
-        int k = KeyMap[i], x_ = KeyX[k] + WkeyW;
-        unsigned int  c = KeyColor[k];
-
-        for (int _y = y; _y < y_; ++_y)
-        {
-            // const RGBA_pix &p = getColor(c);
-			unsigned short r=c&0xFF;
-    	    unsigned short g=(c&0xFF00)>>8;
-            unsigned short b=(c&0xFF0000)>>16;
-            SDL_SetRenderDrawColor(Ren, r, g, b, 255);
-            SDL_RenderLine(Ren, KeyX[k], _y, x_, _y);
-        }
-    }
-
-    for (i = 0; i < 11; ++i)
-    {
-        SDL_FRect Box{(float)TX[i], (float)y - 1, (float)TW, (float)TH};
-        SDL_RenderTexture(Ren, Wk, nullptr, &Box);
-    }
-
-    for (i = 75, y_ = y + BkeyH; i < 128; ++i)
-    {
-        int k = KeyMap[i], x_ = KeyX[k] + BkeyW;
-        unsigned int c = KeyColor[k];
-
-        for (int _y = y; _y < y_; ++_y)
-        {
-
-            unsigned short r=c&0xFF;
-    	    unsigned short g=(c&0xFF00)>>8;
-            unsigned short b=(c&0xFF0000)>>16;
-            SDL_SetRenderDrawColor(Ren, r, g, b, 255);
-            SDL_RenderLine(Ren, KeyX[k], _y, x_, _y);
-        }
-    }
-
-    for (i = 75; i < 128; ++i)
-    {
-        int k = KeyMap[i];
-        SDL_FRect Box{ (float)KeyX[k], (float)y - 1, (float)BkeyW + 2, (float)BkeyH + 3};
-        SDL_RenderTexture(Ren, KeyPress[k]? Bk1 : Bk0, nullptr, &Box);
-    }*/
 }
 
 void Canvas::DrawNote(NVi::u16_t k, const NVnote &n, int pps)

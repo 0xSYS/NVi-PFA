@@ -131,6 +131,8 @@ void reloadSoundfonts() {
     
     // Update our playback time
     Tplay = BASS_ChannelBytes2Seconds(Stm, position);
+
+    NVConf::CreateSoundfontList(live_soundfont_list);
     
     // Log the change
     NVi::info("Player", "Soundfonts reloaded\n");
@@ -440,7 +442,7 @@ void NVi::RefreshSFList()
 
     for (const auto& path : live_conf.extra_sf_paths) 
     {
-        NVi::info("Player", "SF path Array: %s\n", path.c_str());
+        //NVi::info("Player", "SF path Array: %s\n", path.c_str());
         
         auto sf2_files = NVFileUtils::GetFilesByExtension(path, ".sf2");
         live_soundfont_files.insert(live_soundfont_files.end(), sf2_files.begin(), sf2_files.end());
@@ -523,12 +525,14 @@ int SDL_main(int ac, char **av)
         default_config.bg_G = 43;
         default_config.bg_B = 43;
         default_config.bg_A = 255;
+        default_config.note_speed = 6000;
         default_config.audio_device_index = -1; // Also set default audio device output
         liveColor.r = default_config.bg_R;
         liveColor.g = default_config.bg_G;
         liveColor.b = default_config.bg_B;
         liveColor.a = default_config.bg_A;
         live_conf = default_config;
+        live_note_speed = default_config.note_speed; // Note speed should never reset to 0
     }
     
     if(NVFileUtils::FileExists(MIDI_LIST) == true)
@@ -590,7 +594,7 @@ int SDL_main(int ac, char **av)
     BASS_PluginLoad(BASSMIDI_LIB, 0);
     BASS_SetConfig(BASS_CONFIG_BUFFER, 500); // Set buffer size to 500ms
     BASS_SetConfig(BASS_CONFIG_MIDI_AUTOFONT, 0);
-    NVi::info("Player", "array size: %d\n", availableAudioDevices.size());
+    //NVi::info("Player", "array size: %d\n", availableAudioDevices.size());
     
     if(availableAudioDevices.size() == 0)
     {

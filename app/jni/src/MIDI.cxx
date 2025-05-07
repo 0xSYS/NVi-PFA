@@ -81,10 +81,14 @@ void NVmidiFile::mid_close()
         delete[] trk_data[trk];
     }
 
-    delete[]  trk_data; delete[]   trk_ptr;
-    trk_data = nullptr; trk_ptr  = nullptr;
-    delete[]  trk_over; delete[]  grp_code;
-    trk_over = nullptr; grp_code = nullptr;
+    delete[]  trk_data; 
+    delete[]   trk_ptr;
+    trk_data = nullptr; 
+    trk_ptr  = nullptr;
+    delete[]  trk_over; 
+    delete[]  grp_code;
+    trk_over = nullptr; 
+    grp_code = nullptr;
 }
 
 static inline u32_t getVLi_U32(nv_byte **p)

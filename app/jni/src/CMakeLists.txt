@@ -78,8 +78,8 @@ add_executable(nvi-pfa
 target_link_libraries(nvi-pfa PRIVATE SDL3::SDL3 bass bassmidi)
 else()
 
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall")
-set(CMAKE_C_FLAGS_RELEASE "-O3 -Wall")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -march=arm64-v8a")
+set(CMAKE_C_FLAGS_RELEASE "-O3 -Wall -march=arm64-v8a")
 add_library(main SHARED
     extern/imgui_sdl3/imgui_impl_sdl3.cpp
     extern/imgui_sdl3/imgui_impl_sdlrenderer3.cpp

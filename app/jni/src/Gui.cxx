@@ -526,17 +526,18 @@ void NVGui::Run(SDL_Renderer *r)
                     ImGui::EndTooltip();
                 }
                 
-                ImGui::SameLine();
-                
-                if(ImGui::Button("Save Soundfont List"))
-                {
-                    NVConf::CreateSoundfontList(live_soundfont_list);
-                }
-                if (ImGui::BeginItemTooltip())
-                {
-                    ImGui::Text("Save the modified soundfont list");
-                    ImGui::EndTooltip();
-                }
+                //ImGui::SameLine();
+
+                // This happens right after reloading the soundfont
+                //if(ImGui::Button("Save Soundfont List"))
+                //{
+                //    NVConf::CreateSoundfontList(live_soundfont_list);
+                //}
+                //if (ImGui::BeginItemTooltip())
+                //{
+                //    ImGui::Text("Save the modified soundfont list");
+                //    ImGui::EndTooltip();
+                //}
                 RenderSoundfontList(live_soundfont_list, sf_search_text);
                     
                 ImGui::EndTabItem();

@@ -48,6 +48,9 @@ class NVConf
         int bg_G;
         int bg_B;
         int bg_A;
+        bool audio_limiter;
+        bool vel_filter;
+        bool use_default_paths;
         std::string last_midi_path;
         std::vector<std::string> current_soundfonts;
         std::vector<std::string> extra_midi_paths;

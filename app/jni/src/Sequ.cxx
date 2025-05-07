@@ -67,8 +67,10 @@ const NVseq_event& NVsequencer::event() const
 
 void NVsequencer::seq_destroy()
 {
-    delete[]  T; delete[]  E;
-    T = nullptr; E = nullptr;
+    delete[]  T; 
+    delete[]  E;
+    T = nullptr; 
+    E = nullptr;
 }
 
 void NVsequencer::update(int p, int a, int b)
