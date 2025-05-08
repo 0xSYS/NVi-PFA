@@ -14,7 +14,6 @@
 #include "common.hxx"
 #include "canvas.hxx"
 #include "Gui.hxx"
-//#include "Utils.hxx"
 
 
 
@@ -155,30 +154,30 @@ Canvas::Canvas()
 
 	for (int i = 0; i != 128; ++i)
 	{
-		KeyX[i] = (i / 12 * 126 + GenKeyX[i % 12]) * WinW / 1350;
+	    KeyX[i] = (i / 12 * 126 + GenKeyX[i % 12]) * WinW / 1350;
 	}
 
     for (int i = 0; i != 127; ++i)
     {
-    	int val;
-    	switch (i % 12)
-    	{
-        	case 1:
-        	case 3:
-        	case 6:
-        	case 8:
-        	case 10:
-        		val = WinW * 9 / 1350;
-        		break;
-        	case 4:
-        	case 11:
-        		val = KeyX[i + 1] - KeyX[i];
-        		break;
-        	default:
-        		val = KeyX[i + 2] - KeyX[i];
-        		break;
-    	}
-    	_KeyWidth[i] = val;
+        int val;
+        switch (i % 12)
+        {
+            case 1:
+            case 3:
+            case 6:
+            case 8:
+            case 10:
+                val = WinW * 9 / 1350;
+                break;
+            case 4:
+            case 11:
+                val = KeyX[i + 1] - KeyX[i];
+                break;
+            default:
+                val = KeyX[i + 2] - KeyX[i];
+                break;
+   	    }
+        _KeyWidth[i] = val;
     }
 	_KeyWidth[127] = WinW - KeyX[127];
 
@@ -303,9 +302,11 @@ void Canvas::DrawKeyBoard()
 		DrawRect(Ren, floor( fCurX + fKeyGap1 + _KeyWidth[j] - fKeyGap + 0.5f ), fCurY+WinH - WinW * 82 / 1000, fKeyGap, fTopCY + fNearCY, 0xFF000000, 0xFF999999, 0xFF999999, 0xFF000000 );
 		fCurX+=_KeyWidth[j];
     }
+    
     float fSharpTop = SharpRatio * 0.7f;
 
     fCurY = fTransitionCY + fRedCY + fSpacerCY;
+    
 	for (int i=75; i != 128; ++i)
     {
 	    int j = KeyMap[i];
@@ -353,13 +354,13 @@ void Canvas::DrawNote(NVi::u16_t k, const NVnote &n, int pps)
     int y_0 = std::clamp((int)floor(_WinH - (n.Tstart - Tplay) * pps + 0.5f), 0, _WinH);
     int y_1 = (n.Tend < Tplay + Tscr) ? std::clamp((int)floor(_WinH - (n.Tend - Tplay) * pps + 0.5f), 0, _WinH) : 0;
     
-        if (n.Tstart <= Tplay && Tplay < n.Tend)
-        {
-            CvWin->KeyPress[key] = true;
-            CvWin->KeyColor[key] = c;
-        }
+    if (n.Tstart <= Tplay && Tplay < n.Tend)
+    {
+        CvWin->KeyPress[key] = true;
+        CvWin->KeyColor[key] = c;
+    }
     
-        CvWin->Note(k, y_0, y_1, c);
+    CvWin->Note(k, y_0, y_1, c);
 }
 
 int Canvas::scale(int x) const

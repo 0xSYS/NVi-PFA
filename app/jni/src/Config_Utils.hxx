@@ -42,12 +42,14 @@ class NVConf
         int bass_voice_count;
         int audio_device_index;
         int note_speed;
-        int window_w; // Custom width and height for the SDL window
+        int window_w;
         int window_h;
         int bg_R;
         int bg_G;
         int bg_B;
         int bg_A;
+        int vel_min;
+        int vel_max;
         bool audio_limiter;
         bool vel_filter;
         bool use_default_paths;
@@ -59,12 +61,8 @@ class NVConf
     
     static configuration ReadConfig();
     static void WriteConfig(configuration cfg);
-    //static void ReadMidiLists();
     
     static void CreateSoundfontList(std::vector<SoundfontItem> lst);
     static std::vector<SoundfontItem> ReadSoundfontList();
-    
-    //static void CreateMidiFileList(std::vector<std::string> lst);
-    //static std::vector<std::string> ReadMidiList();
     
 };

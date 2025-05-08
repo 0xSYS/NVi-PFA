@@ -439,6 +439,10 @@ void NVGui::Run(SDL_Renderer *r)
         ImGui::Begin("NVi PFA", &main_gui_window, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 #endif
 
+    velocity_filter = live_conf.vel_filter;
+    min_velocity = live_conf.vel_min;
+    max_velocity = live_conf.vel_max;
+
         
         if (ImGui::Button("Quit"))
             NVi::Quit();
@@ -672,6 +676,25 @@ void NVGui::Run(SDL_Renderer *r)
 								updateBassVoiceCount(live_conf.bass_voice_count);
 								prev_voice_count = live_conf.bass_voice_count;
 			                }
+                        }
+                        
+                        ImGui::Text("Effects");
+                        if(ImGui::CollapsingHeader("Velocity Filter *"))
+                        {
+                            //idk
+                            ImGui::Checkbox("Enabled", &velocity_filter);
+                            live_conf.vel_filter = velocity_filter;
+                            
+                            ImGui::BeginDisabled(!live_conf.vel_filter); // Disable widgets if isDisabled is true
+                            {
+                                ImGui::SliderInt("Min Velocity", &min_velocity, 0, 127);
+                                ImGui::SliderInt("Max velocity", &max_velocity, 0, 127);
+                            }
+                            ImGui::EndDisabled();
+                            
+                            live_conf.vel_min = min_velocity;
+                            live_conf.vel_max = max_velocity;
+                            
                         }
                         ImGui::EndTabItem();
                     }

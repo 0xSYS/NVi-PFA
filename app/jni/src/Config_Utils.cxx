@@ -22,9 +22,20 @@ void NVConf::WriteConfig(configuration cfg)
     auto out_cfg = cpptoml::make_table();
     
     auto audio = cpptoml::make_table();
+    
     audio->insert("VoiceCount", cfg.bass_voice_count);
     audio->insert("LastMIDIpath", cfg.last_midi_path);
     audio->insert("DeviceID", cfg.audio_device_index);
+    auto effects = cpptoml::make_table();
+    auto vel_filter = cpptoml::make_table();
+    vel_filter->insert("enabled", cfg.vel_filter);
+    vel_filter->insert("MinVel", cfg.vel_min);
+    vel_filter->insert("MaxVel", cfg.vel_max);
+    
+    effects->insert("VelFilter", vel_filter);
+    
+    // Insert the "Effects" table into the "Audio" table
+    audio->insert("Effects", effects);
     out_cfg->insert("Audio", audio);
     
     auto vis = cpptoml::make_table();
@@ -73,6 +84,24 @@ NVConf::configuration NVConf::ReadConfig()
     in_cfg.bass_voice_count = *audio->get_as<int>("VoiceCount");
     in_cfg.last_midi_path = *audio->get_as<std::string>("LastMIDIpath");
     in_cfg.audio_device_index = *audio->get_as<int>("DeviceID");
+    
+    auto effects = audio->get_table("Effects");
+    
+    if (effects) 
+    {
+        auto vel_filter = effects->get_table("VelFilter");
+        if (vel_filter) 
+        {
+            auto enabled = vel_filter->get_as<bool>("enabled");
+            auto min_vel = vel_filter->get_as<int>("MinVel");
+            auto max_vel = vel_filter->get_as<int>("MaxVel");
+        
+            in_cfg.vel_min = *min_vel;
+            in_cfg.vel_max = *max_vel;
+            in_cfg.vel_filter = *enabled;
+        }
+        
+    }
     
     auto vis = cfg->get_table("Visual");
     in_cfg.window_w = *vis->get_as<int>("Window_w");

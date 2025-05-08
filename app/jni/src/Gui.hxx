@@ -25,7 +25,10 @@ inline NVConf::configuration live_conf;
 inline ImVec4 clear_color;
 inline NVi::RGBAint liveColor;
 inline int live_note_speed = 6000;
+static inline int min_velocity;
+static inline int max_velocity;
 inline int current_audio_dev;
+inline bool velocity_filter = true;
 
 inline std::vector<SoundfontItem> live_soundfont_list;
 inline std::vector<std::string> checked_soundfonts;

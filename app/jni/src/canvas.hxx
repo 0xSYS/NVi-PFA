@@ -77,7 +77,6 @@ public:
 
     SDL_Window   *Win;
     SDL_Renderer *Ren;
-    //SDL_Texture  *GuiLayer;
 	const SDL_DisplayMode *mod;
     int   TH, WinW, WinH;
     bool  KeyPress[128];

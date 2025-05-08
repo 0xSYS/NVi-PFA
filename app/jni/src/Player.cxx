@@ -513,6 +513,9 @@ int SDL_main(int ac, char **av)
         liveColor.a = parsed_config.bg_A;
         live_note_speed = parsed_config.note_speed;
         current_audio_dev = live_conf.audio_device_index; // Used to set the last selected audio device in the combobox
+        //velocity_filter = live_conf.vel_filter;
+        //min_velocity = live_conf.vel_min;
+        //max_velocity = live_conf.vel_max;
     }
     else 
     {
@@ -527,12 +530,20 @@ int SDL_main(int ac, char **av)
         default_config.bg_A = 255;
         default_config.note_speed = 6000;
         default_config.audio_device_index = -1; // Also set default audio device output
+        default_config.vel_filter = true;
+        default_config.vel_min = 0;
+        default_config.vel_max = 32;
         liveColor.r = default_config.bg_R;
         liveColor.g = default_config.bg_G;
         liveColor.b = default_config.bg_B;
         liveColor.a = default_config.bg_A;
         live_conf = default_config;
+        
+        // Update settings to UI
         live_note_speed = default_config.note_speed; // Note speed should never reset to 0
+        velocity_filter = default_config.vel_filter;
+        min_velocity = default_config.vel_min;
+        max_velocity = default_config.vel_max;
     }
     
     if(NVFileUtils::FileExists(MIDI_LIST) == true)
@@ -688,8 +699,9 @@ int SDL_main(int ac, char **av)
     BASS_ChannelSetAttribute(Stm, BASS_ATTRIB_MIDI_VOICES, parsed_config.bass_voice_count);
 
 
-    
-    BASS_MIDI_StreamSetFilter(Stm, 0, reinterpret_cast<BOOL (*)(HSTREAM, int, BASS_MIDI_EVENT *, BOOL, void *)>(filter), nullptr);
+    if(live_conf.vel_filter == true)
+        BASS_MIDI_StreamSetFilter(Stm, 0, reinterpret_cast<BOOL (*)(HSTREAM, int, BASS_MIDI_EVENT *, BOOL, void *)>(filter), nullptr);
+        
     BASS_ChannelPlay(Stm, 1); // Start playback after the delay
     
     const unsigned int FPS=1000000/CvWin->mod->refresh_rate;// 20 may be replaced with a limited frame rate

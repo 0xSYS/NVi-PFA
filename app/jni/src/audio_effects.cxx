@@ -5,6 +5,7 @@
 #include "extern/audio/bassmidi.h"
 
 #include "audio_effects.hxx"
+#include "Utils.hxx"
 
 
 
@@ -50,7 +51,7 @@ BOOL CALLBACK filter(HSTREAM S, DWORD trk, BASS_MIDI_EVENT *E, BOOL sk, void *u)
     if (E->event == MIDI_EVENT_NOTE)
     {
         int vel = HIBYTE(E->param);
-        return vel == 0 || vel > 9;
+        return vel == parsed_config.vel_min || vel > parsed_config.vel_max;
     }
     return TRUE;
 }
