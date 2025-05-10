@@ -127,20 +127,37 @@ public class NvpfaActivity extends SDLActivity {
                 grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 // Permission applied successfully, check MANAGE_EXTERNAL_STORAGE permission.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    if (!Environment.isExternalStorageManager()) {
-                        // If this permission is not available, direct the user to turn it on manually
-                        Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                        intent.setData(Uri.parse("package:" + getPackageName()));
-                        startActivityForResult(intent, REQUEST_MANAGE_EXTERNAL_STORAGE);
-                    } else {
-                        // If you already have all permissions, initialize the application directly
+                    if (!Environment.isExternalStorageManager()) 
+                    {
+                        requestManageExternalStoragePermission();
+                    } 
+                    else 
+                    {
                         initializeApp();
                     }
                 }
-            } else {
+            } 
+            else 
+            {
                 // The permission request fails, prompting the user to
                 System.out.println("Storage permissions were not granted.");
             }
+        }
+    }
+    
+    private void requestManageExternalStoragePermission() 
+    {
+        try 
+        {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            startActivity(intent);
+        } 
+        catch (Exception e) 
+        {
+            // Fallback: Redirect to general All Files Access settings
+            Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+            startActivity(intent);
         }
     }
 
