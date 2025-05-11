@@ -4,6 +4,8 @@
 #include <SDL3/SDL.h>
 #include <cmath>
 #include <algorithm>
+#include <unordered_map>
+#include <random>
 
 
 #include "extern/imgui/imgui.h"
@@ -26,6 +28,31 @@ const float SharpRatio = 0.64f;
 float fDeflate;
 // Define the vertex structure
 SDL_Vertex vert[4];
+
+
+const unsigned char KeyMap[128] =
+{
+    0,   2,   4,   5,   7,   9,   11,  12,  14,  16,  17,  19,  21,  23,  24,  26,
+    28,  29,  31,  33,  35,  36,  38,  40,  41,  43,  45,  47,  48,  50,  52,  53,
+    55,  57,  59,  60,  62,  64,  65,  67,  69,  71,  72,  74,  76,  77,  79,  81,
+    83,  84,  86,  88,  89,  91,  93,  95,  96,  98,  100, 101, 103, 105, 107, 108,
+    110, 112, 113, 115, 117, 119, 120, 122, 124, 125, 127, 1,   3,   6,   8,   10,
+    13,  15,  18,  20,  22,  25,  27,  30,  32,  34,  37,  39,  42,  44,  46,  49,
+    51,  54,  56,  58,  61,  63,  66,  68,  70,  73,  75,  78,  80,  82,  85,  87,
+    90,  92,  94,  97,  99,  102, 104, 106, 109, 111, 114, 116, 118, 121, 123, 126,
+};
+
+static const short GenKeyX[] =
+{
+    0, 12, 18, 33, 36, 54, 66, 72, 85, 90, 105, 108
+};
+
+std::vector<int> bgLinePos = 
+{
+    75, 177, 253, 355, 431, 533, 610, 712, 788, 890,
+    966, 1068, 1145, 1246, 1323, 1425, 1501, 1603, 1679,
+    1781, 1858
+};
 
 // Implementing the DrawRect Function
 void DrawRect(SDL_Renderer* renderer, float x, float y, float cx, float cy, DWORD c1, DWORD c2, DWORD c3, DWORD c4)
@@ -99,25 +126,6 @@ void DrawSkew(SDL_Renderer* renderer, float x1, float y1, float x2, float y2,flo
     // Call SDL_RenderGeometry to draw the quadrilateral.
     SDL_RenderGeometry(renderer, NULL, vert, 4, indices, 6);
 }
-
-
-
-const unsigned char KeyMap[128] =
-{
-    0,   2,   4,   5,   7,   9,   11,  12,  14,  16,  17,  19,  21,  23,  24,  26,
-    28,  29,  31,  33,  35,  36,  38,  40,  41,  43,  45,  47,  48,  50,  52,  53,
-    55,  57,  59,  60,  62,  64,  65,  67,  69,  71,  72,  74,  76,  77,  79,  81,
-    83,  84,  86,  88,  89,  91,  93,  95,  96,  98,  100, 101, 103, 105, 107, 108,
-    110, 112, 113, 115, 117, 119, 120, 122, 124, 125, 127, 1,   3,   6,   8,   10,
-    13,  15,  18,  20,  22,  25,  27,  30,  32,  34,  37,  39,  42,  44,  46,  49,
-    51,  54,  56,  58,  61,  63,  66,  68,  70,  73,  75,  78,  80,  82,  85,  87,
-    90,  92,  94,  97,  99,  102, 104, 106, 109, 111, 114, 116, 118, 121, 123, 126,
-};
-
-static const short GenKeyX[] =
-{
-    0, 12, 18, 33, 36, 54, 66, 72, 85, 90, 105, 108
-};
 
 Canvas::Canvas()
 {
@@ -209,8 +217,20 @@ Canvas::~Canvas()
 
 void Canvas::canvas_clear()
 {
-
     SDL_RenderClear(Ren);
+    
+    int yStart = 0;  // Starting y-coordinate
+    int yEnd = 900;  // Ending y-coordinate
+    
+    for (int x : bgLinePos) 
+    {
+        SDL_SetRenderDrawColor(Ren, 0, 0, 0, 70);
+        SDL_RenderLine(Ren, x, yStart, x, yEnd);
+    
+        SDL_SetRenderDrawColor(Ren, 80, 80, 80, 70);
+        SDL_RenderLine(Ren, x + 1, yStart, x + 1, yEnd);
+    }
+
 
     for (int i = 0; i < 128; ++i)
     {
@@ -345,10 +365,44 @@ void Canvas::DrawKeyBoard()
     }
 }
 
+unsigned int GenerateRandomColor()
+{
+    static std::mt19937 rng(std::random_device{}());
+    static std::uniform_int_distribution<unsigned int> dist(0x000000, 0xFFFFFF);
+    return dist(rng);
+}
+
 void Canvas::DrawNote(NVi::u16_t k, const NVnote &n, int pps)
 {
-    unsigned int c = Col[(n.track % 16 + n.chn) % 16];
-    //unsigned int c = Col[n.track % 16];
+    //unsigned int c = Col[(n.track % 16 + n.chn) % 16];
+    
+    // Static map to store track-to-color mapping
+        static std::unordered_map<int, unsigned int> trackColorMap;
+    
+        // Determine the color for the current track
+        unsigned int c;
+        if (n.track < 16)
+        {
+            // Use predefined colors for the first 16 tracks
+            c = Col[n.track % 16];
+        }
+        else
+        {
+            // Check if the track already has a color assigned
+            auto it = trackColorMap.find(n.track);
+            if (it != trackColorMap.end())
+            {
+                // Use the existing color
+                c = it->second;
+            }
+            else
+            {
+                // Generate a new random color and store it in the map
+                c = GenerateRandomColor();
+                trackColorMap[n.track] = c;
+            }
+        }
+
     int key = KeyMap[k];
     
     int y_0 = std::clamp((int)floor(_WinH - (n.Tstart - Tplay) * pps + 0.5f), 0, _WinH);

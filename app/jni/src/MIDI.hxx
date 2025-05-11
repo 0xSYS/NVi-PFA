@@ -4,6 +4,8 @@
 
 #include "Utils.hxx"
 
+inline int total_track_count;
+
 enum class NV_METYPE  /* === MIDI Event types === */
 {
     NOFF = (NVi::nv_byte)0x80, // Noteoff

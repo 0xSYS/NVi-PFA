@@ -42,6 +42,10 @@ bool NVmidiFile::mid_open(const char *name)
     trk_data = new nv_byte* [tracks];
     trk_ptr  = new nv_byte* [tracks];
     grp_code = new nv_byte  [tracks];
+    
+    info("MIDI", "Total trk count: %d\n", tracks);
+    
+    total_track_count = tracks;
 
     for (u16_t trk = 0; trk < tracks; ++trk)
     {
@@ -52,9 +56,11 @@ bool NVmidiFile::mid_open(const char *name)
         {
             tracks = trk, mid_close();
             error("MIDI", "Track corrupted !\n");
-            info ("MIDI", "@Track%hd\n", trk);
+            info("MIDI", "@Track%hd\n", trk);
             return (fclose(fp), false);
         }
+        else
+            info("MIDI", "Loaded Track: %hd\n", trk);
 
         tmp = 0; revU32(size);
         trk_data[trk] = new nv_byte [size];
@@ -109,6 +115,8 @@ bool NVmidiEvent::get(u16_t track, NVmidiFile &midi)
     {
         return false;
     }
+    
+    //NVi::info("MIDI", "Track: %hd\n", midi.trk_over[track]);
 
     nv_byte code, **p = midi.trk_ptr + track;
 

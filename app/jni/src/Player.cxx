@@ -524,9 +524,9 @@ int SDL_main(int ac, char **av)
 #ifndef NON_ANDROID
         default_config.current_soundfonts = {default_sf_path};
 #endif
-        default_config.bg_R = 43;
-        default_config.bg_G = 43;
-        default_config.bg_B = 43;
+        default_config.bg_R = 48;
+        default_config.bg_G = 48;
+        default_config.bg_B = 48;
         default_config.bg_A = 255;
         default_config.note_speed = 6000;
         default_config.audio_device_index = -1; // Also set default audio device output
