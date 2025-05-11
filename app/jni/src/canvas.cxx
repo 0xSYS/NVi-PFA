@@ -54,78 +54,9 @@ std::vector<int> bgLinePos =
     1781, 1858
 };
 
-// Implementing the DrawRect Function
-void DrawRect(SDL_Renderer* renderer, float x, float y, float cx, float cy, DWORD c1, DWORD c2, DWORD c3, DWORD c4)
-{
-    // Converts color from DWORD to SDL_Color
-    vert[0].position.x = x;
-    vert[0].position.y = y;
-    vert[0].color.r = (c1&0xFF)/255.0f;
-    vert[0].color.g = ((c1&0xFF00)>>8)/255.0f;
-    vert[0].color.b = ((c1&0xFF0000)>>16)/255.0f;
-    vert[0].color.a = 1.0;
 
-    // left
-    vert[1].position.x = x+cx;
-    vert[1].position.y = y;
-    vert[1].color.r = (c2&0xFF)/255.0f;
-    vert[1].color.g = ((c2&0xFF00)>>8)/255.0f;
-    vert[1].color.b = ((c2&0xFF0000)>>16)/255.0f;
-    vert[1].color.a = 1.0;
 
-    // right
-    vert[2].position.x = x+cx;
-    vert[2].position.y = y+cy;
-    vert[2].color.r = (c3&0xFF)/255.0f;
-    vert[2].color.g = ((c3&0xFF00)>>8)/255.0f;
-    vert[2].color.b = ((c3&0xFF0000)>>16)/255.0f;
-    vert[2].color.a = 1.0;
-    vert[3].position.x = x;
-    vert[3].position.y = y+cy;
-    vert[3].color.r = (c4&0xFF)/255.0f;
-    vert[3].color.g = ((c4&0xFF00)>>8)/255.0f;
-    vert[3].color.b = ((c4&0xFF0000)>>16)/255.0f;
-    vert[3].color.a = 1.0;
-    int indices[] = {0, 1, 2, 2, 3, 0};
-    // Call SDL_RenderGeometry to draw the quadrilateral.
-    SDL_RenderGeometry(renderer, NULL, vert, 4, indices, 6);
-}
 
-void DrawSkew(SDL_Renderer* renderer, float x1, float y1, float x2, float y2,float x3, float y3,float x4, float y4, DWORD c1, DWORD c2, DWORD c3, DWORD c4)
-{
-    // Converts color from DWORD to SDL_Color
-    vert[0].position.x = x1;
-    vert[0].position.y = y1;
-    vert[0].color.r = (c1&0xFF)/255.0f;
-    vert[0].color.g = ((c1&0xFF00)>>8)/255.0f;
-    vert[0].color.b = ((c1&0xFF0000)>>16)/255.0f;
-    vert[0].color.a = 1.0;
-
-    // left
-    vert[1].position.x = x2;
-    vert[1].position.y = y2;
-    vert[1].color.r = (c2&0xFF)/255.0f;
-    vert[1].color.g = ((c2&0xFF00)>>8)/255.0f;
-    vert[1].color.b = ((c2&0xFF0000)>>16)/255.0f;
-    vert[1].color.a = 1.0;
-
-    // right
-    vert[2].position.x = x3;
-    vert[2].position.y = y3;
-    vert[2].color.r = (c3&0xFF)/255.0f;
-    vert[2].color.g = ((c3&0xFF00)>>8)/255.0f;
-    vert[2].color.b = ((c3&0xFF0000)>>16)/255.0f;
-    vert[2].color.a = 1.0;
-    vert[3].position.x = x4;
-    vert[3].position.y = y4;
-    vert[3].color.r = (c4&0xFF)/255.0f;
-    vert[3].color.g = ((c4&0xFF00)>>8)/255.0f;
-    vert[3].color.b = ((c4&0xFF0000)>>16)/255.0f;
-    vert[3].color.a = 1.0;
-    int indices[] = {0, 1, 2, 2, 3, 0};
-    // Call SDL_RenderGeometry to draw the quadrilateral.
-    SDL_RenderGeometry(renderer, NULL, vert, 4, indices, 6);
-}
 
 Canvas::Canvas()
 {
@@ -197,6 +128,7 @@ Canvas::Canvas()
     fDeflate = std::max( std::min( fDeflate, 3.0f ), 1.0f );
 }
 
+
 Canvas::~Canvas()
 {
     NVi::info("canvas", "Destroy canvas\n");
@@ -213,6 +145,79 @@ Canvas::~Canvas()
     SDL_DestroyRenderer(Ren);
     SDL_DestroyWindow(Win);
     SDL_Quit();
+}
+
+// Implementing the DrawRect Function
+void DrawRect(SDL_Renderer* renderer, float x, float y, float cx, float cy, DWORD c1, DWORD c2, DWORD c3, DWORD c4)
+{
+    // Converts color from DWORD to SDL_Color
+    vert[0].position.x = x;
+    vert[0].position.y = y;
+    vert[0].color.r = (c1&0xFF)/255.0f;
+    vert[0].color.g = ((c1&0xFF00)>>8)/255.0f;
+    vert[0].color.b = ((c1&0xFF0000)>>16)/255.0f;
+    vert[0].color.a = 1.0;
+
+    // left
+    vert[1].position.x = x+cx;
+    vert[1].position.y = y;
+    vert[1].color.r = (c2&0xFF)/255.0f;
+    vert[1].color.g = ((c2&0xFF00)>>8)/255.0f;
+    vert[1].color.b = ((c2&0xFF0000)>>16)/255.0f;
+    vert[1].color.a = 1.0;
+
+    // right
+    vert[2].position.x = x+cx;
+    vert[2].position.y = y+cy;
+    vert[2].color.r = (c3&0xFF)/255.0f;
+    vert[2].color.g = ((c3&0xFF00)>>8)/255.0f;
+    vert[2].color.b = ((c3&0xFF0000)>>16)/255.0f;
+    vert[2].color.a = 1.0;
+    vert[3].position.x = x;
+    vert[3].position.y = y+cy;
+    vert[3].color.r = (c4&0xFF)/255.0f;
+    vert[3].color.g = ((c4&0xFF00)>>8)/255.0f;
+    vert[3].color.b = ((c4&0xFF0000)>>16)/255.0f;
+    vert[3].color.a = 1.0;
+    int indices[] = {0, 1, 2, 2, 3, 0};
+    // Call SDL_RenderGeometry to draw the quadrilateral.
+    SDL_RenderGeometry(renderer, NULL, vert, 4, indices, 6);
+}
+
+void DrawSkew(SDL_Renderer* renderer, float x1, float y1, float x2, float y2,float x3, float y3,float x4, float y4, DWORD c1, DWORD c2, DWORD c3, DWORD c4)
+{
+    // Converts color from DWORD to SDL_Color
+    vert[0].position.x = x1;
+    vert[0].position.y = y1;
+    vert[0].color.r = (c1&0xFF)/255.0f;
+    vert[0].color.g = ((c1&0xFF00)>>8)/255.0f;
+    vert[0].color.b = ((c1&0xFF0000)>>16)/255.0f;
+    vert[0].color.a = 1.0;
+
+    // left
+    vert[1].position.x = x2;
+    vert[1].position.y = y2;
+    vert[1].color.r = (c2&0xFF)/255.0f;
+    vert[1].color.g = ((c2&0xFF00)>>8)/255.0f;
+    vert[1].color.b = ((c2&0xFF0000)>>16)/255.0f;
+    vert[1].color.a = 1.0;
+
+    // right
+    vert[2].position.x = x3;
+    vert[2].position.y = y3;
+    vert[2].color.r = (c3&0xFF)/255.0f;
+    vert[2].color.g = ((c3&0xFF00)>>8)/255.0f;
+    vert[2].color.b = ((c3&0xFF0000)>>16)/255.0f;
+    vert[2].color.a = 1.0;
+    vert[3].position.x = x4;
+    vert[3].position.y = y4;
+    vert[3].color.r = (c4&0xFF)/255.0f;
+    vert[3].color.g = ((c4&0xFF00)>>8)/255.0f;
+    vert[3].color.b = ((c4&0xFF0000)>>16)/255.0f;
+    vert[3].color.a = 1.0;
+    int indices[] = {0, 1, 2, 2, 3, 0};
+    // Call SDL_RenderGeometry to draw the quadrilateral.
+    SDL_RenderGeometry(renderer, NULL, vert, 4, indices, 6);
 }
 
 void Canvas::canvas_clear()
@@ -365,43 +370,56 @@ void Canvas::DrawKeyBoard()
     }
 }
 
-unsigned int GenerateRandomColor()
+unsigned int Canvas::GenerateRandomColor()
 {
     static std::mt19937 rng(std::random_device{}());
-    static std::uniform_int_distribution<unsigned int> dist(0x000000, 0xFFFFFF);
-    return dist(rng);
+    static std::uniform_int_distribution<unsigned int> dist(60, 255); // Ensure brightness by using a higher range
+    
+    // Generate bright red, green, and blue components
+    unsigned int r = dist(rng);
+    unsigned int g = dist(rng);
+    unsigned int b = dist(rng);
+    
+    // Combine the RGB components into a single color value
+    return (r << 16) | (g << 8) | b;
 }
 
 void Canvas::DrawNote(NVi::u16_t k, const NVnote &n, int pps)
 {
+    // This is broken
     //unsigned int c = Col[(n.track % 16 + n.chn) % 16];
     
-    // Static map to store track-to-color mapping
-        static std::unordered_map<int, unsigned int> trackColorMap;
+    // Static map to store (track, channel)-to-color mapping
+    static std::unordered_map<std::pair<int, int>, unsigned int, PairHash> trackChannelColorMap;
     
-        // Determine the color for the current track
-        unsigned int c;
-        if (n.track < 16)
+    // Determine the color for the current (track, channel) combination
+    unsigned int c;
+    std::pair<int, int> trackChannelKey = {n.track, n.chn};
+    
+    // Check if the (track, channel) combination already has a color assigned
+    auto it = trackChannelColorMap.find(trackChannelKey);
+    if (it != trackChannelColorMap.end())
+    {
+        // Use the existing color
+        c = it->second;
+    }
+    else
+    {
+        // Assign a color based on the predefined Col array or generate a random color
+        if (trackChannelColorMap.size() < 16)
         {
-            // Use predefined colors for the first 16 tracks
-            c = Col[n.track % 16];
+            // Use the next color from the Col array
+            c = Col[trackChannelColorMap.size()];
         }
         else
         {
-            // Check if the track already has a color assigned
-            auto it = trackColorMap.find(n.track);
-            if (it != trackColorMap.end())
-            {
-                // Use the existing color
-                c = it->second;
-            }
-            else
-            {
-                // Generate a new random color and store it in the map
-                c = GenerateRandomColor();
-                trackColorMap[n.track] = c;
-            }
+            // Generate a new random color
+            c = GenerateRandomColor();
         }
+        
+        // Store the color in the map
+        trackChannelColorMap[trackChannelKey] = c;
+    }
 
     int key = KeyMap[k];
     

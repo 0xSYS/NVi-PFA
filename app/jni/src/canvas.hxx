@@ -9,44 +9,21 @@
 extern const unsigned char KeyMap[128];
 
 
+// Required by the track color distributor
+struct PairHash
+{
+    template <typename T1, typename T2>
+    std::size_t operator()(const std::pair<T1, T2>& p) const
+    {
+        auto hash1 = std::hash<T1>{}(p.first);
+        auto hash2 = std::hash<T2>{}(p.second);
+        return hash1 ^ (hash2 << 1); // Combine the two hashes
+    }
+};
+
+
 static constexpr unsigned int Col[]= 
 {
-    /*
-    0xFFFFCC33,
-    0xFFE433FF,
-    0xFF99FF33,
-    0xFF4B33FF,
-    0xFF33FFFF,
-    0xFFFF3381,
-    0xFF3366FF,
-    0xFFFF7E33,
-    0xFF33FF66,
-    0xFFE7FF33,
-    0xFF9933FF,
-    0xFF4EFF33,
-    0xFFFF33CC,
-    0xFF33FFB1,
-    0xFFFF3333,
-    0xFF33B4FF
-    
-    
-    0xFF3366FF,
-    0xFFFF7E33,
-    0xFF33FF66,
-    0xFFFF3381,
-    0xFF33FFFF,
-    0xFFE433FF,
-    0xFF99FF33,
-    0xFF4B33FF,
-    0xFFFFCC33,
-    0xFF33B4FF,
-    0xFFFF3333,
-    0xFF33FFB1,
-    0xFFFF33CC,
-    0xFF4EFF33,
-    0xFF9933FF,
-    0xFFE7FF33
-    */
     0x3366FF,
     0xFF7E33,
     0x33FF66,
@@ -89,6 +66,7 @@ public:
     void canvas_clear();
 
     void DrawKeyBoard();
+    unsigned int GenerateRandomColor();
     void DrawNote(NVi::u16_t k, const NVnote &n, int pps);
 
     void Note(int k, int yb, int ye, unsigned int c);
