@@ -23,9 +23,9 @@ This clone is powered by Qishipai's [midi processing library](https://github.com
 - [X] Improving the audio limiter
 - [X] Better UI layout on mobile
 - [ ] File information support
-- [ ] Custom note color array support
+- [X] Custom note color array support
 - [ ] Loading color arrays from images
-- [X] Veritcal lines on the background
+- [X] Veritcal lines on the background (To fixed on android)
 - [ ] Background image support
 - [X] Setting and using available audio devices
 - [ ] Setting custom key ranges

@@ -782,10 +782,10 @@ void NVGui::Run(SDL_Renderer *r)
                     if (ImGui::BeginTabItem("Audio"))
                     {
                         // Save device ID only if allowed by the list
-                        if(allow_audio_dev_ssave)
-                        {
+                        //if(allow_audio_dev_ssave)
+                        //{
                             live_conf.audio_device_index = current_audio_dev;
-                        }
+                        //}
                         ShowAudioDeviceList(availableAudioDevices);
                         ImGui::Text("\n");
                         ImGui::Text("Voice Count");
