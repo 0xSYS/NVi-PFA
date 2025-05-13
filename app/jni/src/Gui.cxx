@@ -19,6 +19,8 @@ bool show_demo_window = true;
 //bool main_gui_window = false;
 
 int selIndex = 0;
+bool call_once = false;
+bool allow_audio_dev_ssave;
 static char midi_search[128];
 static char sf_search[128];
 static std::string midi_search_text;
@@ -312,26 +314,55 @@ void ShowAudioDeviceList(const std::vector<NVi::AudioDevice>& audioDevices)
     {
         deviceNames.push_back(device.name);
     }
-
-    // Display the combo box
-    if (ImGui::BeginCombo("* Audio Devices", deviceNames[current_audio_dev]))
+    
+    // Ensure current_audio_dev is valid
+    if (deviceNames.empty())
     {
-        for (int i = 0; i < deviceNames.size(); i++)
+        current_audio_dev = 0; // Reset to 0 if there are no devices
+        allow_audio_dev_ssave = false;
+    }
+    else if (current_audio_dev >= deviceNames.size())
+    {
+        allow_audio_dev_ssave = true;
+        current_audio_dev = 0; // Reset to the first device if the index is out of bounds
+    }
+    
+        // Display the combo box
+    const char* currentDeviceName = (deviceNames.empty() ? "No devices available" : deviceNames[current_audio_dev]);
+    
+    if (ImGui::BeginCombo("* Audio Devices", currentDeviceName))
+    {
+        if (deviceNames.empty())
         {
-            // Check if this item is selected
-            bool isSelected = (current_audio_dev == i);
-
-            // Add the item to the combo box
-            if (ImGui::Selectable(deviceNames[i], isSelected))
+            // Render a placeholder item when no devices are available
+            ImGui::Selectable("No devices available", false);
+    
+            // Avoid spamming warnings
+            if (!call_once)
             {
-                // Update the current index if the user selects this item
-                current_audio_dev = i;
+                call_once = true;
+                NVi::warn("Gui", "No audio devices available\n");
             }
-
-            // Set the initial focus when opening the combo box
-            if (isSelected)
+        }
+        else
+        {
+            for (int i = 0; i < deviceNames.size(); i++)
             {
-                ImGui::SetItemDefaultFocus();
+                // Check if this item is selected
+                bool isSelected = (current_audio_dev == i);
+    
+                // Add the item to the combo box
+                if (ImGui::Selectable(deviceNames[i], isSelected))
+                {
+                    // Update the current index if the user selects this item
+                    current_audio_dev = i;
+                }
+    
+                // Set the initial focus when opening the combo box
+                if (isSelected)
+                {
+                    ImGui::SetItemDefaultFocus();
+                }
             }
         }
         ImGui::EndCombo();
@@ -658,7 +689,11 @@ void NVGui::Run(SDL_Renderer *r)
                     
                     if (ImGui::BeginTabItem("Audio"))
                     {
-                        live_conf.audio_device_index = current_audio_dev;
+                        // Save device ID only if allowed by the list
+                        if(allow_audio_dev_ssave)
+                        {
+                            live_conf.audio_device_index = current_audio_dev;
+                        }
                         ShowAudioDeviceList(availableAudioDevices);
                         ImGui::Text("\n");
                         ImGui::Text("Voice Count");
