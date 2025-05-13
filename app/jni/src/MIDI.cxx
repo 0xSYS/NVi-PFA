@@ -36,7 +36,13 @@ bool NVmidiFile::mid_open(const char *name)
     fread(&type  , 2, 1, fp); revU16(type);
     fread(&tracks, 2, 1, fp); revU16(tracks);
     fread(&ppnq  , 2, 1, fp); revU16(ppnq);
+#ifdef __linux__
     fseek(fp, SEEK_SET, size + 8);
+#endif
+
+#if defined(_WIN32) || defined(_WIN64)
+    fseek(fp, size + 8, SEEK_SET);
+#endif
 
     trk_over = new bool     [tracks];
     trk_data = new nv_byte* [tracks];

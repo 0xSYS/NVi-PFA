@@ -2,9 +2,22 @@ cmake_minimum_required(VERSION 3.6)
 
 project(my_app)
 
+if(WIN32)
+    set(SDL3_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/extern/sdl")  # Adjust this to your SDL3 include directory
+    set(SDL3_LIBRARY "${CMAKE_SOURCE_DIR}/extern/lib/x86_64/win32/SDL3.lib")  # Adjust this to your SDL3 lib directory
+    if(NOT EXISTS "${SDL3_LIBRARY}")
+        message(FATAL_ERROR "SDL3.lib not found at ${SDL3_LIBRARY}")
+    endif()
+    include_directories(${SDL3_INCLUDE_DIR})
+
+    add_library(SDL3::SDL3 STATIC IMPORTED)
+    set_target_properties(SDL3::SDL3 PROPERTIES IMPORTED_LOCATION ${SDL3_LIBRARY} INTERFACE_INCLUDE_DIRECTORIES ${SDL3_INCLUDE_DIR})
+endif()
+
 
 option(EXE_TYPE "Build core aplication as executable" OFF)
 
+if(UNIX)
 if(NOT TARGET SDL3::SDL3)
     find_package(SDL3 CONFIG)
 endif()
@@ -25,6 +38,7 @@ Possible ways to fix this:
 - Add add_subdirectory(path/to/SDL) to your CMake script, and make sure a vendored SDL is present there.
 ")
 endif()
+endif()
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -35,15 +49,29 @@ set(CMAKE_CXX_STANDARD 17)
 
 
 if(EXE_TYPE)
-message(STATUS "Building as executable")
+    message(STATUS "Building as executable")
+
+    if(UNIX)
+        add_library(bass SHARED IMPORTED)
+        set_target_properties(bass PROPERTIES IMPORTED_LOCATION "extern/lib/x86_64/linux/libbass.so")
+        
+        add_library(bassmidi SHARED IMPORTED)
+        set_target_properties(bassmidi PROPERTIES IMPORTED_LOCATION "extern/lib/x86_64/linux/libbassmidi.so")
+    elseif(WIN32)
+        add_library(bass STATIC IMPORTED)
+        set_target_properties(bass PROPERTIES IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/extern/lib/x86_64/win32/bass.lib")
+        
+        add_library(bassmidi STATIC IMPORTED)
+        set_target_properties(bassmidi PROPERTIES IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/extern/lib/x86_64/win32/bassmidi.lib")
+    endif()
 else()
 
-# Import BASS libs
-add_library(bass SHARED IMPORTED)
-set_target_properties(bass PROPERTIES IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/../libs/arm64-v8a/libbass.so")
-
-add_library(bassmidi SHARED IMPORTED)
-set_target_properties(bassmidi PROPERTIES IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/../libs/arm64-v8a/libbassmidi.so")
+    # Import BASS libs
+    add_library(bass SHARED IMPORTED)
+    set_target_properties(bass PROPERTIES IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/../libs/arm64-v8a/libbass.so")
+    
+    add_library(bassmidi SHARED IMPORTED)
+    set_target_properties(bassmidi PROPERTIES IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/../libs/arm64-v8a/libbassmidi.so")
 endif()
 
 

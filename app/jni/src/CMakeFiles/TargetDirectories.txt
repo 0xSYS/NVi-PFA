@@ -1,0 +1,3 @@
+C:/Users/acer/Desktop/Codeing/NVi-PFA/app/jni/src/CMakeFiles/nvi-pfa.dir
+C:/Users/acer/Desktop/Codeing/NVi-PFA/app/jni/src/CMakeFiles/ALL_BUILD.dir
+C:/Users/acer/Desktop/Codeing/NVi-PFA/app/jni/src/CMakeFiles/ZERO_CHECK.dir

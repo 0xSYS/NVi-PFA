@@ -8,6 +8,12 @@
 #include <random>
 
 
+
+#if defined(_WIN32) || defined(_WIN64)
+    #define NOMINMAX
+#endif
+
+
 #include "extern/imgui/imgui.h"
 #include "extern/imgui_sdl3/imgui_impl_sdl3.h"
 #include "extern/imgui_sdl3/imgui_impl_sdlrenderer3.h"

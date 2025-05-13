@@ -1,7 +1,10 @@
 #include <cstdio>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
-#include <unistd.h>
+
+#ifdef __linux__
+    #include <unistd.h>
+#endif
 
 
 #include "extern/audio/bassmidi.h"
@@ -48,6 +51,12 @@ bool playback_ended = false;
 
 unsigned char events[6144];
 int eventCount = 0;
+
+const int frameRate = 60;
+const int frameDelay = 1000 / frameRate;  // Calculate delay time for 60 FPS
+
+Uint32 frameStart;
+int frameTime;
 
 
 SDL_Event Evt;
@@ -215,7 +224,7 @@ void loadMidiFile(const std::string& midi_path) {
     BASS_ChannelSetAttribute(Stm, BASS_ATTRIB_MIDI_VOICES, parsed_config.bass_voice_count);
     BASS_MIDI_StreamSetFilter(Stm, 0, reinterpret_cast<BOOL (*)(HSTREAM, int, BASS_MIDI_EVENT *, BOOL, void *)>(filter), nullptr);
     
-    sleep(1); // Sleep 1 second before starting playback
+    //sleep(1); // Sleep 1 second before starting playback
     
     // Start playback
     BASS_ChannelPlay(Stm, 1);
@@ -740,6 +749,7 @@ int SDL_main(int ac, char **av)
 		
 		while (SDL_PollEvent(&Evt)) 
 		{
+            frameStart = SDL_GetTicks();  // Get the current time in milliseconds
 			ImGui_ImplSDL3_ProcessEvent(&Evt);
 			if (Evt.type == SDL_EVENT_QUIT)
 				NVi::Quit();
@@ -781,6 +791,11 @@ int SDL_main(int ac, char **av)
 		
 		CvWin->DrawKeyBoard();
 		NVGui::Run(CvWin->Ren);
+        frameTime = SDL_GetTicks() - frameStart;  // Time taken for one frame
+
+        if (frameDelay > frameTime) {
+        SDL_Delay(frameDelay - frameTime);  // Delay to maintain consistent frame rate
+    }
 		SDL_RenderPresent(CvWin->Ren);
 		
 		// Only update Tplay if actively playing and not at the end

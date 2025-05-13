@@ -1,4 +1,6 @@
-#include <unistd.h>
+#ifdef __linux__
+    #include <unistd.h>
+#endif
 #include <SDL3/SDL.h>
 #include "extern/cpptoml/cpptoml.h"
 
