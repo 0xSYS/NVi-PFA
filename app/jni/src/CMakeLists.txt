@@ -52,11 +52,12 @@ if(EXE_TYPE)
     message(STATUS "Building as executable")
 
     if(UNIX)
-        add_library(bass SHARED IMPORTED)
-        set_target_properties(bass PROPERTIES IMPORTED_LOCATION "extern/lib/x86_64/linux/libbass.so")
-        
-        add_library(bassmidi SHARED IMPORTED)
-        set_target_properties(bassmidi PROPERTIES IMPORTED_LOCATION "extern/lib/x86_64/linux/libbassmidi.so")
+        # Link issues
+        #add_library(bass SHARED IMPORTED)
+        #set_target_properties(bass PROPERTIES IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/extern/lib/x86_64/linux/libbass.so")
+        #
+        #add_library(bassmidi SHARED IMPORTED)
+        #set_target_properties(bassmidi PROPERTIES IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/extern/lib/x86_64/linux/libbassmidi.so")
     elseif(WIN32)
         add_library(bass STATIC IMPORTED)
         set_target_properties(bass PROPERTIES IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/extern/lib/x86_64/win32/bass.lib")
