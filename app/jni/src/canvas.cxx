@@ -4,7 +4,6 @@
 #include <SDL3/SDL.h>
 #include <cmath>
 #include <algorithm>
-#include <unordered_map>
 #include <random>
 
 
@@ -395,11 +394,6 @@ void Canvas::DrawNote(NVi::u16_t k, const NVnote &n, int pps)
     // This is broken
     //unsigned int c = Col[(n.track % 16 + n.chn) % 16];
     
-    // Static map to store (track, channel)-to-color mapping
-    static std::unordered_map<std::pair<int, int>, unsigned int, PairHash> trackChannelColorMap;
-    
-    // Determine the color for the current (track, channel) combination
-    unsigned int c;
     std::pair<int, int> trackChannelKey = {n.track, n.chn};
     
     // Check if the (track, channel) combination already has a color assigned
@@ -407,24 +401,37 @@ void Canvas::DrawNote(NVi::u16_t k, const NVnote &n, int pps)
     if (it != trackChannelColorMap.end())
     {
         // Use the existing color
-        c = it->second;
+        note_color = it->second;
     }
     else
     {
         // Assign a color based on the predefined Col array or generate a random color
         if (trackChannelColorMap.size() < 16)
         {
-            // Use the next color from the Col array
-            c = Col[trackChannelColorMap.size()];
+            // Default color array
+            if(!live_conf.is_custom_ch_colors)
+                note_color = Col[trackChannelColorMap.size()];
+                // Or use the user defined channel color array
+            else
+                note_color = live_conf.channel_colors[trackChannelColorMap.size()];
+            
         }
         else
         {
-            // Generate a new random color
-            c = GenerateRandomColor();
+            // Use the same color array for the rest of the tracks
+            if(live_conf.loop_colors)
+            {
+                note_color = live_conf.channel_colors[trackChannelColorMap.size() % (sizeof(live_conf.channel_colors)/sizeof(live_conf.channel_colors[0]))];
+            }
+            else
+            {
+                // If not generate a new random color
+                note_color = GenerateRandomColor();
+            }
         }
         
         // Store the color in the map
-        trackChannelColorMap[trackChannelKey] = c;
+        trackChannelColorMap[trackChannelKey] = note_color;
     }
 
     int key = KeyMap[k];
@@ -435,10 +442,15 @@ void Canvas::DrawNote(NVi::u16_t k, const NVnote &n, int pps)
     if (n.Tstart <= Tplay && Tplay < n.Tend)
     {
         CvWin->KeyPress[key] = true;
-        CvWin->KeyColor[key] = c;
+        CvWin->KeyColor[key] = note_color;
     }
     
-    CvWin->Note(k, y_0, y_1, c);
+    CvWin->Note(k, y_0, y_1, note_color);
+}
+
+void Canvas::ClearTrackChannelColors()
+{
+    trackChannelColorMap.clear();
 }
 
 int Canvas::scale(int x) const
@@ -448,6 +460,7 @@ int Canvas::scale(int x) const
     //return (x * WinW + 3665) / 7330;
 }
 
+// Is dis any useful ?
 Canvas::RGBA_pix Canvas::getColor(color C) const
 {
     int x = C.real() + 1024.5f, y = C.imag() + 1024.5f;

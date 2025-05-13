@@ -44,6 +44,7 @@ void NVConf::WriteConfig(configuration cfg)
     vis->insert("NoteSpeed", cfg.note_speed);
     vis->insert("Window_w", cfg.window_w);
     vis->insert("Window_h", cfg.window_h);
+    vis->insert("LoopColors", cfg.loop_colors);
     out_cfg->insert("Visual", vis);
     
     auto bg_col = cpptoml::make_table();
@@ -70,6 +71,14 @@ void NVConf::WriteConfig(configuration cfg)
     }
     
     out_cfg->insert("soundfonts_paths", sf_paths_out);
+    
+    auto ch_colors = cpptoml::make_array();
+    
+    for(const auto& color : cfg.channel_colors)
+    {
+        ch_colors->push_back(color);
+    }
+    out_cfg->insert("ch_color_array", ch_colors);
     
     std::ofstream out(CONFIG_PATH);
     out << "# This file was created by NVi Piano From Above to store its settings.\n";
@@ -112,6 +121,7 @@ NVConf::configuration NVConf::ReadConfig()
     in_cfg.window_w = *vis->get_as<int>("Window_w");
     in_cfg.window_h = *vis->get_as<int>("Window_h");
     in_cfg.note_speed = *vis->get_as<int>("NoteSpeed");
+    in_cfg.loop_colors = *vis->get_as<bool>("LoopColors");
     
     auto bg_col = cfg->get_table("BackgroundColor");
     in_cfg.bg_R = *bg_col->get_as<int>("R");
@@ -124,6 +134,22 @@ NVConf::configuration NVConf::ReadConfig()
     
     auto sf_paths = cfg->get_array_of<std::string>("soundfonts_paths");
     in_cfg.extra_sf_paths = *sf_paths;
+    
+    auto ch_colors = cfg->get_array_of<int64_t>("ch_color_array");
+    
+    if (ch_colors && ch_colors->size() == 16) 
+    {
+        in_cfg.is_custom_ch_colors = true;
+        for (size_t i = 0; i < 16; ++i) 
+        {
+            in_cfg.channel_colors[i] = static_cast<unsigned int>((*ch_colors)[i]);
+        }
+    } 
+    else 
+    {
+        //in_cfg.use_default_colors = true; // Nah it would make things a whole lot stupid so for now I want to keep it like this. I hope this will never EVER happen
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning!!", "Missing channel Color array !\nFalling back to default color array.", nullptr);
+    }
    
     
     return in_cfg;

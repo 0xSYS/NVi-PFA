@@ -330,7 +330,7 @@ void ShowAudioDeviceList(const std::vector<NVi::AudioDevice>& audioDevices)
         // Display the combo box
     const char* currentDeviceName = (deviceNames.empty() ? "No devices available" : deviceNames[current_audio_dev]);
     
-    if (ImGui::BeginCombo("* Audio Devices", currentDeviceName))
+    if (ImGui::BeginCombo("Audio Devices *", currentDeviceName))
     {
         if (deviceNames.empty())
         {
@@ -367,6 +367,22 @@ void ShowAudioDeviceList(const std::vector<NVi::AudioDevice>& audioDevices)
         }
         ImGui::EndCombo();
     }
+}
+
+unsigned int ImVec4ToUInt(const ImVec4& color) 
+{
+    unsigned int r = static_cast<unsigned int>(color.x * 255.0f);
+    unsigned int g = static_cast<unsigned int>(color.y * 255.0f);
+    unsigned int b = static_cast<unsigned int>(color.z * 255.0f);
+    return (r << 16) | (g << 8) | b;
+}
+
+ImVec4 UIntToImVec4(unsigned int rgb, float alpha = 1.0f)
+{
+    float r = ((rgb >> 16) & 0xFF) / 255.0f;
+    float g = ((rgb >> 8)  & 0xFF) / 255.0f;
+    float b = (rgb         & 0xFF) / 255.0f;
+    return ImVec4(r, g, b, alpha);
 }
 
 void NVGui::Run(SDL_Renderer *r)
@@ -677,6 +693,7 @@ void NVGui::Run(SDL_Renderer *r)
                         ImGui::Text("Background Color");
                         clear_color = ImVec4(live_conf.bg_R / 255.0f, live_conf.bg_G / 255.0f, live_conf.bg_B / 255.0f, live_conf.bg_A / 255.0f);
                         ImGui::ColorEdit3("##H", (float*)&clear_color);
+                        //ImGuiColorEditFlags_NoInputs
 
                         if (ImGui::BeginItemTooltip())
                         {
@@ -684,6 +701,81 @@ void NVGui::Run(SDL_Renderer *r)
                             ImGui::EndTooltip();
                         }
                         liveColor = NVi::Frgba2Irgba(clear_color);
+                        
+                        ImGui::Text("");
+                        ImGui::Text("Custom Channel Colors *");
+                        
+                        // This is just funny af :madman:
+                        ch_col1 = UIntToImVec4(live_conf.channel_colors[0]);
+                        ch_col2 = UIntToImVec4(live_conf.channel_colors[1]);
+                        ch_col3 = UIntToImVec4(live_conf.channel_colors[2]);
+                        ch_col4 = UIntToImVec4(live_conf.channel_colors[3]);
+                        ch_col5 = UIntToImVec4(live_conf.channel_colors[4]);
+                        ch_col6 = UIntToImVec4(live_conf.channel_colors[5]);
+                        ch_col7 = UIntToImVec4(live_conf.channel_colors[6]);
+                        ch_col8 = UIntToImVec4(live_conf.channel_colors[7]);
+                        ch_col9 = UIntToImVec4(live_conf.channel_colors[8]);
+                        ch_col10 = UIntToImVec4(live_conf.channel_colors[9]);
+                        ch_col11 = UIntToImVec4(live_conf.channel_colors[10]);
+                        ch_col12 = UIntToImVec4(live_conf.channel_colors[11]);
+                        ch_col13 = UIntToImVec4(live_conf.channel_colors[12]);
+                        ch_col14 = UIntToImVec4(live_conf.channel_colors[13]);
+                        ch_col15 = UIntToImVec4(live_conf.channel_colors[14]);
+                        ch_col16 = UIntToImVec4(live_conf.channel_colors[15]);
+                        
+                        ImGui::ColorEdit3("##ch1", (float*)&ch_col1, ImGuiColorEditFlags_NoInputs);
+                        ImGui::SameLine();
+                        ImGui::ColorEdit3("##ch2", (float*)&ch_col2, ImGuiColorEditFlags_NoInputs);
+                        ImGui::SameLine();
+                        ImGui::ColorEdit3("##ch3", (float*)&ch_col3, ImGuiColorEditFlags_NoInputs);
+                        ImGui::SameLine();
+                        ImGui::ColorEdit3("##ch4", (float*)&ch_col4, ImGuiColorEditFlags_NoInputs);
+                        ImGui::SameLine();
+                        ImGui::ColorEdit3("##ch5", (float*)&ch_col5, ImGuiColorEditFlags_NoInputs);
+                        ImGui::SameLine();
+                        ImGui::ColorEdit3("##ch6", (float*)&ch_col6, ImGuiColorEditFlags_NoInputs);
+                        ImGui::SameLine();
+                        ImGui::ColorEdit3("##ch7", (float*)&ch_col7, ImGuiColorEditFlags_NoInputs);
+                        ImGui::SameLine();
+                        ImGui::ColorEdit3("##ch8", (float*)&ch_col8, ImGuiColorEditFlags_NoInputs);
+                        ImGui::SameLine();
+                        ImGui::ColorEdit3("##ch9", (float*)&ch_col9, ImGuiColorEditFlags_NoInputs);
+                        ImGui::SameLine();
+                        ImGui::ColorEdit3("##ch10", (float*)&ch_col10, ImGuiColorEditFlags_NoInputs);
+                        ImGui::SameLine();
+                        ImGui::ColorEdit3("##ch11", (float*)&ch_col11, ImGuiColorEditFlags_NoInputs);
+                        ImGui::SameLine();
+                        ImGui::ColorEdit3("##ch12", (float*)&ch_col12, ImGuiColorEditFlags_NoInputs);
+                        ImGui::SameLine();
+                        ImGui::ColorEdit3("##ch13", (float*)&ch_col13, ImGuiColorEditFlags_NoInputs);
+                        ImGui::SameLine();
+                        ImGui::ColorEdit3("##ch14", (float*)&ch_col14, ImGuiColorEditFlags_NoInputs);
+                        ImGui::SameLine();
+                        ImGui::ColorEdit3("##ch15", (float*)&ch_col15, ImGuiColorEditFlags_NoInputs);
+                        ImGui::SameLine();
+                        ImGui::ColorEdit3("##ch16", (float*)&ch_col16, ImGuiColorEditFlags_NoInputs);
+                        
+                        // Conversions
+                        live_conf.channel_colors[0] = ImVec4ToUInt(ch_col1);
+                        live_conf.channel_colors[1] = ImVec4ToUInt(ch_col2);
+                        live_conf.channel_colors[2] = ImVec4ToUInt(ch_col3);
+                        live_conf.channel_colors[3] = ImVec4ToUInt(ch_col4);
+                        live_conf.channel_colors[4] = ImVec4ToUInt(ch_col5);
+                        live_conf.channel_colors[5] = ImVec4ToUInt(ch_col6);
+                        live_conf.channel_colors[6] = ImVec4ToUInt(ch_col7);
+                        live_conf.channel_colors[7] = ImVec4ToUInt(ch_col8);
+                        live_conf.channel_colors[8] = ImVec4ToUInt(ch_col9);
+                        live_conf.channel_colors[9] = ImVec4ToUInt(ch_col10);
+                        live_conf.channel_colors[10] = ImVec4ToUInt(ch_col11);
+                        live_conf.channel_colors[11] = ImVec4ToUInt(ch_col12);
+                        live_conf.channel_colors[12] = ImVec4ToUInt(ch_col13);
+                        live_conf.channel_colors[13] = ImVec4ToUInt(ch_col14);
+                        live_conf.channel_colors[14] = ImVec4ToUInt(ch_col15);
+                        live_conf.channel_colors[15] = ImVec4ToUInt(ch_col16);
+                        
+                        ImGui::Checkbox("Loop colors *", &loop_colors);
+                        live_conf.loop_colors = loop_colors;
+                        
                         ImGui::EndTabItem();
                     }
                     

@@ -3,6 +3,7 @@
 
 
 #include <complex>
+#include <unordered_map>
 #include <SDL3/SDL.h>
 #include "Nlist.hxx"
 
@@ -22,7 +23,7 @@ struct PairHash
 };
 
 
-static constexpr unsigned int Col[]= 
+static unsigned int Col[]= 
 {
     0x3366FF,
     0xFF7E33,
@@ -41,6 +42,8 @@ static constexpr unsigned int Col[]=
     0x9933FF,
     0xE7FF33
 };
+
+inline unsigned int note_color;
 
 class Canvas
 {
@@ -68,10 +71,13 @@ public:
     void DrawKeyBoard();
     unsigned int GenerateRandomColor();
     void DrawNote(NVi::u16_t k, const NVnote &n, int pps);
+    void ClearTrackChannelColors();
 
     void Note(int k, int yb, int ye, unsigned int c);
 
 private:
+
+    std::unordered_map<std::pair<int, int>, unsigned int, PairHash> trackChannelColorMap;
 
     SDL_Texture *Bk0, *Bk1, *Wk, *note;
     SDL_Surface *colors;

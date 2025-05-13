@@ -174,6 +174,9 @@ void loadMidiFile(const std::string& midi_path) {
         MIDI.L[i].clear();
     }
     
+    // Clear previous channel / track colors
+    CvWin->ClearTrackChannelColors();
+    
     // Parse new MIDI file
     if (!MIDI.start_parse(midi_path.c_str())) {
         std::ostringstream temp_msg;
@@ -525,6 +528,7 @@ int SDL_main(int ac, char **av)
         liveColor.a = parsed_config.bg_A;
         live_note_speed = parsed_config.note_speed;
         current_audio_dev = live_conf.audio_device_index; // Used to set the last selected audio device in the combobox
+        loop_colors = live_conf.loop_colors;
         //velocity_filter = live_conf.vel_filter;
         //min_velocity = live_conf.vel_min;
         //max_velocity = live_conf.vel_max;
@@ -540,6 +544,7 @@ int SDL_main(int ac, char **av)
         default_config.bg_G = 48;
         default_config.bg_B = 48;
         default_config.bg_A = 255;
+        default_config.loop_colors = false;
         default_config.note_speed = 6000;
         default_config.audio_device_index = -1; // Also set default audio device output
         default_config.vel_filter = true;
