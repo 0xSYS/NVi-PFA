@@ -3,5 +3,6 @@ build/*
 app/.cxx/*
 app/build/*
 release_history.txt
+fix_bugs_pls.txt
 app/jni/src/build/*
 local.properties
