@@ -676,11 +676,8 @@ void NVGui::Run(SDL_Renderer *r)
                         ImGui::SliderInt("Note Speed", &live_note_speed, 100, 20000);
                         ImGui::Text("Background Color");
                         clear_color = ImVec4(live_conf.bg_R / 255.0f, live_conf.bg_G / 255.0f, live_conf.bg_B / 255.0f, live_conf.bg_A / 255.0f);
-#ifndef NON_ANDROID
-                        ImGui::ColorEdit3("##H", (float*)&clear_color, ImGuiWindowFlags_NoMove);
-#else
+
                         ImGui::ColorEdit3("##H", (float*)&clear_color);
-#endif
 
                         if (ImGui::BeginItemTooltip())
                         {
@@ -700,11 +697,9 @@ void NVGui::Run(SDL_Renderer *r)
                             }
                             
                             temp_widget_id = "##Ch" + std::to_string(i);
-#ifndef NON_ANDROID
-                            ImGui::ColorEdit3(temp_widget_id.c_str(), (float*)&ui_chcolors[i], ImGuiColorEditFlags_NoInputs | ImGuiWindowFlags_NoMove);
-#else
+
                             ImGui::ColorEdit3(temp_widget_id.c_str(), (float*)&ui_chcolors[i], ImGuiColorEditFlags_NoInputs);
-#endif
+
                             ImGui::SameLine();
                             
                             live_conf.channel_colors[i] = ImVec4ToUInt(ui_chcolors[i]);
