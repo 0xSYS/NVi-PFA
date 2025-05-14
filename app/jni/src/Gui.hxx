@@ -31,25 +31,13 @@ inline int current_audio_dev;
 inline bool velocity_filter = true;
 inline bool loop_colors = false;
 
-inline ImVec4 ch_col1;
-inline ImVec4 ch_col2;
-inline ImVec4 ch_col3;
-inline ImVec4 ch_col4;
-inline ImVec4 ch_col5;
-inline ImVec4 ch_col6;
-inline ImVec4 ch_col7;
-inline ImVec4 ch_col8;
-inline ImVec4 ch_col9;
-inline ImVec4 ch_col10;
-inline ImVec4 ch_col11;
-inline ImVec4 ch_col12;
-inline ImVec4 ch_col13;
-inline ImVec4 ch_col14;
-inline ImVec4 ch_col15;
-inline ImVec4 ch_col16;
+inline ImVec4 ui_chcolors[16];
 
 inline std::vector<SoundfontItem> live_soundfont_list;
 inline std::vector<std::string> checked_soundfonts;
+
+unsigned int ImVec4ToUInt(const ImVec4& color);
+ImVec4 UIntToImVec4(unsigned int rgb);
 
 static NVnoteList MIDI;
 

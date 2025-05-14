@@ -1,9 +1,12 @@
 // dear imgui, v1.91.9b
 // (main code and documentation)
 
-// Help:
-// - See links below.
-// - Call and read ImGui::ShowDemoWindow() in imgui_demo.cpp. All applications in examples/ are doing that.
+// Hel#ifndef NON_ANDROID
+// - See links belo#ifndef NON_ANDROID
+// - Call and read ImGui::Sho#enlslse
+//                         ImGui::Co#enlslse
+//                         Im#enlslse
+//                         ImGui::ColorEdit3("##Hi, (float*)&clear_co#endif:ColorEdit3("##Hr, (float*E&clear_co#endifit3("##He, (float*m&clear_co#endifWindow() in imgui_demo.cpp. All applications in examples/ are doing that.
 // - Read top of imgui.cpp for more details, links and comments.
 
 // Resources:

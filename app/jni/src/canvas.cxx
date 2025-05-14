@@ -61,7 +61,7 @@ std::vector<int> bgLinePos =
 
 
 
-
+//int original_width = 800;
 
 Canvas::Canvas()
 {
@@ -228,18 +228,35 @@ void DrawSkew(SDL_Renderer* renderer, float x1, float y1, float x2, float y2,flo
 void Canvas::canvas_clear()
 {
     SDL_RenderClear(Ren);
+/*
+FUCK THIS SHIT
+    std::vector<float> bgLineRelPos;
+    for (int x : bgLinePos) {
+        bgLineRelPos.push_back(static_cast<float>(x) / original_width);
+    }
+    
+    std::vector<int> scaledBgLinePos;
+    for (float rel : bgLineRelPos) {
+        scaledBgLinePos.push_back(static_cast<int>(rel * WinW));
+    }
+
     
     int yStart = 0;  // Starting y-coordinate
     int yEnd = 900;  // Ending y-coordinate
     
-    for (int x : bgLinePos) 
+    
+    
+    float keyboard_offset_x = 0; // The X where your keyboard starts
+    for (int x : scaledBgLinePos) 
     {
+        int line_x = static_cast<int>(keyboard_offset_x + x);
         SDL_SetRenderDrawColor(Ren, 0, 0, 0, 70);
-        SDL_RenderLine(Ren, x, yStart, x, yEnd);
+        SDL_RenderLine(Ren, line_x, yStart, line_x, yEnd);
     
         SDL_SetRenderDrawColor(Ren, 80, 80, 80, 70);
-        SDL_RenderLine(Ren, x + 1, yStart, x + 1, yEnd);
+        SDL_RenderLine(Ren, line_x + 1, yStart, line_x + 1, yEnd);
     }
+*/
 
 
     for (int i = 0; i < 128; ++i)
@@ -283,7 +300,7 @@ void Canvas::DrawKeyBoard()
 	float fCurX = 0;
 	float fSharpCY = fTopCY * 0.67f;
     float fCurY = fTransitionCY + fRedCY + fSpacerCY;
-
+    
 	DrawRect(Ren, 0, WinH - WinW * 82 / 1000, WinW, WinW * 82 / 1000, 0xFF000000,0xFF000000,0xFF000000,0xFF000000 );
     DrawRect(Ren, 0, WinH - WinW * 82 / 1000 + fTransitionCY, WinW, fRedCY, 0xFF06054C, 0xFF06054C, 0xFF0D0A98, 0xFF0D0A98 );
     DrawRect(Ren, 0, WinH - WinW * 82 / 1000 + fTransitionCY + fRedCY, WinW, fSpacerCY, 0xFF1C1C1C, 0xFF1C1C1C, 0xFF1C1C1C, 0xFF1C1C1C );

@@ -163,19 +163,8 @@ void updateBassVoiceCount(int voiceCount) {
 
 
 void loadMidiFile(const std::string& midi_path) {
-    // Stop current playback and free resources
-    if (Stm) {
-        BASS_ChannelStop(Stm);
-        BASS_StreamFree(Stm);
-    }
     
-    // Reset note lists
-    for (int i = 0; i < 128; ++i) {
-        MIDI.L[i].clear();
-    }
-    
-    // Clear previous channel / track colors
-    CvWin->ClearTrackChannelColors();
+    NVi::CloseMIDI();
     
     // Parse new MIDI file
     if (!MIDI.start_parse(midi_path.c_str())) {
@@ -239,6 +228,23 @@ void loadMidiFile(const std::string& midi_path) {
     
     // Update current midi path
     parsed_config.last_midi_path = midi_path;
+}
+
+void NVi::CloseMIDI()
+{
+    // Stop current playback and free resources
+    if (Stm) {
+        BASS_ChannelStop(Stm);
+        BASS_StreamFree(Stm);
+    }
+    
+    // Reset note lists
+    for (int i = 0; i < 128; ++i) {
+        MIDI.L[i].clear();
+    }
+    
+    // Clear previous channel / track colors
+    CvWin->ClearTrackChannelColors();
 }
 
 
@@ -520,6 +526,7 @@ int SDL_main(int ac, char **av)
     if(NVFileUtils::FileExists(CONFIG_PATH) == true)
     {
         // Read Config and assign settings structure
+        is_defaultconfig = false;
         parsed_config = NVConf::ReadConfig();
         live_conf = parsed_config;
         liveColor.r = parsed_config.bg_R;
@@ -536,6 +543,7 @@ int SDL_main(int ac, char **av)
     else 
     {
         // If not assign default configuration
+        is_defaultconfig = true;
         default_config.bass_voice_count = 500;
 #ifndef NON_ANDROID
         default_config.current_soundfonts = {default_sf_path};
@@ -550,6 +558,11 @@ int SDL_main(int ac, char **av)
         default_config.vel_filter = true;
         default_config.vel_min = 0;
         default_config.vel_max = 32;
+        //default_config.channel_colors[15] = Col[15];
+        for(int i = 0; i < 15; i++)
+        {
+            ui_chcolors[i] = UIntToImVec4(Col[i]);
+        }
         liveColor.r = default_config.bg_R;
         liveColor.g = default_config.bg_G;
         liveColor.b = default_config.bg_B;

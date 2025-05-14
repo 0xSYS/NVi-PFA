@@ -29,6 +29,7 @@ static char midi_path_entry[1024];
 static char soundfons_path_entry[1024];
 int selected_midi_path_entry;
 int selected_soundfont_path_etry;
+std::string temp_widget_id;
 
 
 
@@ -269,7 +270,7 @@ std::vector<std::string> NVGui::GetCheckedSoundfonts(const std::vector<Soundfont
 
 void RenderMidiPathsList(const std::vector<std::string>& items, int& selectedIndex)
 {
-    ImGui::BeginChild("##midipathls", ImVec2(0, 100), true, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("##midipathls", ImVec2(0, 300), true, ImGuiWindowFlags_HorizontalScrollbar);
     
         for (int i = 0; i < items.size(); ++i) 
         {
@@ -289,7 +290,7 @@ void RenderMidiPathsList(const std::vector<std::string>& items, int& selectedInd
 
 void RenderSoundfontsPathsList(const std::vector<std::string>& items, int& selectedIndex)
 {
-    ImGui::BeginChild("##soundfontspathls", ImVec2(0, 100), true, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("##soundfontspathls", ImVec2(0, 300), true, ImGuiWindowFlags_HorizontalScrollbar);
     
         for (int i = 0; i < items.size(); ++i) 
         {
@@ -377,8 +378,9 @@ unsigned int ImVec4ToUInt(const ImVec4& color)
     return (r << 16) | (g << 8) | b;
 }
 
-ImVec4 UIntToImVec4(unsigned int rgb, float alpha = 1.0f)
+ImVec4 UIntToImVec4(unsigned int rgb)
 {
+    float alpha = 1.0f;
     float r = ((rgb >> 16) & 0xFF) / 255.0f;
     float g = ((rgb >> 8)  & 0xFF) / 255.0f;
     float b = (rgb         & 0xFF) / 255.0f;
@@ -478,17 +480,15 @@ void NVGui::Run(SDL_Renderer *r)
         ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f)); // Pivot 0.5 = center
 #ifdef NON_ANDROID
         ImGui::SetNextWindowSizeConstraints(ImVec2(700, 380), ImVec2(FLT_MAX, FLT_MAX));
-        //ImGui::SetNextWindowFocus(); // This is just wrong
         ImGui::Begin("NVi PFA", &main_gui_window);
 #else   // Setting up a different ui layout for mobile users
         ImGui::SetNextWindowSize(ImVec2(900.0f, 600.0f));
-        //ImGui::SetNextWindowFocus();
         ImGui::Begin("NVi PFA", &main_gui_window, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 #endif
 
-    velocity_filter = live_conf.vel_filter;
-    min_velocity = live_conf.vel_min;
-    max_velocity = live_conf.vel_max;
+        velocity_filter = live_conf.vel_filter;
+        min_velocity = live_conf.vel_min;
+        max_velocity = live_conf.vel_max;
 
         
         if (ImGui::Button("Quit"))
@@ -523,38 +523,34 @@ void NVGui::Run(SDL_Renderer *r)
                 
                 ImGui::SameLine();
                 
-            if (ImGui::Button("Load Selected"))
-		    {
-	    	    // Check if the list is not empty and selIndex is valid before loading
-	    	    if (!live_midi_list.empty() && selIndex >= 0 && selIndex < live_midi_list.size())
-	    	    {
-				    loadMidiFile(live_midi_list[selIndex]);
-				    live_conf.last_midi_path = live_midi_list[selIndex];
-				    NVConf::WriteConfig(live_conf); // Also save the last selected midi file bc why not
-	    	    }
-		    }
-		    if (ImGui::BeginItemTooltip())
-		    {
-	    	    ImGui::Text("Load and play the selected MIDI file");
-	    	    ImGui::EndTooltip();
-		    }
-
+                if (ImGui::Button("Load Selected"))
+                {
+                    // Check if the list is not empty and selIndex is valid before loading
+                    if (!live_midi_list.empty() && selIndex >= 0 && selIndex < live_midi_list.size())
+                    {
+                        loadMidiFile(live_midi_list[selIndex]);
+                        live_conf.last_midi_path = live_midi_list[selIndex];
+                        NVConf::WriteConfig(live_conf); // Also save the last selected midi file bc why not
+                    }
+                }
+                if (ImGui::BeginItemTooltip())
+                {
+                    ImGui::Text("Load and play the selected MIDI file");
+                    ImGui::EndTooltip();
+                }
                 
-                //ImGui::SameLine();
+                ImGui::SameLine();
                 
-                // Not used yet...
-                //if (ImGui::Button("Close"))
-                //    //NVi::CloseMidiPlayback();
-                //    std::cout << "Close midi playback\n";
+                if (ImGui::Button("Close"))
+                    NVi::CloseMIDI();
                 
-                //if (ImGui::BeginItemTooltip())
-                //{
-                //    ImGui::Text("Close and reset midi playback");
-                //    ImGui::EndTooltip();
-                //}
+                if (ImGui::BeginItemTooltip())
+                {
+                    ImGui::Text("Close and reset midi playback");
+                    ImGui::EndTooltip();
+                }
                 
                 RenderMidiList(live_midi_list, selIndex, midi_search_text);
-                //std::cout << "Selection index: " << live_midi_list[selIndex] << "\n";
                 ImGui::EndTabItem();
             }
             
@@ -577,18 +573,6 @@ void NVGui::Run(SDL_Renderer *r)
                     ImGui::EndTooltip();
                 }
                 
-                //ImGui::SameLine();
-
-                // This happens right after reloading the soundfont
-                //if(ImGui::Button("Save Soundfont List"))
-                //{
-                //    NVConf::CreateSoundfontList(live_soundfont_list);
-                //}
-                //if (ImGui::BeginItemTooltip())
-                //{
-                //    ImGui::Text("Save the modified soundfont list");
-                //    ImGui::EndTooltip();
-                //}
                 RenderSoundfontList(live_soundfont_list, sf_search_text);
                     
                 ImGui::EndTabItem();
@@ -692,8 +676,11 @@ void NVGui::Run(SDL_Renderer *r)
                         ImGui::SliderInt("Note Speed", &live_note_speed, 100, 20000);
                         ImGui::Text("Background Color");
                         clear_color = ImVec4(live_conf.bg_R / 255.0f, live_conf.bg_G / 255.0f, live_conf.bg_B / 255.0f, live_conf.bg_A / 255.0f);
+#ifndef NON_ANDROID
+                        ImGui::ColorEdit3("##H", (float*)&clear_color, ImGuiWindowFlags_NoMove);
+#else
                         ImGui::ColorEdit3("##H", (float*)&clear_color);
-                        //ImGuiColorEditFlags_NoInputs
+#endif
 
                         if (ImGui::BeginItemTooltip())
                         {
@@ -705,73 +692,24 @@ void NVGui::Run(SDL_Renderer *r)
                         ImGui::Text("");
                         ImGui::Text("Custom Channel Colors *");
                         
-                        // This is just funny af :madman:
-                        ch_col1 = UIntToImVec4(live_conf.channel_colors[0]);
-                        ch_col2 = UIntToImVec4(live_conf.channel_colors[1]);
-                        ch_col3 = UIntToImVec4(live_conf.channel_colors[2]);
-                        ch_col4 = UIntToImVec4(live_conf.channel_colors[3]);
-                        ch_col5 = UIntToImVec4(live_conf.channel_colors[4]);
-                        ch_col6 = UIntToImVec4(live_conf.channel_colors[5]);
-                        ch_col7 = UIntToImVec4(live_conf.channel_colors[6]);
-                        ch_col8 = UIntToImVec4(live_conf.channel_colors[7]);
-                        ch_col9 = UIntToImVec4(live_conf.channel_colors[8]);
-                        ch_col10 = UIntToImVec4(live_conf.channel_colors[9]);
-                        ch_col11 = UIntToImVec4(live_conf.channel_colors[10]);
-                        ch_col12 = UIntToImVec4(live_conf.channel_colors[11]);
-                        ch_col13 = UIntToImVec4(live_conf.channel_colors[12]);
-                        ch_col14 = UIntToImVec4(live_conf.channel_colors[13]);
-                        ch_col15 = UIntToImVec4(live_conf.channel_colors[14]);
-                        ch_col16 = UIntToImVec4(live_conf.channel_colors[15]);
-                        
-                        ImGui::ColorEdit3("##ch1", (float*)&ch_col1, ImGuiColorEditFlags_NoInputs);
-                        ImGui::SameLine();
-                        ImGui::ColorEdit3("##ch2", (float*)&ch_col2, ImGuiColorEditFlags_NoInputs);
-                        ImGui::SameLine();
-                        ImGui::ColorEdit3("##ch3", (float*)&ch_col3, ImGuiColorEditFlags_NoInputs);
-                        ImGui::SameLine();
-                        ImGui::ColorEdit3("##ch4", (float*)&ch_col4, ImGuiColorEditFlags_NoInputs);
-                        ImGui::SameLine();
-                        ImGui::ColorEdit3("##ch5", (float*)&ch_col5, ImGuiColorEditFlags_NoInputs);
-                        ImGui::SameLine();
-                        ImGui::ColorEdit3("##ch6", (float*)&ch_col6, ImGuiColorEditFlags_NoInputs);
-                        ImGui::SameLine();
-                        ImGui::ColorEdit3("##ch7", (float*)&ch_col7, ImGuiColorEditFlags_NoInputs);
-                        ImGui::SameLine();
-                        ImGui::ColorEdit3("##ch8", (float*)&ch_col8, ImGuiColorEditFlags_NoInputs);
-                        ImGui::SameLine();
-                        ImGui::ColorEdit3("##ch9", (float*)&ch_col9, ImGuiColorEditFlags_NoInputs);
-                        ImGui::SameLine();
-                        ImGui::ColorEdit3("##ch10", (float*)&ch_col10, ImGuiColorEditFlags_NoInputs);
-                        ImGui::SameLine();
-                        ImGui::ColorEdit3("##ch11", (float*)&ch_col11, ImGuiColorEditFlags_NoInputs);
-                        ImGui::SameLine();
-                        ImGui::ColorEdit3("##ch12", (float*)&ch_col12, ImGuiColorEditFlags_NoInputs);
-                        ImGui::SameLine();
-                        ImGui::ColorEdit3("##ch13", (float*)&ch_col13, ImGuiColorEditFlags_NoInputs);
-                        ImGui::SameLine();
-                        ImGui::ColorEdit3("##ch14", (float*)&ch_col14, ImGuiColorEditFlags_NoInputs);
-                        ImGui::SameLine();
-                        ImGui::ColorEdit3("##ch15", (float*)&ch_col15, ImGuiColorEditFlags_NoInputs);
-                        ImGui::SameLine();
-                        ImGui::ColorEdit3("##ch16", (float*)&ch_col16, ImGuiColorEditFlags_NoInputs);
-                        
-                        // Conversions
-                        live_conf.channel_colors[0] = ImVec4ToUInt(ch_col1);
-                        live_conf.channel_colors[1] = ImVec4ToUInt(ch_col2);
-                        live_conf.channel_colors[2] = ImVec4ToUInt(ch_col3);
-                        live_conf.channel_colors[3] = ImVec4ToUInt(ch_col4);
-                        live_conf.channel_colors[4] = ImVec4ToUInt(ch_col5);
-                        live_conf.channel_colors[5] = ImVec4ToUInt(ch_col6);
-                        live_conf.channel_colors[6] = ImVec4ToUInt(ch_col7);
-                        live_conf.channel_colors[7] = ImVec4ToUInt(ch_col8);
-                        live_conf.channel_colors[8] = ImVec4ToUInt(ch_col9);
-                        live_conf.channel_colors[9] = ImVec4ToUInt(ch_col10);
-                        live_conf.channel_colors[10] = ImVec4ToUInt(ch_col11);
-                        live_conf.channel_colors[11] = ImVec4ToUInt(ch_col12);
-                        live_conf.channel_colors[12] = ImVec4ToUInt(ch_col13);
-                        live_conf.channel_colors[13] = ImVec4ToUInt(ch_col14);
-                        live_conf.channel_colors[14] = ImVec4ToUInt(ch_col15);
-                        live_conf.channel_colors[15] = ImVec4ToUInt(ch_col16);
+                        for(int i = 0; i < 15; i++)
+                        {
+                            if(!is_defaultconfig)
+                            {
+                                ui_chcolors[i] = UIntToImVec4(live_conf.channel_colors[i]);
+                            }
+                            
+                            temp_widget_id = "##Ch" + std::to_string(i);
+#ifndef NON_ANDROID
+                            ImGui::ColorEdit3(temp_widget_id.c_str(), (float*)&ui_chcolors[i], ImGuiColorEditFlags_NoInputs | ImGuiWindowFlags_NoMove);
+#else
+                            ImGui::ColorEdit3(temp_widget_id.c_str(), (float*)&ui_chcolors[i], ImGuiColorEditFlags_NoInputs);
+#endif
+                            ImGui::SameLine();
+                            
+                            live_conf.channel_colors[i] = ImVec4ToUInt(ui_chcolors[i]);
+                        }
+                        ImGui::Text("\n");
                         
                         ImGui::Checkbox("Loop colors *", &loop_colors);
                         live_conf.loop_colors = loop_colors;
@@ -782,6 +720,7 @@ void NVGui::Run(SDL_Renderer *r)
                     if (ImGui::BeginTabItem("Audio"))
                     {
                         // Save device ID only if allowed by the list
+                        // Risky!!
                         //if(allow_audio_dev_ssave)
                         //{
                             live_conf.audio_device_index = current_audio_dev;
@@ -808,7 +747,6 @@ void NVGui::Run(SDL_Renderer *r)
                         ImGui::Text("Effects");
                         if(ImGui::CollapsingHeader("Velocity Filter *"))
                         {
-                            //idk
                             ImGui::Checkbox("Enabled", &velocity_filter);
                             live_conf.vel_filter = velocity_filter;
                             

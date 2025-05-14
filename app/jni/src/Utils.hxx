@@ -17,6 +17,7 @@ inline std::vector<std::string> live_soundfont_files;
 inline bool is_midi_loaded;
 inline std::string current_midi_file;
 inline bool main_gui_window = false;
+inline bool is_defaultconfig;
 //static NVnoteList MIDI;
 
 
@@ -57,6 +58,7 @@ namespace  NVi   /* ===== Tool function namespace ===== */
     void CreateMidiList();
     void ReadMidiList();
     void RefreshSFList();
+    void CloseMIDI();
     std::vector<AudioDevice> GetAudioOutputs();
     
     // Float rgb to int rgb

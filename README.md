@@ -25,7 +25,7 @@ This clone is powered by Qishipai's [midi processing library](https://github.com
 - [ ] File information support
 - [X] Custom note color array support
 - [ ] Loading color arrays from images
-- [X] Veritcal lines on the background (To fixed on android)
+- [ ] Veritcal lines on the background (Failed)
 - [ ] Background image support
 - [X] Setting and using available audio devices
 - [ ] Setting custom key ranges
