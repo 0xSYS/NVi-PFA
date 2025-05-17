@@ -22,7 +22,7 @@ This clone is powered by Qishipai's [midi processing library](https://github.com
 - [X] Live Note speed change
 - [X] Improving the audio limiter
 - [X] Better UI layout on mobile
-- [ ] File information support
+- [X] File information support
 - [X] Custom note color array support
 - [ ] Loading color arrays from images
 - [ ] Veritcal lines on the background (Failed)
