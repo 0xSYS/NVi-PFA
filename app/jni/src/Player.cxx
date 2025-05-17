@@ -51,6 +51,7 @@ bool playback_ended = false;
 
 unsigned char events[6144];
 int eventCount = 0;
+NVnoteList nv_list;
 
 const int frameRate = 60;
 const int frameDelay = 1000 / frameRate;  // Calculate delay time for 60 FPS
@@ -357,36 +358,41 @@ void NVi::CreateMidiList()
     base_dir << BASE_DIRECTORY;
 #endif
 
-for (const auto& path : live_conf.extra_midi_paths) {
-    auto mid_files       = NVFileUtils::GetFilesByExtension(path, ".mid");
-    auto midi_files      = NVFileUtils::GetFilesByExtension(path, ".midi");
-    auto smf_files       = NVFileUtils::GetFilesByExtension(path, ".smf");
-    auto mid_caps_files  = NVFileUtils::GetFilesByExtension(path, ".MID");
-    auto midi_caps_files = NVFileUtils::GetFilesByExtension(path, ".MIDI");
-    auto smf_caps_files  = NVFileUtils::GetFilesByExtension(path, ".SMF");
-
-    all_midi_files.insert(all_midi_files.end(), mid_files.begin(), mid_files.end());
-    all_midi_files.insert(all_midi_files.end(), midi_files.begin(), midi_files.end());
-    all_midi_files.insert(all_midi_files.end(), smf_files.begin(), smf_files.end());
-    all_midi_files.insert(all_midi_files.end(), mid_caps_files.begin(), mid_caps_files.end());
-    all_midi_files.insert(all_midi_files.end(), midi_caps_files.begin(), midi_caps_files.end());
-    all_midi_files.insert(all_midi_files.end(), smf_caps_files.begin(), smf_caps_files.end());
-}
+    for (const auto& path : live_conf.extra_midi_paths) 
+    {
+        auto mid_files       = NVFileUtils::GetFilesByExtension(path, ".mid");
+        auto midi_files      = NVFileUtils::GetFilesByExtension(path, ".midi");
+        auto smf_files       = NVFileUtils::GetFilesByExtension(path, ".smf");
+        auto mid_caps_files  = NVFileUtils::GetFilesByExtension(path, ".MID");
+        auto midi_caps_files = NVFileUtils::GetFilesByExtension(path, ".MIDI");
+        auto smf_caps_files  = NVFileUtils::GetFilesByExtension(path, ".SMF");
+        
+        all_midi_files.insert(all_midi_files.end(), mid_files.begin(), mid_files.end());
+        all_midi_files.insert(all_midi_files.end(), midi_files.begin(), midi_files.end());
+        all_midi_files.insert(all_midi_files.end(), smf_files.begin(), smf_files.end());
+        all_midi_files.insert(all_midi_files.end(), mid_caps_files.begin(), mid_caps_files.end());
+        all_midi_files.insert(all_midi_files.end(), midi_caps_files.begin(), midi_caps_files.end());
+        all_midi_files.insert(all_midi_files.end(), smf_caps_files.begin(), smf_caps_files.end());
+    }
     
-    //All possibilities
-    auto mid_files       = NVFileUtils::GetFilesByExtension(base_dir.str(), ".mid");
-    auto midi_files      = NVFileUtils::GetFilesByExtension(base_dir.str(), ".midi");
-    auto smf_files       = NVFileUtils::GetFilesByExtension(base_dir.str(), ".smf");
-    auto mid_caps_files  = NVFileUtils::GetFilesByExtension(base_dir.str(), ".MID");
-    auto midi_caps_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".MIDI");
-    auto smf_caps_files  = NVFileUtils::GetFilesByExtension(base_dir.str(), ".SMF");
-    
-    all_midi_files.insert(all_midi_files.end(), mid_files.begin(), mid_files.end());
-    all_midi_files.insert(all_midi_files.end(), midi_files.begin(), midi_files.end());
-    all_midi_files.insert(all_midi_files.end(), smf_files.begin(), smf_files.end());
-    all_midi_files.insert(all_midi_files.end(), mid_caps_files.begin(), mid_caps_files.end());
-    all_midi_files.insert(all_midi_files.end(), midi_caps_files.begin(), midi_caps_files.end());
-    all_midi_files.insert(all_midi_files.end(), smf_caps_files.begin(), smf_caps_files.end());
+    if(live_conf.use_default_paths)
+    {
+        NVi::info("Player", "Default paths\n");
+        //All possibilities
+        auto mid_files       = NVFileUtils::GetFilesByExtension(base_dir.str(), ".mid");
+        auto midi_files      = NVFileUtils::GetFilesByExtension(base_dir.str(), ".midi");
+        auto smf_files       = NVFileUtils::GetFilesByExtension(base_dir.str(), ".smf");
+        auto mid_caps_files  = NVFileUtils::GetFilesByExtension(base_dir.str(), ".MID");
+        auto midi_caps_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".MIDI");
+        auto smf_caps_files  = NVFileUtils::GetFilesByExtension(base_dir.str(), ".SMF");
+        
+        all_midi_files.insert(all_midi_files.end(), mid_files.begin(), mid_files.end());
+        all_midi_files.insert(all_midi_files.end(), midi_files.begin(), midi_files.end());
+        all_midi_files.insert(all_midi_files.end(), smf_files.begin(), smf_files.end());
+        all_midi_files.insert(all_midi_files.end(), mid_caps_files.begin(), mid_caps_files.end());
+        all_midi_files.insert(all_midi_files.end(), midi_caps_files.begin(), midi_caps_files.end());
+        all_midi_files.insert(all_midi_files.end(), smf_caps_files.begin(), smf_caps_files.end());
+    }
     
     live_midi_list.resize(all_midi_files.size());
     
@@ -473,16 +479,19 @@ void NVi::RefreshSFList()
     }
 
 
-    auto sf2_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".sf2");
-    live_soundfont_files.insert(live_soundfont_files.end(), sf2_files.begin(), sf2_files.end());
-    
-    auto sfz_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".sfz");
-    live_soundfont_files.insert(live_soundfont_files.end(), sfz_files.begin(), sfz_files.end());
-    
-    live_soundfont_list.resize(live_soundfont_files.size());
-    for(size_t i = 0; i < live_soundfont_files.size(); i++)
+    if(live_conf.use_default_paths)
     {
-        live_soundfont_list[i] = {live_soundfont_files[i], false};
+        auto sf2_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".sf2");
+        live_soundfont_files.insert(live_soundfont_files.end(), sf2_files.begin(), sf2_files.end());
+        
+        auto sfz_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".sfz");
+        live_soundfont_files.insert(live_soundfont_files.end(), sfz_files.begin(), sfz_files.end());
+        
+        live_soundfont_list.resize(live_soundfont_files.size());
+        for(size_t i = 0; i < live_soundfont_files.size(); i++)
+        {
+            live_soundfont_list[i] = {live_soundfont_files[i], false};
+        }
     }
     NVConf::CreateSoundfontList(live_soundfont_list);
 }
@@ -536,6 +545,10 @@ int SDL_main(int ac, char **av)
         live_note_speed = parsed_config.note_speed;
         current_audio_dev = live_conf.audio_device_index; // Used to set the last selected audio device in the combobox
         loop_colors = live_conf.loop_colors;
+        overlap_remover = live_conf.OR;
+        use_default_media_paths = live_conf.use_default_paths;
+        
+        selIndex = live_conf.midi_index;
         //velocity_filter = live_conf.vel_filter;
         //min_velocity = live_conf.vel_min;
         //max_velocity = live_conf.vel_max;
@@ -558,6 +571,7 @@ int SDL_main(int ac, char **av)
         default_config.vel_filter = true;
         default_config.vel_min = 0;
         default_config.vel_max = 32;
+        selIndex = 0;
         //default_config.channel_colors[15] = Col[15];
         for(int i = 0; i < 15; i++)
         {
@@ -620,6 +634,10 @@ int SDL_main(int ac, char **av)
             NVi::info("Player", "Midi file exists\n"); // Just to not let this empty lol
         }
     }
+    
+    
+    if(live_conf.OR)
+        nv_list.OR(); // Overlap remover in action
     
 
     CvWin = new Canvas;
@@ -718,6 +736,15 @@ int SDL_main(int ac, char **av)
                 BASS_MIDI_FontSetVolume(Sf, 0.15);
                 font_list.push_back({Sf, -1, 0});
             }
+            // I hate this
+            std::ostringstream sf_file_info_text;
+            NVFileUtils::FileInfo sf_file = NVFileUtils::GetFileInfo(checked_soundfonts[i]);
+            
+            sf_file_info_text << "File Name:         " << sf_file.file_name << "\n";
+            sf_file_info_text << "Last Modified:   " << sf_file.last_mod << "\n";
+            sf_file_info_text << "Size:                    " << sf_file.size << "\n";
+            
+            sf_file_info_text_arr.push_back(sf_file_info_text.str());
         }
     }
    

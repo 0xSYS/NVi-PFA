@@ -51,12 +51,14 @@ class NVConf
         unsigned int channel_colors[16];
         int vel_min;
         int vel_max;
+        int midi_index;
         bool audio_limiter;
         bool vel_filter;
         bool use_default_paths;
         bool is_custom_ch_colors; // Only for internal use!!!
         bool use_default_colors; // Only for internal use!!!
         bool loop_colors;
+        bool OR; // Overlap remover
         std::string last_midi_path;
         std::vector<std::string> current_soundfonts;
         std::vector<std::string> extra_midi_paths;

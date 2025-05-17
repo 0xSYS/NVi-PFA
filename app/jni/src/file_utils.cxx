@@ -4,6 +4,10 @@
     #include <dirent.h>
     #include <unistd.h>
     #include <sys/stat.h>
+    #include <pwd.h>
+    #include <limits.h>
+    #include <ctime>
+    #include <iomanip>
 #endif
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -22,6 +26,7 @@
 
 
 #include "file_utils.hxx"
+#include "Utils.hxx"
 
 
 
@@ -50,42 +55,41 @@ std::vector<std::string> NVFileUtils::GetFilesByExtension(std::string base_dir, 
 
     dir = opendir(base_dir.c_str());
     
-    if (!dir)
+    if(!dir)
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", ("Failed to scan: " + base_dir).c_str(), nullptr);
         return result;
     }
     
-    while ((entry = readdir(dir)) != NULL) 
+    while((entry = readdir(dir)) != NULL) 
     {
         std::string name = entry->d_name;
 
         // Skip "." and ".."
-        if (name == "." || name == "..")
+        if(name == "." || name == "..")
             continue;
 
         std::string full_path = base_dir + name;
 
         struct stat statbuf;
-        if (lstat(full_path.c_str(), &statbuf) == -1)
+        if(lstat(full_path.c_str(), &statbuf) == -1)
             continue;
             
             
-        if (S_ISLNK(statbuf.st_mode)) {
+        if(S_ISLNK(statbuf.st_mode)) {
             // Skip symbolic links entirely to avoid infinite recursion
             continue;
         }
 
-        if (S_ISDIR(statbuf.st_mode)) 
+        if(S_ISDIR(statbuf.st_mode)) 
         {
             // Recursively scan and collect files from subdirectory
             std::vector<std::string> sub_result = GetFilesByExtension(full_path, f_ext);
             result.insert(result.end(), sub_result.begin(), sub_result.end());
         } 
-        else if (S_ISREG(statbuf.st_mode)) 
+        else if(S_ISREG(statbuf.st_mode)) 
         {
-            if (name.size() >= f_ext.size() &&
-                name.substr(name.size() - f_ext.size()) == f_ext)
+            if(name.size() >= f_ext.size() && name.substr(name.size() - f_ext.size()) == f_ext)
             {
                 // std::cout << "Files found: " << full_path << "\n";
                 result.push_back(full_path);
@@ -116,28 +120,26 @@ std::vector<std::string> NVFileUtils::GetFilesByExtension(std::string base_dir, 
         std::string name = findFileData.cFileName;
 
         // Skip "." and ".."
-        if (name == "." || name == "..")
+        if(name == "." || name == "..")
             continue;
 
         std::string full_path = base_dir + name;
 
-        if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT)
+        if(findFileData.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT)
         {
             // Skip symbolic links or junctions
             continue;
         }
 
-        if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+        if(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
         {
             // Recurse into subdirectory
             std::vector<std::string> sub_result = GetFilesByExtension(full_path, f_ext);
             result.insert(result.end(), sub_result.begin(), sub_result.end());
         }
-        else if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_NORMAL ||
-                 findFileData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE)
+        else if(findFileData.dwFileAttributes & FILE_ATTRIBUTE_NORMAL || findFileData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE)
         {
-            if (name.size() >= f_ext.size() &&
-                name.substr(name.size() - f_ext.size()) == f_ext)
+            if(name.size() >= f_ext.size() && name.substr(name.size() - f_ext.size()) == f_ext)
             {
                 result.push_back(full_path);
             }
@@ -148,6 +150,59 @@ std::vector<std::string> NVFileUtils::GetFilesByExtension(std::string base_dir, 
     FindClose(hFind);
 #endif
     return result;
+}
+
+std::string human_readable_size(uint64_t bytes) {
+    const char* units[] = {"B", "KB", "MB", "GB", "TB", "PB"};
+    int unit_index = 0;
+    double size = static_cast<double>(bytes);
+
+    while (size >= 1024 && unit_index < 5) {
+        size /= 1024;
+        ++unit_index;
+    }
+
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision(2) << size << " " << units[unit_index];
+    return oss.str();
+}
+
+NVFileUtils::FileInfo NVFileUtils::GetFileInfo(std::string f)
+{
+    NVFileUtils::FileInfo result;
+    char abs_path[PATH_MAX];
+#ifdef __linux__
+    struct stat f_stat;
+    std::time_t t;
+    std::tm* tm_ptr;
+    
+    // Get basic file information and populate the the struct members
+    if(stat(f.c_str(), &f_stat) == 0)
+    {
+        t = f_stat.st_mtime;
+        tm_ptr = std::localtime(&t);
+        result.file_name = f;
+        
+        std::ostringstream temp;
+        temp << std::put_time(tm_ptr, "%Y-%m-%d %H:%M:%S");
+        result.last_mod  = temp.str();
+        result.size      = human_readable_size(f_stat.st_size);
+        result.success = true;
+    }
+    else
+    {
+        result.success = false;
+        result.err << "File does not exist !!\n";
+        NVi::error("file_utils", result.err.str().c_str());
+    }
+#endif
+
+#if defined(_WIN32) || defined(_WIN64)
+    // Todo...
+#endif
+    
+    return result;
+    
 }
 
 #ifndef NON_ANDROID

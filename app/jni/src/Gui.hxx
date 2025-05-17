@@ -25,11 +25,14 @@ inline NVConf::configuration live_conf;
 inline ImVec4 clear_color;
 inline NVi::RGBAint liveColor;
 inline int live_note_speed = 6000;
+inline int selIndex = 0;
 static inline int min_velocity;
 static inline int max_velocity;
 inline int current_audio_dev;
 inline bool velocity_filter = true;
 inline bool loop_colors = false;
+inline bool overlap_remover = true;
+inline bool use_default_media_paths = true;
 
 inline ImVec4 ui_chcolors[16];
 

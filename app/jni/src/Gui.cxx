@@ -1,10 +1,12 @@
 #include <string>
+//#include <iostream>
 
 
 #include "Gui.hxx"
 #include "Config_Utils.hxx"
 #include "Utils.hxx"
 #include "file_utils.hxx"
+#include "canvas.hxx"
 
 
 #include "extern/imgui/imgui.h"
@@ -16,9 +18,10 @@
 
 
 bool show_demo_window = true;
+bool file_info_window = false;
 //bool main_gui_window = false;
 
-int selIndex = 0;
+//int selIndex = 0;
 bool call_once = false;
 bool allow_audio_dev_ssave;
 static char midi_search[128];
@@ -27,9 +30,13 @@ static std::string midi_search_text;
 static std::string sf_search_text;
 static char midi_path_entry[1024];
 static char soundfons_path_entry[1024];
+static char file_info_text[1500 * 50];
 int selected_midi_path_entry;
 int selected_soundfont_path_etry;
 std::string temp_widget_id;
+std::ostringstream file_info_fields;
+std::vector <std::string> current_soundfonts;
+NVFileUtils::FileInfo current_file_info;
 
 
 
@@ -272,20 +279,20 @@ void RenderMidiPathsList(const std::vector<std::string>& items, int& selectedInd
 {
     ImGui::BeginChild("##midipathls", ImVec2(0, 300), true, ImGuiWindowFlags_HorizontalScrollbar);
     
-        for (int i = 0; i < items.size(); ++i) 
+    for (int i = 0; i < items.size(); ++i) 
+    {
+        bool isSelected = (i == selectedIndex);
+    
+        if (ImGui::Selectable((items[i] + "##" + std::to_string(i)).c_str(), isSelected)) 
         {
-            bool isSelected = (i == selectedIndex);
-    
-            if (ImGui::Selectable((items[i] + "##" + std::to_string(i)).c_str(), isSelected)) 
-            {
-                selectedIndex = i;
-            }
-    
-            if (isSelected)
-                ImGui::SetItemDefaultFocus();
+            selectedIndex = i;
         }
     
-        ImGui::EndChild();
+        if (isSelected)
+            ImGui::SetItemDefaultFocus();
+    }
+    
+    ImGui::EndChild();
 }
 
 void RenderSoundfontsPathsList(const std::vector<std::string>& items, int& selectedIndex)
@@ -473,9 +480,11 @@ void NVGui::Run(SDL_Renderer *r)
     ImGui::Columns(1); // Reset to single column
     
     
+    
     // Show the main GUI window
-    if (main_gui_window)
+    if(main_gui_window)
     {
+        //selIndex = live_conf.midi_index;
         ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
         ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f)); // Pivot 0.5 = center
 #ifdef NON_ANDROID
@@ -504,7 +513,7 @@ void NVGui::Run(SDL_Renderer *r)
         {
             if (ImGui::BeginTabItem("Play MIDI Files"))
             {
-                ImGui::SetNextItemWidth(300);
+                ImGui::SetNextItemWidth(200);
                 ImGui::InputTextWithHint("##EHE", "Search midis", midi_search, IM_ARRAYSIZE(midi_search));
                 
                 midi_search_text = midi_search;
@@ -530,6 +539,7 @@ void NVGui::Run(SDL_Renderer *r)
                     {
                         loadMidiFile(live_midi_list[selIndex]);
                         live_conf.last_midi_path = live_midi_list[selIndex];
+                        live_conf.midi_index = selIndex;
                         NVConf::WriteConfig(live_conf); // Also save the last selected midi file bc why not
                     }
                 }
@@ -547,6 +557,19 @@ void NVGui::Run(SDL_Renderer *r)
                 if (ImGui::BeginItemTooltip())
                 {
                     ImGui::Text("Close and reset midi playback");
+                    ImGui::EndTooltip();
+                }
+                
+                ImGui::SameLine();
+                
+                if(ImGui::Button("File info"))
+                {
+                    current_file_info = NVFileUtils::GetFileInfo(live_midi_list[selIndex]);
+                    file_info_window = true;
+                }
+                if (ImGui::BeginItemTooltip())
+                {
+                    ImGui::Text("Show file information");
                     ImGui::EndTooltip();
                 }
                 
@@ -570,6 +593,19 @@ void NVGui::Run(SDL_Renderer *r)
                 if (ImGui::BeginItemTooltip())
                 {
                     ImGui::Text("Synchronize the soundfont file list with the new files created");
+                    ImGui::EndTooltip();
+                }
+                
+                ImGui::SameLine();
+                
+                if(ImGui::Button("File info"))
+                {
+                    current_file_info = NVFileUtils::GetFileInfo(live_midi_list[selIndex]);
+                    file_info_window = true;
+                }
+                if (ImGui::BeginItemTooltip())
+                {
+                    ImGui::Text("Show file information");
                     ImGui::EndTooltip();
                 }
                 
@@ -598,6 +634,13 @@ void NVGui::Run(SDL_Renderer *r)
                 {
                     if (ImGui::BeginTabItem("General"))
                     {
+                        ImGui::Checkbox("Include default paths", &use_default_media_paths);
+                        live_conf.use_default_paths = use_default_media_paths;
+                        if (ImGui::BeginItemTooltip())
+                        {
+                            ImGui::Text("Use the preincluded media paths to scan for midi and soundfont files\nDefault path: /sdcard/Download/");
+                            ImGui::EndTooltip();
+                        }
                         ImGui::Text("Add directories to scan for midis");
                         ImGui::InputTextWithHint("##XD", "New entry", midi_path_entry, IM_ARRAYSIZE(midi_path_entry));
                         
@@ -673,8 +716,15 @@ void NVGui::Run(SDL_Renderer *r)
                     
                     if (ImGui::BeginTabItem("Visual"))
                     {
+                        ImGui::Checkbox("Overlap Remover *", &overlap_remover);
+                        if (ImGui::BeginItemTooltip())
+                        {
+                            ImGui::Text("Removes duplicated note data reducing the visualization lag");
+                            ImGui::EndTooltip();
+                        }
                         ImGui::SliderInt("Note Speed", &live_note_speed, 100, 20000);
                         ImGui::Text("Background Color");
+                        live_conf.OR = overlap_remover;
                         clear_color = ImVec4(live_conf.bg_R / 255.0f, live_conf.bg_G / 255.0f, live_conf.bg_B / 255.0f, live_conf.bg_A / 255.0f);
 
                         ImGui::ColorEdit3("##H", (float*)&clear_color);
@@ -689,7 +739,22 @@ void NVGui::Run(SDL_Renderer *r)
                         ImGui::Text("");
                         ImGui::Text("Custom Channel Colors *");
                         
-                        for(int i = 0; i < 15; i++)
+                        if(ImGui::Button("Reset"))
+                        {
+                            NVi::info("Gui", "Reset action\n");
+                            for(int i = 0; i < 15; i++)
+                            {
+                                ui_chcolors[i] = UIntToImVec4(Col[i]);
+                                live_conf.channel_colors[i] = Col[i];
+                            }
+                        }
+                        if (ImGui::BeginItemTooltip())
+                        {
+                            ImGui::Text("Reset the color order");
+                            ImGui::EndTooltip();
+                        }
+                        
+                        for(int i = 0; i < 16; i++)
                         {
                             if(!is_defaultconfig)
                             {
@@ -796,6 +861,46 @@ void NVGui::Run(SDL_Renderer *r)
         }
         ImGui::End();
     } // Main window
+    
+    if(file_info_window)
+    {
+        ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+        ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f)); // Pivot 0.5 = center
+#ifdef NON_ANDROID
+        ImGui::SetNextWindowSizeConstraints(ImVec2(500, 380), ImVec2(FLT_MAX, FLT_MAX));
+        ImGui::Begin("File Information", &file_info_window);
+#else   // Setting up a different ui layout for mobile users
+        ImGui::SetNextWindowSize(ImVec2(900.0f, 600.0f));
+        ImGui::Begin("File Information", &file_info_window, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+#endif
+
+        file_info_fields.str("");
+        file_info_fields.clear();
+     
+        file_info_fields << "- - - - Midi File - - - -\n\n";
+        file_info_fields << "File Name:         " << current_file_info.file_name << "\n";
+        file_info_fields << "Last Modified:   " << current_file_info.last_mod << "\n";
+        file_info_fields << "Size:                    " << current_file_info.size << "\n";
+        
+        // AAHHHH Stupid soundfont file information
+        file_info_fields << "\n\n- - - - Loaded SoundFonts - - - -\n\n";
+        
+        for(int i = 0; i < sf_file_info_text_arr.size(); i++)
+        {
+            file_info_fields << sf_file_info_text_arr[i];
+            file_info_fields << "\n";
+        }
+        
+        strncpy(file_info_text, file_info_fields.str().c_str(), sizeof(file_info_text) - 1);
+        file_info_text[sizeof(file_info_text) - 1] = '\0';
+        
+        
+        ImVec2 avail = ImGui::GetContentRegionAvail();
+        
+        ImGui::InputTextMultiline("##source", file_info_text, IM_ARRAYSIZE(file_info_text), avail, ImGuiInputTextFlags_ReadOnly);
+    
+        ImGui::End();  
+    }
     
     ImGui::End();
     

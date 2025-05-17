@@ -19,6 +19,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.annotation.NonNull;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+
 public class NvpfaActivity extends SDLActivity {
     private static final int REQUEST_STORAGE_PERMISSION = 1;
     private static final int REQUEST_MANAGE_EXTERNAL_STORAGE = 2;
@@ -48,7 +52,7 @@ public class NvpfaActivity extends SDLActivity {
                 REQUEST_STORAGE_PERMISSION);
         } else {
             // Check if you have the MANAGE_EXTERNAL_STORAGE privilege.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && Build.VERSION.SDK_INT < 35) {
                 if (!Environment.isExternalStorageManager()) {
                     // If this permission is not available, direct the user to turn it on manually
                     Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
@@ -58,6 +62,21 @@ public class NvpfaActivity extends SDLActivity {
                     // If you already have all permissions, initialize the application directly
                     initializeApp();
                 }
+            }
+            else
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Error");
+                builder.setMessage("Cannot open storage permission settings\nNo midi and soundfont files will be available to scan.\nThis fails due to the new security requirements on Android 15 and latter");
+                builder.setIcon(android.R.drawable.ic_dialog_alert);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) 
+                    {
+                        // User clicked OK button
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
             }
         }
     }

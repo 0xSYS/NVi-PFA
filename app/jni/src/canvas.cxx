@@ -423,7 +423,7 @@ void Canvas::DrawNote(NVi::u16_t k, const NVnote &n, int pps)
     else
     {
         // Assign a color based on the predefined Col array or generate a random color
-        if (trackChannelColorMap.size() < 16)
+        if (trackChannelColorMap.size() < 15)
         {
             // Default color array
             if(!live_conf.is_custom_ch_colors)

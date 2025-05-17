@@ -28,6 +28,8 @@ void NVConf::WriteConfig(configuration cfg)
     audio->insert("VoiceCount", cfg.bass_voice_count);
     audio->insert("LastMIDIpath", cfg.last_midi_path);
     audio->insert("DeviceID", cfg.audio_device_index);
+    audio->insert("MIDI_Index", cfg.midi_index);
+    audio->insert("DefaultPaths", cfg.use_default_paths);
     auto effects = cpptoml::make_table();
     auto vel_filter = cpptoml::make_table();
     vel_filter->insert("enabled", cfg.vel_filter);
@@ -45,6 +47,7 @@ void NVConf::WriteConfig(configuration cfg)
     vis->insert("Window_w", cfg.window_w);
     vis->insert("Window_h", cfg.window_h);
     vis->insert("LoopColors", cfg.loop_colors);
+    vis->insert("OR", cfg.OR);
     out_cfg->insert("Visual", vis);
     
     auto bg_col = cpptoml::make_table();
@@ -95,9 +98,11 @@ NVConf::configuration NVConf::ReadConfig()
     auto cfg = cpptoml::parse_file(CONFIG_PATH);
     
     auto audio = cfg->get_table("Audio");
-    in_cfg.bass_voice_count = *audio->get_as<int>("VoiceCount");
-    in_cfg.last_midi_path = *audio->get_as<std::string>("LastMIDIpath");
+    in_cfg.bass_voice_count   = *audio->get_as<int>("VoiceCount");
+    in_cfg.last_midi_path     = *audio->get_as<std::string>("LastMIDIpath");
     in_cfg.audio_device_index = *audio->get_as<int>("DeviceID");
+    in_cfg.midi_index         = *audio->get_as<int>("MIDI_Index");
+    in_cfg.use_default_paths  = *audio->get_as<bool>("DefaultPaths");
     
     auto effects = audio->get_table("Effects");
     
@@ -110,18 +115,19 @@ NVConf::configuration NVConf::ReadConfig()
             auto min_vel = vel_filter->get_as<int>("MinVel");
             auto max_vel = vel_filter->get_as<int>("MaxVel");
         
-            in_cfg.vel_min = *min_vel;
-            in_cfg.vel_max = *max_vel;
+            in_cfg.vel_min    = *min_vel;
+            in_cfg.vel_max    = *max_vel;
             in_cfg.vel_filter = *enabled;
         }
         
     }
     
     auto vis = cfg->get_table("Visual");
-    in_cfg.window_w = *vis->get_as<int>("Window_w");
-    in_cfg.window_h = *vis->get_as<int>("Window_h");
-    in_cfg.note_speed = *vis->get_as<int>("NoteSpeed");
+    in_cfg.window_w    = *vis->get_as<int>("Window_w");
+    in_cfg.window_h    = *vis->get_as<int>("Window_h");
+    in_cfg.note_speed  = *vis->get_as<int>("NoteSpeed");
     in_cfg.loop_colors = *vis->get_as<bool>("LoopColors");
+    in_cfg.OR          = *vis->get_as<bool>("OR");
     
     auto bg_col = cfg->get_table("BackgroundColor");
     in_cfg.bg_R = *bg_col->get_as<int>("R");
