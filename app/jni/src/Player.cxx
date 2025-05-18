@@ -764,9 +764,6 @@ int SDL_main(int ac, char **av)
     const unsigned int FPS=1000000/CvWin->mod->refresh_rate;// 20 may be replaced with a limited frame rate
 
     
-    Uint64 lastTapTime = 0;
-    const Uint32 doubleTapThreshold = 400; // in milliseconds
-    
     // Allow live change of the backgoround color
    	SDL_SetRenderDrawColor(CvWin->Ren, liveColor.r, liveColor.g, liveColor.b, liveColor.a);
     
