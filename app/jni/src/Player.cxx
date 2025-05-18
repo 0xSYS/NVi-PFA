@@ -651,7 +651,7 @@ int SDL_main(int ac, char **av)
 
     // Bass, bassmidi stuff
     BASS_PluginLoad(BASSMIDI_LIB, 0);
-    BASS_SetConfig(BASS_CONFIG_BUFFER, 500); // Set buffer size to 500ms
+    BASS_SetConfig(BASS_CONFIG_BUFFER, 5000); // Set buffer size to 500ms
     BASS_SetConfig(BASS_CONFIG_MIDI_AUTOFONT, 0);
     //NVi::info("Player", "array size: %d\n", availableAudioDevices.size());
     
