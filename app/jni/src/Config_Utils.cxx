@@ -44,8 +44,6 @@ void NVConf::WriteConfig(configuration cfg)
     
     auto vis = cpptoml::make_table();
     vis->insert("NoteSpeed", cfg.note_speed);
-    vis->insert("Window_w", cfg.window_w);
-    vis->insert("Window_h", cfg.window_h);
     vis->insert("LoopColors", cfg.loop_colors);
     vis->insert("OR", cfg.OR);
     out_cfg->insert("Visual", vis);
@@ -123,8 +121,6 @@ NVConf::configuration NVConf::ReadConfig()
     }
     
     auto vis = cfg->get_table("Visual");
-    in_cfg.window_w    = *vis->get_as<int>("Window_w");
-    in_cfg.window_h    = *vis->get_as<int>("Window_h");
     in_cfg.note_speed  = *vis->get_as<int>("NoteSpeed");
     in_cfg.loop_colors = *vis->get_as<bool>("LoopColors");
     in_cfg.OR          = *vis->get_as<bool>("OR");

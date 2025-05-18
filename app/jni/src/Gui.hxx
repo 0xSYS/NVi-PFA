@@ -44,6 +44,10 @@ ImVec4 UIntToImVec4(unsigned int rgb);
 
 static NVnoteList MIDI;
 
+struct LoadMidiArgs {
+    std::string midi_path;
+};
+
 class NVGui
 {
     public:

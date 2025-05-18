@@ -188,11 +188,34 @@ void NVGui::Setup(SDL_Window *w, SDL_Renderer *r)
 Functions for internal use only
 */
 
+
+int LoadMidiThreadFunc(void *data)
+{
+    LoadMidiArgs *args = (LoadMidiArgs*)data;
+    // Optionally set high priority
+    SDL_SetCurrentThreadPriority(SDL_THREAD_PRIORITY_HIGH);
+    loadMidiFile(args->midi_path);
+    delete args;
+    return 0;
+}
+
+void startLoadMidiThread(const std::string& midi_path)
+{
+    LoadMidiArgs *args = new LoadMidiArgs{midi_path};
+    SDL_CreateThread(LoadMidiThreadFunc, "LoadMidiThread", args);
+}
+
+
+
+/*
+- - - - [UI Functions] - - - -
+*/
+
 // So many of you wanted this
 // And I can relate to such a problem
 
 // Filter only the filenames before showing them on the midi and soundfont lists or it will cause a godamn stupid chaos
-std::string FilenameOnly(const std::string& path) 
+std::string FilenameOnly(const std::string& path)
 {
     size_t slash = path.find_last_of("/\\");
     return (slash == std::string::npos) ? path : path.substr(slash + 1);
@@ -202,24 +225,24 @@ void RenderMidiList(const std::vector<std::string>& items, int& selectedIndex, s
 {
     ImGui::BeginChild("##midils", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar);
     
-        for (int i = 0; i < items.size(); ++i) 
+    for(int i = 0; i < items.size(); ++i)
+    {
+        std::string filename = FilenameOnly(items[i]);
+    
+        // Filter check (case-insensitive optional)
+        if(!find_item.empty() && filename.find(find_item) == std::string::npos)
+            continue;
+    
+        bool isSelected = (i == selectedIndex);
+    
+        if(ImGui::Selectable((filename + "##" + std::to_string(i)).c_str(), isSelected))
         {
-            std::string filename = FilenameOnly(items[i]);
-    
-            // Filter check (case-insensitive optional)
-            if (!find_item.empty() && filename.find(find_item) == std::string::npos)
-                continue;
-    
-            bool isSelected = (i == selectedIndex);
-    
-            if (ImGui::Selectable((filename + "##" + std::to_string(i)).c_str(), isSelected)) 
-            {
-                selectedIndex = i;
-            }
-    
-            if (isSelected)
-                ImGui::SetItemDefaultFocus();
+            selectedIndex = i;
         }
+    
+        if(isSelected)
+            ImGui::SetItemDefaultFocus();
+    }
     
         ImGui::EndChild();
 }
@@ -230,12 +253,12 @@ void RenderSoundfontList(std::vector<SoundfontItem>& items, std::string find_ite
     
     bool soundfont_changed = false;
     
-    for (int i = 0; i < items.size(); ++i) 
+    for(int i = 0; i < items.size(); ++i)
     {
         std::string filename = FilenameOnly(items[i].label);
     
         // Filter check
-        if (!find_item.empty() && filename.find(find_item) == std::string::npos)
+        if(!find_item.empty() && filename.find(find_item) == std::string::npos)
             continue;
             
         // Store previous checkbox state
@@ -245,7 +268,8 @@ void RenderSoundfontList(std::vector<SoundfontItem>& items, std::string find_ite
         ImGui::Checkbox((filename + "##" + std::to_string(i)).c_str(), &items[i].checked);
         
         // Check if state changed
-        if (previous_state != items[i].checked) {
+        if(previous_state != items[i].checked)
+        {
             soundfont_changed = true;
         }
     }
@@ -254,7 +278,8 @@ void RenderSoundfontList(std::vector<SoundfontItem>& items, std::string find_ite
     
     // If any soundfont selection changed, update the checked_soundfonts list
     // and reload soundfonts immediately
-    if (soundfont_changed) {
+    if(soundfont_changed)
+    {
         checked_soundfonts = NVGui::GetCheckedSoundfonts(items);
         reloadSoundfonts();
     }
@@ -264,9 +289,9 @@ std::vector<std::string> NVGui::GetCheckedSoundfonts(const std::vector<Soundfont
 {
     std::vector<std::string> checkedItems;
     
-    for (const auto& item : items) 
+    for(const auto& item : items)
     {
-        if (item.checked) 
+        if(item.checked)
         {
             checkedItems.push_back(item.label);
         }
@@ -279,11 +304,11 @@ void RenderMidiPathsList(const std::vector<std::string>& items, int& selectedInd
 {
     ImGui::BeginChild("##midipathls", ImVec2(0, 300), true, ImGuiWindowFlags_HorizontalScrollbar);
     
-    for (int i = 0; i < items.size(); ++i) 
+    for(int i = 0; i < items.size(); ++i)
     {
         bool isSelected = (i == selectedIndex);
     
-        if (ImGui::Selectable((items[i] + "##" + std::to_string(i)).c_str(), isSelected)) 
+        if(ImGui::Selectable((items[i] + "##" + std::to_string(i)).c_str(), isSelected))
         {
             selectedIndex = i;
         }
@@ -299,16 +324,16 @@ void RenderSoundfontsPathsList(const std::vector<std::string>& items, int& selec
 {
     ImGui::BeginChild("##soundfontspathls", ImVec2(0, 300), true, ImGuiWindowFlags_HorizontalScrollbar);
     
-        for (int i = 0; i < items.size(); ++i) 
+        for(int i = 0; i < items.size(); ++i)
         {
             bool isSelected = (i == selectedIndex);
     
-            if (ImGui::Selectable((items[i] + "##" + std::to_string(i)).c_str(), isSelected)) 
+            if(ImGui::Selectable((items[i] + "##" + std::to_string(i)).c_str(), isSelected))
             {
                 selectedIndex = i;
             }
     
-            if (isSelected)
+            if(isSelected)
                 ImGui::SetItemDefaultFocus();
         }
     
@@ -318,18 +343,18 @@ void RenderSoundfontsPathsList(const std::vector<std::string>& items, int& selec
 void ShowAudioDeviceList(const std::vector<NVi::AudioDevice>& audioDevices)
 {
     std::vector<const char*> deviceNames;
-    for (const auto& device : audioDevices)
+    for(const auto& device : audioDevices)
     {
         deviceNames.push_back(device.name);
     }
     
     // Ensure current_audio_dev is valid
-    if (deviceNames.empty())
+    if(deviceNames.empty())
     {
         current_audio_dev = 0; // Reset to 0 if there are no devices
         allow_audio_dev_ssave = false;
     }
-    else if (current_audio_dev >= deviceNames.size())
+    else if(current_audio_dev >= deviceNames.size())
     {
         allow_audio_dev_ssave = true;
         current_audio_dev = 0; // Reset to the first device if the index is out of bounds
@@ -338,15 +363,15 @@ void ShowAudioDeviceList(const std::vector<NVi::AudioDevice>& audioDevices)
         // Display the combo box
     const char* currentDeviceName = (deviceNames.empty() ? "No devices available" : deviceNames[current_audio_dev]);
     
-    if (ImGui::BeginCombo("Audio Devices *", currentDeviceName))
+    if(ImGui::BeginCombo("Audio Devices *", currentDeviceName))
     {
-        if (deviceNames.empty())
+        if(deviceNames.empty())
         {
             // Render a placeholder item when no devices are available
             ImGui::Selectable("No devices available", false);
     
             // Avoid spamming warnings
-            if (!call_once)
+            if(!call_once)
             {
                 call_once = true;
                 NVi::warn("Gui", "No audio devices available\n");
@@ -354,20 +379,20 @@ void ShowAudioDeviceList(const std::vector<NVi::AudioDevice>& audioDevices)
         }
         else
         {
-            for (int i = 0; i < deviceNames.size(); i++)
+            for(int i = 0; i < deviceNames.size(); i++)
             {
                 // Check if this item is selected
                 bool isSelected = (current_audio_dev == i);
     
                 // Add the item to the combo box
-                if (ImGui::Selectable(deviceNames[i], isSelected))
+                if(ImGui::Selectable(deviceNames[i], isSelected))
                 {
                     // Update the current index if the user selects this item
                     current_audio_dev = i;
                 }
     
                 // Set the initial focus when opening the combo box
-                if (isSelected)
+                if(isSelected)
                 {
                     ImGui::SetItemDefaultFocus();
                 }
@@ -427,15 +452,15 @@ void NVGui::Run(SDL_Renderer *r)
     ImGui::Columns(3, "ResizableColumns", false); // 2 columns, resizable
     float sb_col_w = ImGui::GetColumnWidth();
     float sb_btn_h = ImGui::GetContentRegionAvail().y;
-    if (ImGui::InvisibleButton("<<" , ImVec2(sb_col_w, sb_btn_h)))
+    if(ImGui::InvisibleButton("<<" , ImVec2(sb_col_w, sb_btn_h)))
         seek_playback(-SEEK_AMOUNT);
     
-    if (ImGui::IsItemActive())
+    if(ImGui::IsItemActive())
     {
         float holdDuration = ImGui::GetIO().MouseDownDuration[0]; // [0] is for the left mouse button
     
         // Handling long click / tap event
-        if (holdDuration > longClickThreshold)
+        if(holdDuration > longClickThreshold)
         {
             main_gui_window = true;
         }
@@ -445,15 +470,15 @@ void NVGui::Run(SDL_Renderer *r)
 
     float ps_col_w = ImGui::GetColumnWidth();
     float ps_btn_h = ImGui::GetContentRegionAvail().y;
-    if (ImGui::InvisibleButton(is_paused ? "|>" : "||" , ImVec2(ps_col_w, ps_btn_h)))
+    if(ImGui::InvisibleButton(is_paused ? "|>" : "||" , ImVec2(ps_col_w, ps_btn_h)))
         toggle_pause();
         
-    if (ImGui::IsItemActive())
+    if(ImGui::IsItemActive())
     {
         float holdDuration = ImGui::GetIO().MouseDownDuration[0]; // [0] is for the left mouse button
     
         // Handling long click / tap event to open up the settings window
-        if (holdDuration > longClickThreshold)
+        if(holdDuration > longClickThreshold)
         {
             main_gui_window = true;
         }
@@ -466,12 +491,12 @@ void NVGui::Run(SDL_Renderer *r)
     if (ImGui::InvisibleButton(">>" , ImVec2(sf_col_w, sf_btn_h)))
         seek_playback(SEEK_AMOUNT);
         
-    if (ImGui::IsItemActive())
+    if(ImGui::IsItemActive())
     {
         float holdDuration = ImGui::GetIO().MouseDownDuration[0]; // [0] is for the left mouse button
     
         // Handling long click / tap event to open up the settings window
-        if (holdDuration > longClickThreshold)
+        if(holdDuration > longClickThreshold)
         {
             main_gui_window = true;
         }
@@ -500,10 +525,10 @@ void NVGui::Run(SDL_Renderer *r)
         max_velocity = live_conf.vel_max;
 
         
-        if (ImGui::Button("Quit"))
+        if(ImGui::Button("Quit"))
             NVi::Quit();
             
-        if (ImGui::BeginItemTooltip())
+        if(ImGui::BeginItemTooltip())
         {
             ImGui::Text("Quit NVi PFA");
             ImGui::EndTooltip();
@@ -511,7 +536,7 @@ void NVGui::Run(SDL_Renderer *r)
 
         if(ImGui::BeginTabBar("tabs", ImGuiTabBarFlags_None))
         {
-            if (ImGui::BeginTabItem("Play MIDI Files"))
+            if(ImGui::BeginTabItem("Play MIDI Files"))
             {
                 ImGui::SetNextItemWidth(200);
                 ImGui::InputTextWithHint("##EHE", "Search midis", midi_search, IM_ARRAYSIZE(midi_search));
@@ -524,7 +549,7 @@ void NVGui::Run(SDL_Renderer *r)
                 {
                     NVi::CreateMidiList(); // It simply overwrites to the present midi list
                 }
-                if (ImGui::BeginItemTooltip())
+                if(ImGui::BeginItemTooltip())
                 {
                     ImGui::Text("Synchronize the midi file list with the new files created");
                     ImGui::EndTooltip();
@@ -532,18 +557,41 @@ void NVGui::Run(SDL_Renderer *r)
                 
                 ImGui::SameLine();
                 
-                if (ImGui::Button("Load Selected"))
+                if(!is_playback_started)
                 {
-                    // Check if the list is not empty and selIndex is valid before loading
-                    if (!live_midi_list.empty() && selIndex >= 0 && selIndex < live_midi_list.size())
+                    ImGui::BeginDisabled();
+                
+                    if(ImGui::Button("Load Selected"))
                     {
-                        loadMidiFile(live_midi_list[selIndex]);
-                        live_conf.last_midi_path = live_midi_list[selIndex];
-                        live_conf.midi_index = selIndex;
-                        NVConf::WriteConfig(live_conf); // Also save the last selected midi file bc why not
+                        // Check if the list is not empty and selIndex is valid before loading
+                        if (!live_midi_list.empty() && selIndex >= 0 && selIndex < live_midi_list.size())
+                        {
+                            NVi::CloseMIDI();
+                            startLoadMidiThread(live_midi_list[selIndex]);
+                            live_conf.last_midi_path = live_midi_list[selIndex];
+                            live_conf.midi_index = selIndex;
+                            NVConf::WriteConfig(live_conf); // Also save the last selected midi file bc why not
+                        }
+                    }
+                    ImGui::EndDisabled();
+                }
+                else
+                {
+                    if(ImGui::Button("Load Selected"))
+                    {
+                        // Check if the list is not empty and selIndex is valid before loading
+                        if(!live_midi_list.empty() && selIndex >= 0 && selIndex < live_midi_list.size())
+                        {
+                            NVi::CloseMIDI();
+                            //loadMidiFile(live_midi_list[selIndex]);
+                            startLoadMidiThread(live_midi_list[selIndex]);
+                            live_conf.last_midi_path = live_midi_list[selIndex];
+                            live_conf.midi_index = selIndex;
+                            NVConf::WriteConfig(live_conf); // Also save the last selected midi file bc why not
+                        }
                     }
                 }
-                if (ImGui::BeginItemTooltip())
+                if(ImGui::BeginItemTooltip())
                 {
                     ImGui::Text("Load and play the selected MIDI file");
                     ImGui::EndTooltip();
@@ -551,10 +599,10 @@ void NVGui::Run(SDL_Renderer *r)
                 
                 ImGui::SameLine();
                 
-                if (ImGui::Button("Close"))
+                if(ImGui::Button("Close"))
                     NVi::CloseMIDI();
                 
-                if (ImGui::BeginItemTooltip())
+                if(ImGui::BeginItemTooltip())
                 {
                     ImGui::Text("Close and reset midi playback");
                     ImGui::EndTooltip();
@@ -567,7 +615,7 @@ void NVGui::Run(SDL_Renderer *r)
                     current_file_info = NVFileUtils::GetFileInfo(live_midi_list[selIndex]);
                     file_info_window = true;
                 }
-                if (ImGui::BeginItemTooltip())
+                if(ImGui::BeginItemTooltip())
                 {
                     ImGui::Text("Show file information");
                     ImGui::EndTooltip();
@@ -577,7 +625,7 @@ void NVGui::Run(SDL_Renderer *r)
                 ImGui::EndTabItem();
             }
             
-            if (ImGui::BeginTabItem("Soundfonts"))
+            if(ImGui::BeginTabItem("Soundfonts"))
             {
                 ImGui::SetNextItemWidth(300);
                 ImGui::InputTextWithHint("##XD", "Search soundfonts", sf_search, IM_ARRAYSIZE(sf_search));
@@ -590,7 +638,7 @@ void NVGui::Run(SDL_Renderer *r)
                 {
                     NVi::RefreshSFList();
                 }
-                if (ImGui::BeginItemTooltip())
+                if(ImGui::BeginItemTooltip())
                 {
                     ImGui::Text("Synchronize the soundfont file list with the new files created");
                     ImGui::EndTooltip();
@@ -603,7 +651,7 @@ void NVGui::Run(SDL_Renderer *r)
                     current_file_info = NVFileUtils::GetFileInfo(live_midi_list[selIndex]);
                     file_info_window = true;
                 }
-                if (ImGui::BeginItemTooltip())
+                if(ImGui::BeginItemTooltip())
                 {
                     ImGui::Text("Show file information");
                     ImGui::EndTooltip();
@@ -614,7 +662,7 @@ void NVGui::Run(SDL_Renderer *r)
                 ImGui::EndTabItem();
             }
             
-            if (ImGui::BeginTabItem("Settings"))
+            if(ImGui::BeginTabItem("Settings"))
             {
                 if(ImGui::Button("Save"))
                 {
@@ -654,7 +702,7 @@ void NVGui::Run(SDL_Renderer *r)
                                 midi_path_entry[0] = '\0';
                             }
                         }
-                        if (ImGui::BeginItemTooltip())
+                        if(ImGui::BeginItemTooltip())
                         {
                             ImGui::Text("Add new midi path entry");
                             ImGui::EndTooltip();
@@ -664,13 +712,13 @@ void NVGui::Run(SDL_Renderer *r)
                         
                         if(ImGui::Button("-"))
                         {
-                            if (selected_midi_path_entry >= 0 && selected_midi_path_entry < live_conf.extra_midi_paths.size())
+                            if(selected_midi_path_entry >= 0 && selected_midi_path_entry < live_conf.extra_midi_paths.size())
                             {
                                 live_conf.extra_midi_paths.erase(live_conf.extra_midi_paths.begin() + selected_midi_path_entry);
                                 selected_midi_path_entry = -1;
                             }
                         }
-                        if (ImGui::BeginItemTooltip())
+                        if(ImGui::BeginItemTooltip())
                         {
                             ImGui::Text("Remove midi path entry");
                             ImGui::EndTooltip();
@@ -689,7 +737,7 @@ void NVGui::Run(SDL_Renderer *r)
                                 soundfons_path_entry[0] = '\0';
                             }
                         }
-                        if (ImGui::BeginItemTooltip())
+                        if(ImGui::BeginItemTooltip())
                         {
                             ImGui::Text("Add new soundfonts path entry");
                             ImGui::EndTooltip();
@@ -699,13 +747,13 @@ void NVGui::Run(SDL_Renderer *r)
                         
                         if(ImGui::Button("-##sf1"))
                         {
-                            if (selected_soundfont_path_etry >= 0 && selected_soundfont_path_etry < live_conf.extra_sf_paths.size())
+                            if(selected_soundfont_path_etry >= 0 && selected_soundfont_path_etry < live_conf.extra_sf_paths.size())
                             {
                                 live_conf.extra_sf_paths.erase(live_conf.extra_sf_paths.begin() + selected_midi_path_entry);
                                 selected_soundfont_path_etry = -1;
                             }
                         }
-                        if (ImGui::BeginItemTooltip())
+                        if(ImGui::BeginItemTooltip())
                         {
                             ImGui::Text("Remove soundfonts path entry");
                             ImGui::EndTooltip();
@@ -714,10 +762,10 @@ void NVGui::Run(SDL_Renderer *r)
                         ImGui::EndTabItem();
                     }
                     
-                    if (ImGui::BeginTabItem("Visual"))
+                    if(ImGui::BeginTabItem("Visual"))
                     {
                         ImGui::Checkbox("Overlap Remover *", &overlap_remover);
-                        if (ImGui::BeginItemTooltip())
+                        if(ImGui::BeginItemTooltip())
                         {
                             ImGui::Text("Removes duplicated note data reducing the visualization lag");
                             ImGui::EndTooltip();
@@ -729,7 +777,7 @@ void NVGui::Run(SDL_Renderer *r)
 
                         ImGui::ColorEdit3("##H", (float*)&clear_color);
 
-                        if (ImGui::BeginItemTooltip())
+                        if(ImGui::BeginItemTooltip())
                         {
                             ImGui::Text("Change the background color of the main scene");
                             ImGui::EndTooltip();
@@ -748,7 +796,7 @@ void NVGui::Run(SDL_Renderer *r)
                                 live_conf.channel_colors[i] = Col[i];
                             }
                         }
-                        if (ImGui::BeginItemTooltip())
+                        if(ImGui::BeginItemTooltip())
                         {
                             ImGui::Text("Reset the color order");
                             ImGui::EndTooltip();
@@ -777,7 +825,7 @@ void NVGui::Run(SDL_Renderer *r)
                         ImGui::EndTabItem();
                     }
                     
-                    if (ImGui::BeginTabItem("Audio"))
+                    if(ImGui::BeginTabItem("Audio"))
                     {
                         // Save device ID only if allowed by the list
                         // Risky!!
@@ -792,13 +840,15 @@ void NVGui::Run(SDL_Renderer *r)
 		                static int prev_voice_count = live_conf.bass_voice_count;
 		
 		                // Input widget for voice count
-		                if (ImGui::InputInt("##LOL", &live_conf.bass_voice_count)) {
+		                if(ImGui::InputInt("##LOL", &live_conf.bass_voice_count))
+						{
 			                // Ensure value is within reasonable limits
 			                if (live_conf.bass_voice_count < 1) live_conf.bass_voice_count = 1;
 			                if (live_conf.bass_voice_count > 5000) live_conf.bass_voice_count = 5000;
 			
 			                // Apply the change in real-time if the value has changed
-			                if (prev_voice_count != live_conf.bass_voice_count) {
+			                if(prev_voice_count != live_conf.bass_voice_count)
+						    {
 								updateBassVoiceCount(live_conf.bass_voice_count);
 								prev_voice_count = live_conf.bass_voice_count;
 			                }
@@ -827,7 +877,7 @@ void NVGui::Run(SDL_Renderer *r)
                     ImGui::Text("\n");
 		        }
 		
-		        if (ImGui::BeginItemTooltip())
+		        if(ImGui::BeginItemTooltip())
 		        {
 					ImGui::Text("Set how many notes can be played on specific instruments (changes apply immediately)");
 					ImGui::EndTooltip();

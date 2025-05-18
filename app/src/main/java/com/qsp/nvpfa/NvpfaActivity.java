@@ -34,6 +34,7 @@ public class NvpfaActivity extends SDLActivity {
         
         loadFile("pfa_intro.mid");
         loadFile("piano_maganda.sf2");
+        loadFile("gm_generic.sf2");
         loadFile("ui_font.ttf");
         
         extractAssets();

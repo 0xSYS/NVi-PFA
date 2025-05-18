@@ -10,7 +10,7 @@ This clone is powered by Qishipai's [midi processing library](https://github.com
 
 ## Features
 - [X] Default midi and soundfont
-- [ ] Default GM Soundfont
+- [X] Default GM Soundfont
 - [X] Custom background color support
 - [X] Custom themed GUI
 - [X] Settings storage to file (.toml)
@@ -32,7 +32,8 @@ This clone is powered by Qishipai's [midi processing library](https://github.com
 - [X] Common midi and soundfont reloading (This must not require app restarting after each midi playing session)
 - [X] Seting for custom folders / directories to search for midi and soundfont files
 - [ ] More audio settings (like Realtime frame rate, frame fluctuation, enabling disabling limiter)
-- [ ] Performance improvements
+- [X] Audio Playback Performance improvements
+- [ ] Visualizer performance improvements
 - [ ] Loging to text file (This can be useful for development purposes)
 - [X] Custom icon and app name
 
