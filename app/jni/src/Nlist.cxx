@@ -136,7 +136,6 @@ void NVnoteList::update_to(double T)
 
 void NVnoteList::OR()        // A presumably useful overlap remover
 {
-    NVi::info("Nlist", "Applying OR\n");
     for (int i = 0; i < 128; ++i)
     {
         std::list<NVnote>::iterator p = L[i].end();

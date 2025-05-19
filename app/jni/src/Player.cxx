@@ -47,7 +47,6 @@ std::vector<BASS_MIDI_FONT> font_list;
 QWORD saved_position = 0; // For storing position when paused
 const double SEEK_AMOUNT = 3.0; // 3 seconds for seeking
 bool is_paused = false;
-bool playback_ended = false;
 
 unsigned char events[6144];
 int eventCount = 0;
@@ -211,6 +210,10 @@ void loadMidiFile(const std::string& midi_path)
 {
     
     SDL_LockMutex(bass_mutex);
+    
+    // Make sure the main window is closed before loading a new midi
+    if(main_gui_window)
+        main_gui_window = false;
     
     // Parse new MIDI file
     if(!MIDI.start_parse(midi_path.c_str()))

@@ -20,6 +20,7 @@ inline std::string current_midi_file;
 inline bool main_gui_window = false;
 inline bool is_defaultconfig;
 inline bool is_playback_started = false;
+inline bool playback_ended = false;
 inline std::vector<std::string> sf_file_info_text_arr;
 //static NVnoteList MIDI;
 

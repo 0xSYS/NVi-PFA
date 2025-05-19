@@ -14,7 +14,7 @@
 #include "extern/imgui_sdl3/imgui_impl_sdlrenderer3.h"
 
 
-
+//#undef NON_ANDROID
 
 
 bool show_demo_window = true;
@@ -37,7 +37,6 @@ std::string temp_widget_id;
 std::ostringstream file_info_fields;
 std::vector <std::string> current_soundfonts;
 NVFileUtils::FileInfo current_file_info;
-
 
 
 
@@ -176,13 +175,14 @@ void NVGui::Setup(SDL_Window *w, SDL_Renderer *r)
     std::string ui_font_file = NVFileUtils::GetFilePathA("ui_font.ttf", "rb");
     io.Fonts->AddFontFromFileTTF(ui_font_file.c_str(), 38.0f);
 #else
-    io.Fonts->AddFontFromFileTTF("ui_font.ttf", 19.0f);
+  io.Fonts->AddFontFromFileTTF("ui_font.ttf", 19.0f);
 #endif
     
     // Setup Platform/Renderer backends
     ImGui_ImplSDL3_InitForSDLRenderer(w, r);
     ImGui_ImplSDLRenderer3_Init(r);
 }
+
 
 /*
 Functions for internal use only
@@ -516,7 +516,7 @@ void NVGui::Run(SDL_Renderer *r)
         ImGui::SetNextWindowSizeConstraints(ImVec2(700, 380), ImVec2(FLT_MAX, FLT_MAX));
         ImGui::Begin("NVi PFA", &main_gui_window);
 #else   // Setting up a different ui layout for mobile users
-        ImGui::SetNextWindowSize(ImVec2(900.0f, 600.0f));
+        ImGui::SetNextWindowSize(ImVec2(964.0f, 600.0f));
         ImGui::Begin("NVi PFA", &main_gui_window, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 #endif
 
@@ -557,7 +557,7 @@ void NVGui::Run(SDL_Renderer *r)
                 
                 ImGui::SameLine();
                 
-                if(!is_playback_started)
+                if(!is_playback_started && !playback_ended)
                 {
                     ImGui::BeginDisabled();
                 

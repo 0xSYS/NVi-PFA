@@ -9,7 +9,7 @@ void NVsequencer::seq_start(NVmidiFile &midi)
     E[midi.tracks].abstick = 0xFFFFFFFFu;
     E[midi.tracks].track   = midi.tracks;
 
-    for (L = 1; L < midi.tracks; L <<= 1){ }
+    for (L = 1; L < midi.tracks; L <<= 1) { }
 
     T = new NVi::u16_t [L << 1]; seq_reset(midi);
 }

@@ -3,6 +3,8 @@
 
 
 #include "MIDI.hxx"
+
+
 using namespace NVi;
 
 
