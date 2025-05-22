@@ -57,7 +57,7 @@ std::vector<std::string> NVFileUtils::GetFilesByExtension(std::string base_dir, 
     
     if(!dir)
     {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", ("Failed to scan: " + base_dir).c_str(), nullptr);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "File Scanner Error!!!!!", ("Failed to scan: " + base_dir).c_str(), nullptr);
         return result;
     }
     
@@ -222,8 +222,8 @@ std::string NVFileUtils::GetFilePathA(std::string filename, const char * reading
     {
         out_path = "";
         std::ostringstream temp_msg;
-        temp_msg << "Failed to get file !\n" << "'" << full_path.str() << "' Does not exists !";
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", temp_msg.str().c_str(), nullptr);
+        temp_msg << "Failed to get asset file !\n" << "'" << full_path.str() << "' Does not exists !";
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Asset Error!!!!!", temp_msg.str().c_str(), nullptr);
     }
     SDL_free(base_path);
     return out_path;

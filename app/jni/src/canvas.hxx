@@ -9,6 +9,8 @@
 
 extern const unsigned char KeyMap[128];
 
+inline bool is_image_loaded;
+
 
 // Required by the track color distributor
 struct PairHash
@@ -61,7 +63,6 @@ public:
 	const SDL_DisplayMode *mod;
     int   TH, WinW, WinH;
     bool  KeyPress[128];
-    bool is_image_loaded;
     unsigned int KeyColor[128];
     
     SDL_Texture *bg_img;

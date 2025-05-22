@@ -166,7 +166,7 @@ NVConf::configuration NVConf::ReadConfig()
     else 
     {
         //in_cfg.use_default_colors = true; // Nah it would make things a whole lot stupid so for now I want to keep it like this. I hope this will never EVER happen
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning!!", "Missing channel Color array !\nFalling back to default color array.", nullptr);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Config Warning!!", "Missing channel Color array !\nFalling back to default color array.", nullptr);
     }
    
     

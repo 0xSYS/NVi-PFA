@@ -22,6 +22,7 @@
 #include "common.hxx"
 #include "canvas.hxx"
 #include "Gui.hxx"
+#include "file_utils.hxx"
 
 
 
@@ -94,33 +95,47 @@ Canvas::Canvas()
 	
 	if(live_conf.use_bg_img)
 	{
-	    NVi::info("canvas", "Loading image: %s\n", live_conf.bg_img.c_str());
-        bg_img = IMG_LoadTexture(Ren, live_conf.bg_img.c_str());
-        if (!bg_img)
+	    NVi::info("canvas", "Loading background image: %s\n", live_conf.bg_img.c_str());
+		if(NVFileUtils::FileExists(live_conf.bg_img))
+		{
+            bg_img = IMG_LoadTexture(Ren, live_conf.bg_img.c_str());
+            is_image_loaded = true;
+            
+            
+            if(!bg_img)
+            {
+                std::ostringstream temp;
+                temp << "Failed to load background image\nSDL Err: " << SDL_GetError();
+                SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Loading Image Error !!!", temp.str().c_str() , nullptr);
+                is_image_loaded = false;
+                //SDL_DestroyRenderer(Ren);
+                //SDL_DestroyWindow(Win);
+                //SDL_Quit();
+            }
+            else
+                is_image_loaded = true;
+		}
+        else
         {
             std::ostringstream temp;
-            temp << "Failed to load background image\nSDL Err: " << SDL_GetError();
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!", temp.str().c_str() , nullptr);
-            //SDL_DestroyRenderer(Ren);
-            //SDL_DestroyWindow(Win);
-            //SDL_Quit();
+            temp << "File '" << live_conf.bg_img << "' does not exist!!!";
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Loading Image Error !!!", temp.str().c_str(), nullptr);
+            is_image_loaded = false;
         }
-        else
-            is_image_loaded = true;
 	}
     
     // Load all available images and store them into the texture
     for (std::string filename : all_image_files) 
     {
-        NVi::info("canvas", "Files: %s\n", filename.c_str());
+        //NVi::info("canvas", "Files: %s\n", filename.c_str());
         SDL_Texture* tex = IMG_LoadTexture(Ren, filename.c_str());
         if (tex) 
             image_textures.push_back(tex);
         else
         {
             std::ostringstream temp;
-            temp << "Failed to load " << filename;
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!", temp.str().c_str() , nullptr);
+            temp << "Failed to load preview image: '" << filename << "'";
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Loading Image Error !!!", temp.str().c_str() , nullptr);
         }
     }
 	

@@ -968,6 +968,7 @@ void NVGui::Run(SDL_Renderer *r)
                         {
                             if(ImGui::Button("Reload Background Image"))
                             {
+                                is_image_loaded = true;
                                 CvWin->bg_img = IMG_LoadTexture(CvWin->Ren, all_image_files[selected_image].c_str());
                             }
                         }
@@ -977,6 +978,7 @@ void NVGui::Run(SDL_Renderer *r)
                             ImGui::EndTooltip();
                         }
                         live_conf.use_bg_img = use_bg_image;
+                        is_image_loaded = use_bg_image;
                         RenderImageList(image_textures);
                         live_conf.bg_img = all_image_files[selected_image];
                     

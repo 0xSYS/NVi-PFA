@@ -39,8 +39,10 @@ bool NVnoteList::start_parse(const char *name)
 
 void NVnoteList::destroy_all()
 {
-    delete[] keys; keys =  nullptr;
-    M.mid_close(); S.seq_destroy();
+    delete[] keys;
+    keys =  nullptr;
+    M.mid_close();
+    S.seq_destroy();
 }
 
 void NVnoteList::list_seek(double T)

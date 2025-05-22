@@ -11,7 +11,7 @@
 
 #ifndef NON_ANDROID
     #define BASE_DIRECTORY "/sdcard/Download/"
-    #define BASE_DIRECTORY_IMAGES "/sdcard/idk/where/to/look/for/images/lmfaoo"
+    #define BASE_DIRECTORY_IMAGES "/sdcard/Pictures/"
     #define APP_NAMESPACE "com.qsp"
 #endif
 

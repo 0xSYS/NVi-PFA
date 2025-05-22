@@ -84,7 +84,7 @@ void LoadInitialSoundfonts()
     {
 #ifndef NON_ANDROID
         std::string default_sf_path = NVFileUtils::GetFilePathA("piano_maganda.sf2", "rb");
-        std::string default_gm_sf_path = NVFileUtils::GetFilePathA("gm_generic.sf2", "rbf");
+        std::string default_gm_sf_path = NVFileUtils::GetFilePathA("gm_generic.sf2", "rb");
         
         HSOUNDFONT Sf1 = BASS_MIDI_FontInit(default_gm_sf_path.c_str(), 0);
         HSOUNDFONT Sf2 = BASS_MIDI_FontInit(default_sf_path.c_str(), 0);
@@ -221,7 +221,7 @@ void loadMidiFile(const std::string& midi_path)
     {
         std::ostringstream temp_msg;
         temp_msg << "Failed to load '" << midi_path << "'";
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", temp_msg.str().c_str(), nullptr);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "MIDI Loading Error!!!!!", temp_msg.str().c_str(), nullptr);
         return;
     }
     
@@ -371,6 +371,15 @@ void NVi::Quit()
     BASS_PluginFree(0);
     MIDI.destroy_all();
     SDL_DestroyMutex(bass_mutex);
+    
+    const char * sdl_err = SDL_GetError();
+    if(strlen(sdl_err) << 1)
+    {
+        std::ostringstream temp;
+        temp << "Caught last Error: " << sdl_err;
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Last SDL Error: ", temp.str().c_str() , nullptr);
+        SDL_Log("SDL Error: %s", sdl_err);
+    }
     exit(0);
 }
 
@@ -454,7 +463,7 @@ void NVi::CreateMidiList()
     } 
     else 
     {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!!!", "Failed to save midi list", nullptr);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "MIDI List Error!!!!!", "Failed to save midi list", nullptr);
     }
 }
 
@@ -537,7 +546,7 @@ void NVi::CreateImageList()
 #ifdef NON_ANDROID
     base_dir << NVi::GetHomeDir() << "/Pictures/";
 #else 
-    base_dir << BASE_DIRECTORY;
+    base_dir << BASE_DIRECTORY_IMAGES; // Temporarry stuff
 #endif
 
     if(live_conf.extra_img_paths.size() == 0)
@@ -567,7 +576,6 @@ void NVi::CreateImageList()
     
     if(live_conf.use_default_paths)
     {
-        NVi::info("Kiss my ass", "fdkjghfdgjkhdf\n");
         auto png_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".png");
         image_files.insert(image_files.end(), png_files.begin(), png_files.end());
         
@@ -810,7 +818,10 @@ int SDL_main(int ac, char **av)
         CvWin->bg_img = IMG_LoadTexture(CvWin->Ren, live_conf.bg_img.c_str());
     }
     else
+    {
         CvWin->bg_img = IMG_LoadTexture(CvWin->Ren, all_image_files[0].c_str());
+    }
+        
     
     /*
     App Main loop
@@ -881,16 +892,16 @@ int SDL_main(int ac, char **av)
 		
 		if(live_conf.use_bg_img)
 		{
+		    //NVi::info("Player", "Use Background image\n");
 		    // Draw the background image only if the image is loaded
-		    //if(CvWin->is_image_loaded)
-			//{
+		    if(is_image_loaded)
+			{
 			    //NVi::info("Player", "Yes image\n");
                 SDL_FRect dst = {0, 0, (float)CvWin->WinW, (float)CvWin->WinH};
                 SDL_RenderClear(CvWin->Ren);
                 SDL_RenderTexture(CvWin->Ren, CvWin->bg_img, NULL, &dst);
-            //}
+            }
 		}
-        //SDL_RenderPresent(CvWin->Ren);
 		
 		// Always draw notes
 		for(int i = 0; i != 128; ++i)
@@ -915,12 +926,6 @@ int SDL_main(int ac, char **av)
 		if (!is_paused && !playback_ended)
 		{
 			Tplay = BASS_ChannelBytes2Seconds(Stm, BASS_ChannelGetPosition(Stm, BASS_POS_BYTE));
-		}
-		
-		const char * sdl_err = SDL_GetError();
-		if(strlen(sdl_err) << 1)
-		{
-			SDL_Log("SDL Error: %s", sdl_err);
 		}
 	}
 #else
