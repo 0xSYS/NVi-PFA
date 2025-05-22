@@ -46,6 +46,8 @@ void NVConf::WriteConfig(configuration cfg)
     vis->insert("NoteSpeed", cfg.note_speed);
     vis->insert("LoopColors", cfg.loop_colors);
     vis->insert("OR", cfg.OR);
+    vis->insert("UseBGImage", cfg.use_bg_img);
+    vis->insert("BGImgPath", cfg.bg_img);
     out_cfg->insert("Visual", vis);
     
     auto bg_col = cpptoml::make_table();
@@ -72,6 +74,15 @@ void NVConf::WriteConfig(configuration cfg)
     }
     
     out_cfg->insert("soundfonts_paths", sf_paths_out);
+    
+    auto img_paths_out = cpptoml::make_array();
+    
+    for (const auto& path : cfg.extra_img_paths) 
+    {
+        img_paths_out->push_back(path);
+    }
+    
+    out_cfg->insert("image_paths", img_paths_out);
     
     auto ch_colors = cpptoml::make_array();
     
@@ -124,6 +135,8 @@ NVConf::configuration NVConf::ReadConfig()
     in_cfg.note_speed  = *vis->get_as<int>("NoteSpeed");
     in_cfg.loop_colors = *vis->get_as<bool>("LoopColors");
     in_cfg.OR          = *vis->get_as<bool>("OR");
+    in_cfg.use_bg_img  = *vis->get_as<bool>("UseBGImage");
+    in_cfg.bg_img = *vis->get_as<std::string>("BGImgPath");
     
     auto bg_col = cfg->get_table("BackgroundColor");
     in_cfg.bg_R = *bg_col->get_as<int>("R");
@@ -136,6 +149,9 @@ NVConf::configuration NVConf::ReadConfig()
     
     auto sf_paths = cfg->get_array_of<std::string>("soundfonts_paths");
     in_cfg.extra_sf_paths = *sf_paths;
+    
+    auto img_paths = cfg->get_array_of<std::string>("image_paths");
+    in_cfg.extra_img_paths = *img_paths;
     
     auto ch_colors = cfg->get_array_of<int64_t>("ch_color_array");
     

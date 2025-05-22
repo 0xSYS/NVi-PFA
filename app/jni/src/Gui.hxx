@@ -32,12 +32,16 @@ inline int current_audio_dev;
 inline bool velocity_filter = true;
 inline bool loop_colors = false;
 inline bool overlap_remover = true;
+inline bool use_bg_image = false;
 inline bool use_default_media_paths = true;
 
 inline ImVec4 ui_chcolors[16];
 
 inline std::vector<SoundfontItem> live_soundfont_list;
 inline std::vector<std::string> checked_soundfonts;
+inline std::vector<std::string> image_files;
+inline std::vector<std::string> all_image_files;
+inline std::vector<SDL_Texture*> image_textures;
 
 unsigned int ImVec4ToUInt(const ImVec4& color);
 ImVec4 UIntToImVec4(unsigned int rgb);

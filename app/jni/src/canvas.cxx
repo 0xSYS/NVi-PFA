@@ -2,6 +2,7 @@
 #include <SDL3/SDL_messagebox.h>
 #include <SDL3/SDL_oldnames.h>
 #include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
 #include <cmath>
 #include <algorithm>
 #include <random>
@@ -67,6 +68,7 @@ Canvas::Canvas()
 {
     NVi::info("canvas", "Init\n");
     SDL_Init(SDL_INIT_VIDEO); //IMG_Init(IMG_INIT_PNG);
+    //IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
     //Win = SDL_CreateWindow("NVplayer++", parsed_config.window_w, parsed_config.window_h, 0);
     //Win = SDL_CreateWindow("NVplayer++", 1900, 900, 0);
 #ifndef NON_ANDROID
@@ -88,6 +90,39 @@ Canvas::Canvas()
         
 	SDL_SetRenderVSync(Ren, 1);
 	SDL_SetWindowPosition(Win, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+	
+	
+	if(live_conf.use_bg_img)
+	{
+	    NVi::info("canvas", "Loading image: %s\n", live_conf.bg_img.c_str());
+        bg_img = IMG_LoadTexture(Ren, live_conf.bg_img.c_str());
+        if (!bg_img)
+        {
+            std::ostringstream temp;
+            temp << "Failed to load background image\nSDL Err: " << SDL_GetError();
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!", temp.str().c_str() , nullptr);
+            //SDL_DestroyRenderer(Ren);
+            //SDL_DestroyWindow(Win);
+            //SDL_Quit();
+        }
+        else
+            is_image_loaded = true;
+	}
+    
+    // Load all available images and store them into the texture
+    for (std::string filename : all_image_files) 
+    {
+        NVi::info("canvas", "Files: %s\n", filename.c_str());
+        SDL_Texture* tex = IMG_LoadTexture(Ren, filename.c_str());
+        if (tex) 
+            image_textures.push_back(tex);
+        else
+        {
+            std::ostringstream temp;
+            temp << "Failed to load " << filename;
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!!!", temp.str().c_str() , nullptr);
+        }
+    }
 	
 	SDL_DisplayID sid = SDL_GetDisplayForWindow(Win);
 	mod = SDL_GetDesktopDisplayMode(sid);
@@ -147,6 +182,7 @@ Canvas::~Canvas()
     SDL_DestroyTexture(Bk0);
     SDL_DestroyTexture(Bk1);
     SDL_DestroyTexture(Wk);
+    SDL_DestroyTexture(bg_img);
     SDL_DestroyRenderer(Ren);
     SDL_DestroyWindow(Win);
     SDL_Quit();

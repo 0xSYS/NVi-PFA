@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
+#include <SDL3_image/SDL_image.h>
 
 #ifdef __linux__
     #include <unistd.h>
@@ -500,6 +501,9 @@ void NVi::RefreshSFList()
     {
         auto sf2_files = NVFileUtils::GetFilesByExtension(path, ".sf2");
         live_soundfont_files.insert(live_soundfont_files.end(), sf2_files.begin(), sf2_files.end());
+        
+        auto sf3_files = NVFileUtils::GetFilesByExtension(path, ".sf3");
+        live_soundfont_files.insert(live_soundfont_files.end(), sf3_files.begin(), sf2_files.end());
     
         auto sfz_files = NVFileUtils::GetFilesByExtension(path, ".sfz");
         live_soundfont_files.insert(live_soundfont_files.end(), sfz_files.begin(), sfz_files.end());
@@ -511,6 +515,9 @@ void NVi::RefreshSFList()
         auto sf2_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".sf2");
         live_soundfont_files.insert(live_soundfont_files.end(), sf2_files.begin(), sf2_files.end());
         
+        auto sf3_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".sf3");
+        live_soundfont_files.insert(live_soundfont_files.end(), sf3_files.begin(), sf2_files.end());
+        
         auto sfz_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".sfz");
         live_soundfont_files.insert(live_soundfont_files.end(), sfz_files.begin(), sfz_files.end());
         
@@ -521,6 +528,69 @@ void NVi::RefreshSFList()
         }
     }
     NVConf::CreateSoundfontList(live_soundfont_list);
+}
+
+// Deciced to not save the image list to toml array
+void NVi::CreateImageList()
+{
+    std::ostringstream base_dir;
+#ifdef NON_ANDROID
+    base_dir << NVi::GetHomeDir() << "/Pictures/";
+#else 
+    base_dir << BASE_DIRECTORY;
+#endif
+
+    if(live_conf.extra_img_paths.size() == 0)
+    {
+        NVi::info("Player", "no extra image_paths\n");
+    }
+    else
+    {
+        for(const auto& path : live_conf.extra_img_paths)
+        {
+            auto png_files = NVFileUtils::GetFilesByExtension(path, ".png");
+            image_files.insert(image_files.end(), png_files.begin(), png_files.end());
+            
+            auto jpg_files = NVFileUtils::GetFilesByExtension(path, ".jpg");
+            image_files.insert(image_files.end(), jpg_files.begin(), jpg_files.end());
+            
+            auto jpeg_files = NVFileUtils::GetFilesByExtension(path, ".jpeg");
+            image_files.insert(image_files.end(), jpeg_files.begin(), jpeg_files.end());
+            
+            auto webp_files = NVFileUtils::GetFilesByExtension(path, ".webp");
+            image_files.insert(image_files.end(), webp_files.begin(), webp_files.end());
+            
+            auto svg_files = NVFileUtils::GetFilesByExtension(path, ".svg");
+            image_files.insert(image_files.end(), svg_files.begin(), svg_files.end());
+        }
+    }
+    
+    if(live_conf.use_default_paths)
+    {
+        NVi::info("Kiss my ass", "fdkjghfdgjkhdf\n");
+        auto png_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".png");
+        image_files.insert(image_files.end(), png_files.begin(), png_files.end());
+        
+        auto jpg_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".jpg");
+        image_files.insert(image_files.end(), jpg_files.begin(), jpg_files.end());
+        
+        auto jpeg_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".jpeg");
+        image_files.insert(image_files.end(), jpeg_files.begin(), jpeg_files.end());
+        
+        auto webp_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".webp");
+        image_files.insert(image_files.end(), webp_files.begin(), webp_files.end());
+        
+        auto svg_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".svg");
+        image_files.insert(image_files.end(), svg_files.begin(), svg_files.end());
+    }
+    
+    all_image_files.resize(image_files.size());
+    
+    // Complete array merging
+    for(int i = 0; i < all_image_files.size(); i++)
+    {
+        all_image_files[i] = image_files[i];
+    }
 }
 
 
@@ -574,6 +644,7 @@ int SDL_main(int ac, char **av)
         loop_colors = live_conf.loop_colors;
         overlap_remover = live_conf.OR;
         use_default_media_paths = live_conf.use_default_paths;
+        use_bg_image = live_conf.use_bg_img;
         
         selIndex = live_conf.midi_index;
     }
@@ -595,9 +666,10 @@ int SDL_main(int ac, char **av)
         default_config.vel_filter = true;
         default_config.vel_min = 0;
         default_config.vel_max = 32;
+        default_config.use_default_paths = true;
         selIndex = 0;
         //default_config.channel_colors[15] = Col[15];
-        for(int i = 0; i < 15; i++)
+        for(int i = 0; i < 16; i++)
         {
             ui_chcolors[i] = UIntToImVec4(Col[i]);
         }
@@ -632,6 +704,8 @@ int SDL_main(int ac, char **av)
     {
         NVi::RefreshSFList();
     }
+    
+    NVi::CreateImageList();
     
     if(parsed_config.last_midi_path.length() == 0)
     {
@@ -731,6 +805,13 @@ int SDL_main(int ac, char **av)
     // Allow live change of the backgoround color
    	SDL_SetRenderDrawColor(CvWin->Ren, liveColor.r, liveColor.g, liveColor.b, liveColor.a);
     
+    if(!live_conf.bg_img.empty())
+    {
+        CvWin->bg_img = IMG_LoadTexture(CvWin->Ren, live_conf.bg_img.c_str());
+    }
+    else
+        CvWin->bg_img = IMG_LoadTexture(CvWin->Ren, all_image_files[0].c_str());
+    
     /*
     App Main loop
     */
@@ -797,6 +878,19 @@ int SDL_main(int ac, char **av)
 		}
 		
 		SDL_SetRenderDrawColor(CvWin->Ren, liveColor.r, liveColor.g, liveColor.b, liveColor.a);
+		
+		if(live_conf.use_bg_img)
+		{
+		    // Draw the background image only if the image is loaded
+		    //if(CvWin->is_image_loaded)
+			//{
+			    //NVi::info("Player", "Yes image\n");
+                SDL_FRect dst = {0, 0, (float)CvWin->WinW, (float)CvWin->WinH};
+                SDL_RenderClear(CvWin->Ren);
+                SDL_RenderTexture(CvWin->Ren, CvWin->bg_img, NULL, &dst);
+            //}
+		}
+        //SDL_RenderPresent(CvWin->Ren);
 		
 		// Always draw notes
 		for(int i = 0; i != 128; ++i)

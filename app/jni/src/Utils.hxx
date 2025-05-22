@@ -63,6 +63,7 @@ namespace  NVi   /* ===== Tool function namespace ===== */
     void ReadMidiList();
     void RefreshSFList();
     void CloseMIDI();
+    void CreateImageList();
     std::vector<AudioDevice> GetAudioOutputs();
     
     // Float rgb to int rgb

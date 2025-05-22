@@ -60,12 +60,16 @@ class NVConf
         bool use_default_paths;
         bool is_custom_ch_colors; // Only for internal use!!!
         bool use_default_colors; // Only for internal use!!!
+        bool use_bg_img;
         bool loop_colors;
+        bool auto_refresh;
         bool OR; // Overlap remover
         std::string last_midi_path;
+        std::string bg_img;
         std::vector<std::string> current_soundfonts;
         std::vector<std::string> extra_midi_paths;
         std::vector<std::string> extra_sf_paths;
+        std::vector<std::string> extra_img_paths;
     }configuration;
     
     static configuration ReadConfig();
