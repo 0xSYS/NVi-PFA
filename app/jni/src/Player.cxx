@@ -525,7 +525,7 @@ void NVi::RefreshSFList()
         live_soundfont_files.insert(live_soundfont_files.end(), sf2_files.begin(), sf2_files.end());
         
         auto sf3_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".sf3");
-        live_soundfont_files.insert(live_soundfont_files.end(), sf3_files.begin(), sf2_files.end());
+        live_soundfont_files.insert(live_soundfont_files.end(), sf3_files.begin(), sf3_files.end());
         
         auto sfz_files = NVFileUtils::GetFilesByExtension(base_dir.str(), ".sfz");
         live_soundfont_files.insert(live_soundfont_files.end(), sfz_files.begin(), sfz_files.end());
