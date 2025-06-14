@@ -73,5 +73,7 @@ void NVsequencer::seq_destroy()
 
 void NVsequencer::update(int p, int a, int b)
 {
-    T[p] = E[a].abstick < E[b].abstick? a : b;
+    if (E[a].abstick < E[b].abstick) T[p] = a;
+	else if (E[a].abstick == E[b].abstick) T[p] = E[a].track < E[b].track ? a : b;
+	else T[p] = b;
 }
